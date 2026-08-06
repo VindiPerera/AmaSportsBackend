@@ -16,6 +16,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            SportSeeder::class,
+            FormatSeeder::class,
+            AgeCategorySeeder::class,
+            MatchCategorySeeder::class,
+            CricketMatchTypeSeeder::class,
+        ]);
+
         User::factory()->coach()->create([
             'name' => 'Demo Coach',
             'email' => 'coach@amasports.app',

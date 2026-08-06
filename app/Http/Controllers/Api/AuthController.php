@@ -28,11 +28,14 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
+        // There is only one signup type — Player. The `role` column stays
+        // in the schema for future coach/admin features, but the client
+        // never chooses it.
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => User::ROLE_STUDENT,
         ]);
 
         $token = $user->createToken('mobile')->plainTextToken;
