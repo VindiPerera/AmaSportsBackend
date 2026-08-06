@@ -23,8 +23,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
-    Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 });

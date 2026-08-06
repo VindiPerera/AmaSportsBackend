@@ -8,8 +8,9 @@ use App\Notifications\OtpCodeNotification;
 use Illuminate\Support\Carbon;
 
 /**
- * Central place for issuing and validating one-time codes, shared by the
- * email-verification and password-reset flows.
+ * Central place for issuing and validating one-time codes. Currently backs
+ * the password-reset flow; generic enough to reuse for any future
+ * OTP-gated action.
  */
 class OtpService
 {

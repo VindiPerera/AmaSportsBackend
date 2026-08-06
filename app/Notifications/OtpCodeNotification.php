@@ -25,14 +25,10 @@ class OtpCodeNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        $purpose = $this->otp->type === OtpCode::TYPE_PASSWORD_RESET
-            ? 'reset your password'
-            : 'verify your email address';
-
         return (new MailMessage)
             ->subject('Your AmaSports verification code')
             ->greeting('Hi '.$notifiable->name.',')
-            ->line("Use the code below to {$purpose}.")
+            ->line('Use the code below to reset your password.')
             ->line(new HtmlString(
                 '<strong style="font-size:24px;letter-spacing:4px;">'.$this->otp->code.'</strong>'
             ))

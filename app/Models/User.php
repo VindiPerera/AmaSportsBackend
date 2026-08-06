@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
-use Illuminate\Auth\MustVerifyEmail;
-use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmailContract
+class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     public const ROLE_COACH = 'coach';
 
@@ -52,7 +50,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -70,15 +67,5 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
-    }
-
-    /**
-     * Verification uses OTP codes (see OtpService), not Laravel's default
-     * signed-link email. Suppress the built-in notification so registering
-     * a user never fires it by accident.
-     */
-    public function sendEmailVerificationNotification(): void
-    {
-        //
     }
 }

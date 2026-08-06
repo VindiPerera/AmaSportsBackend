@@ -69,8 +69,8 @@ app/
     Resources/             UserResource — API-facing shape of models
     Middleware/            EnsureUserHasRole (generic role gate for future modules)
   Models/                  User, OtpCode
-  Notifications/           OtpCodeNotification (verification / reset emails)
-  Services/                OtpService (issue + verify one-time codes)
+  Notifications/           OtpCodeNotification (password-reset emails)
+  Services/                OtpService (issue + verify password-reset codes)
   Traits/                  ApiResponse (shared success()/error() envelope helpers)
 
 routes/
@@ -104,13 +104,11 @@ Every endpoint returns the same JSON envelope, produced by the `ApiResponse` tra
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| POST | `/api/auth/register` | – | Create account, sends email-verification OTP, returns token + user |
-| POST | `/api/auth/login` | – | Returns token + user (403 + resends OTP if unverified) |
+| POST | `/api/auth/register` | – | Create account, returns token + user immediately (no email verification step) |
+| POST | `/api/auth/login` | – | Returns token + user |
 | POST | `/api/auth/logout` | ✅ | Revokes the current access token |
 | POST | `/api/auth/forgot-password` | – | Sends a 6-digit password-reset code by email |
 | POST | `/api/auth/reset-password` | – | `{ email, token, password, password_confirmation }` — resets password, revokes all tokens |
-| POST | `/api/auth/verify-otp` | – | `{ email, otp }` — verifies email, returns a fresh token |
-| POST | `/api/auth/resend-otp` | – | Re-issues an email-verification code |
 | GET | `/api/user` | ✅ | Current user's profile |
 | PATCH | `/api/user` | ✅ | Update `name` / `email` / `avatar_url` |
 | PUT | `/api/user/password` | ✅ | Change password while authenticated |
@@ -119,12 +117,14 @@ Authenticated requests use `Authorization: Bearer <token>`.
 
 ## OTP codes
 
-Both email verification and password reset share one `otp_codes` table (`app/Models/OtpCode.php`) and one `OtpService`:
+Password reset uses a one-time code, backed by the `otp_codes` table (`app/Models/OtpCode.php`) and `OtpService`:
 
 - 6-digit numeric code, expires after 10 minutes (`OtpCode::EXPIRY_MINUTES`)
-- Issuing a new code invalidates any previous unused code of the same type for that email
+- Issuing a new code invalidates any previous unused code for that email
 - Codes are single-use (`used_at` is stamped on successful verification)
 - Delivered via `OtpCodeNotification` (queued mail) — with `MAIL_MAILER=log` (the default), codes land in `storage/logs/laravel.log` instead of a real inbox, which is convenient for local development
+
+The `type` column on `otp_codes` currently only has one value (`password_reset`) but is kept so a future OTP-gated feature can reuse the same table.
 
 ## CORS
 

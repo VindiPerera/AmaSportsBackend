@@ -7,8 +7,6 @@ use Illuminate\Support\Carbon;
 
 class OtpCode extends Model
 {
-    public const TYPE_EMAIL_VERIFICATION = 'email_verification';
-
     public const TYPE_PASSWORD_RESET = 'password_reset';
 
     /** Minutes an OTP code stays valid after being issued. */
