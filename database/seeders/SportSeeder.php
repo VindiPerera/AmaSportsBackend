@@ -9,8 +9,7 @@ use Illuminate\Support\Str;
 class SportSeeder extends Seeder
 {
     /**
-     * Order and list per spec section 6.1. Only Cricket and Hockey ship a
-     * full registration form in this phase.
+     * Order and list per spec section 6.1.
      *
      * @var list<string>
      */
@@ -21,7 +20,22 @@ class SportSeeder extends Seeder
         'Elle', 'Netball', 'Soft Ball Cricket', 'Base Ball', 'Kabadi',
     ];
 
-    private const FULL_FORM_SLUGS = [Sport::CRICKET_SLUG, Sport::HOCKEY_SLUG];
+    /**
+     * Phase 1 shipped Cricket + Hockey; Phase 2 added Base Ball, Netball,
+     * Tennis/Badminton/Table Tennis (shared form), Kabadi, and Judo; Phase 3
+     * added Basketball, Football, Rugby, Boxing, Karate, Chess, Athletics,
+     * and Swimming; Phase 4 adds Volleyball, Beach Volleyball, and Elle.
+     * Only Shooting and Soft Ball Cricket still fall through to "coming
+     * soon" — no reference form has been provided for either yet.
+     */
+    private const FULL_FORM_SLUGS = [
+        Sport::CRICKET_SLUG, Sport::HOCKEY_SLUG, Sport::BASE_BALL_SLUG, Sport::NETBALL_SLUG,
+        Sport::TENNIS_SLUG, Sport::BADMINTON_SLUG, Sport::TABLE_TENNIS_SLUG,
+        Sport::KABADI_SLUG, Sport::JUDO_SLUG,
+        Sport::BASKETBALL_SLUG, Sport::FOOTBALL_SLUG, Sport::RUGBY_SLUG, Sport::BOXING_SLUG,
+        Sport::KARATE_SLUG, Sport::CHESS_SLUG, Sport::ATHLETICS_SLUG, Sport::SWIMMING_SLUG,
+        Sport::VOLLEYBALL_SLUG, Sport::BEACH_VOLLEYBALL_SLUG, Sport::ELLE_SLUG,
+    ];
 
     public function run(): void
     {

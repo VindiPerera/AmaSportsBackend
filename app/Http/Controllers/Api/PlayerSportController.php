@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Player\AddPlayerSportRequest;
 use App\Models\Player;
 use App\Models\PlayerSport;
 use App\Traits\ApiResponse;
@@ -39,30 +38,9 @@ class PlayerSportController extends Controller
         return $this->success($sports, 'Player sports retrieved successfully.');
     }
 
-    /**
-     * POST /player/sports — add a sport to this player. Idempotent: adding
-     * an already-added sport just returns the existing row.
-     */
-    public function store(AddPlayerSportRequest $request): JsonResponse
-    {
-        $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
-
-        $playerSport = PlayerSport::firstOrCreate(
-            ['player_id' => $player->id, 'sport_id' => $request->integer('sport_id')],
-            ['status' => PlayerSport::STATUS_PLACEHOLDER]
-        );
-
-        $playerSport->load('sport');
-
-        return $this->success([
-            'id' => $playerSport->id,
-            'status' => $playerSport->status,
-            'sport' => [
-                'id' => $playerSport->sport->id,
-                'name' => $playerSport->sport->name,
-                'slug' => $playerSport->sport->slug,
-                'has_full_form' => $playerSport->sport->has_full_form,
-            ],
-        ], 'Sport added.', 201);
-    }
+    // Deliberately no store()/add endpoint here — a `player_sports` row is
+    // only ever created by a sport profile's own submit endpoint (e.g.
+    // CricketProfileController::update), never just by picking a sport in
+    // the UI. This is what stops an unfinished form from polluting the
+    // player's sport list (see Phase 2 fix A3).
 }
