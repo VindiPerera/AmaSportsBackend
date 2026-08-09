@@ -10,7 +10,15 @@ class Team extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['name', 'sport_id'];
+    protected $fillable = [
+        'name',
+        'sport_id',
+        'country',
+        'school_academy',
+        'club',
+        'logo_url',
+        'photo_url',
+    ];
 
     public function sport(): BelongsTo
     {

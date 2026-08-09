@@ -11,6 +11,17 @@ class Sport extends Model
 
     public const HOCKEY_SLUG = 'hockey';
 
+    public const VOLLEYBALL_SLUG = 'volleyball';
+
+    public const BADMINTON_SLUG = 'badminton';
+
+    /** Sports the admin Live Score panel currently builds a scoreboard for. */
+    public const ADMIN_LIVE_SCORE_SLUGS = [
+        self::CRICKET_SLUG,
+        self::VOLLEYBALL_SLUG,
+        self::BADMINTON_SLUG,
+    ];
+
     /**
      * @var list<string>
      */
