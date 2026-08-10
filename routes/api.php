@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BeachVolleyballProfileController;
 use App\Http\Controllers\Api\BoxingProfileController;
 use App\Http\Controllers\Api\ChessProfileController;
 use App\Http\Controllers\Api\ContactMessageController;
+use App\Http\Controllers\Api\CricketAnalysisController;
 use App\Http\Controllers\Api\CricketProfileController;
 use App\Http\Controllers\Api\ElleProfileController;
 use App\Http\Controllers\Api\FootballProfileController;
@@ -73,6 +74,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/player/cricket-profile', [CricketProfileController::class, 'show']);
     Route::put('/player/cricket-profile', [CricketProfileController::class, 'update']);
+    // Read-only aggregated stats for the Analysis tab (spec Phase 5) — never
+    // writes anything, so it lives alongside the profile routes but has no
+    // PUT/POST counterpart.
+    Route::get('/player/cricket-analysis', CricketAnalysisController::class);
 
     Route::get('/player/hockey-profile', [HockeyProfileController::class, 'show']);
     Route::put('/player/hockey-profile', [HockeyProfileController::class, 'update']);
