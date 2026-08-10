@@ -1,14 +1,30 @@
 <?php
 
+use App\Http\Controllers\Api\AthleticsProfileController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BaseBallProfileController;
+use App\Http\Controllers\Api\BasketballProfileController;
+use App\Http\Controllers\Api\BeachVolleyballProfileController;
+use App\Http\Controllers\Api\BoxingProfileController;
+use App\Http\Controllers\Api\ChessProfileController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\CricketProfileController;
+use App\Http\Controllers\Api\ElleProfileController;
+use App\Http\Controllers\Api\FootballProfileController;
 use App\Http\Controllers\Api\HockeyProfileController;
+use App\Http\Controllers\Api\JudoProfileController;
+use App\Http\Controllers\Api\KabadiProfileController;
+use App\Http\Controllers\Api\KarateProfileController;
 use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MatchController;
+use App\Http\Controllers\Api\NetBallProfileController;
 use App\Http\Controllers\Api\PlayerProfileController;
 use App\Http\Controllers\Api\PlayerSportController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\RacketSportProfileController;
+use App\Http\Controllers\Api\RugbyProfileController;
+use App\Http\Controllers\Api\SwimmingProfileController;
+use App\Http\Controllers\Api\VolleyballProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,8 +64,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/user', [ProfileController::class, 'update']);
     Route::put('/user/password', [ProfileController::class, 'changePassword']);
 
+    // No POST here — a player_sports row is only ever created inside a
+    // sport profile's own submit endpoint (see PlayerSportController).
     Route::get('/player/sports', [PlayerSportController::class, 'index']);
-    Route::post('/player/sports', [PlayerSportController::class, 'store']);
 
     Route::get('/player/profile', [PlayerProfileController::class, 'show']);
     Route::post('/player/profile', [PlayerProfileController::class, 'update']);
@@ -59,6 +76,56 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/player/hockey-profile', [HockeyProfileController::class, 'show']);
     Route::put('/player/hockey-profile', [HockeyProfileController::class, 'update']);
+
+    Route::get('/player/base-ball-profile', [BaseBallProfileController::class, 'show']);
+    Route::put('/player/base-ball-profile', [BaseBallProfileController::class, 'update']);
+
+    Route::get('/player/net-ball-profile', [NetBallProfileController::class, 'show']);
+    Route::put('/player/net-ball-profile', [NetBallProfileController::class, 'update']);
+
+    // Shared Tennis/Badminton/Table Tennis form — disambiguated by a
+    // `sport_id` query/body param (see RacketSportProfileController).
+    Route::get('/player/racket-sport-profile', [RacketSportProfileController::class, 'show']);
+    Route::put('/player/racket-sport-profile', [RacketSportProfileController::class, 'update']);
+
+    Route::get('/player/kabadi-profile', [KabadiProfileController::class, 'show']);
+    Route::put('/player/kabadi-profile', [KabadiProfileController::class, 'update']);
+
+    Route::get('/player/judo-profile', [JudoProfileController::class, 'show']);
+    Route::put('/player/judo-profile', [JudoProfileController::class, 'update']);
+
+    Route::get('/player/basketball-profile', [BasketballProfileController::class, 'show']);
+    Route::put('/player/basketball-profile', [BasketballProfileController::class, 'update']);
+
+    Route::get('/player/football-profile', [FootballProfileController::class, 'show']);
+    Route::put('/player/football-profile', [FootballProfileController::class, 'update']);
+
+    Route::get('/player/rugby-profile', [RugbyProfileController::class, 'show']);
+    Route::put('/player/rugby-profile', [RugbyProfileController::class, 'update']);
+
+    Route::get('/player/boxing-profile', [BoxingProfileController::class, 'show']);
+    Route::put('/player/boxing-profile', [BoxingProfileController::class, 'update']);
+
+    Route::get('/player/karate-profile', [KarateProfileController::class, 'show']);
+    Route::put('/player/karate-profile', [KarateProfileController::class, 'update']);
+
+    Route::get('/player/chess-profile', [ChessProfileController::class, 'show']);
+    Route::put('/player/chess-profile', [ChessProfileController::class, 'update']);
+
+    Route::get('/player/athletics-profile', [AthleticsProfileController::class, 'show']);
+    Route::put('/player/athletics-profile', [AthleticsProfileController::class, 'update']);
+
+    Route::get('/player/swimming-profile', [SwimmingProfileController::class, 'show']);
+    Route::put('/player/swimming-profile', [SwimmingProfileController::class, 'update']);
+
+    Route::get('/player/volleyball-profile', [VolleyballProfileController::class, 'show']);
+    Route::put('/player/volleyball-profile', [VolleyballProfileController::class, 'update']);
+
+    Route::get('/player/beach-volleyball-profile', [BeachVolleyballProfileController::class, 'show']);
+    Route::put('/player/beach-volleyball-profile', [BeachVolleyballProfileController::class, 'update']);
+
+    Route::get('/player/elle-profile', [ElleProfileController::class, 'show']);
+    Route::put('/player/elle-profile', [ElleProfileController::class, 'update']);
 
     Route::patch('/matches/{match}/score', [MatchController::class, 'updateScore']);
 

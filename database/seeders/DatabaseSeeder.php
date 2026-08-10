@@ -22,6 +22,12 @@ class DatabaseSeeder extends Seeder
             AgeCategorySeeder::class,
             MatchCategorySeeder::class,
             CricketMatchTypeSeeder::class,
+            WeightPositionSeeder::class,
+            CompetitionLevelSeeder::class,
+            AthleticsEventSeeder::class,
+            SwimmingEventSeeder::class,
+            BoxingWeightClassSeeder::class,
+            KarateStyleSeeder::class,
         ]);
 
         User::factory()->coach()->create([

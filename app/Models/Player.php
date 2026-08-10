@@ -44,4 +44,85 @@ class Player extends Model
     {
         return $this->hasOne(HockeyProfile::class);
     }
+
+    public function baseBallProfile(): HasOne
+    {
+        return $this->hasOne(BaseBallProfile::class);
+    }
+
+    public function netBallProfile(): HasOne
+    {
+        return $this->hasOne(NetBallProfile::class);
+    }
+
+    /** One row per racket sport (Tennis/Badminton/Table Tennis) the player has submitted. */
+    public function racketSportProfiles(): HasMany
+    {
+        return $this->hasMany(RacketSportProfile::class);
+    }
+
+    public function kabadiProfile(): HasOne
+    {
+        return $this->hasOne(KabadiProfile::class);
+    }
+
+    public function judoProfile(): HasOne
+    {
+        return $this->hasOne(JudoProfile::class);
+    }
+
+    public function basketballProfile(): HasOne
+    {
+        return $this->hasOne(BasketballProfile::class);
+    }
+
+    public function footballProfile(): HasOne
+    {
+        return $this->hasOne(FootballProfile::class);
+    }
+
+    public function rugbyProfile(): HasOne
+    {
+        return $this->hasOne(RugbyProfile::class);
+    }
+
+    public function boxingProfile(): HasOne
+    {
+        return $this->hasOne(BoxingProfile::class);
+    }
+
+    public function karateProfile(): HasOne
+    {
+        return $this->hasOne(KarateProfile::class);
+    }
+
+    public function chessProfile(): HasOne
+    {
+        return $this->hasOne(ChessProfile::class);
+    }
+
+    public function athleticsProfile(): HasOne
+    {
+        return $this->hasOne(AthleticsProfile::class);
+    }
+
+    public function swimmingProfile(): HasOne
+    {
+        return $this->hasOne(SwimmingProfile::class);
+    }
+
+    public function volleyballProfile(): HasOne
+    {
+        return $this->hasOne(VolleyballProfile::class);
+    }
+
+    public function beachVolleyballProfile(): HasOne
+    {
+        return $this->hasOne(BeachVolleyballProfile::class);
+    }
+
+    public function elleProfile(): HasOne
+    {
+        return $this->hasOne(ElleProfile::class);
+    }
 }
