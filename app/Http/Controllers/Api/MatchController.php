@@ -19,9 +19,16 @@ class MatchController extends Controller
      * so the tab can be built/tested before login flows are wired to it;
      * every other player route stays behind Sanctum.
      */
+    /**
+     * Relations every GameMatchResource needs — format/age/category feed the
+     * resource's `format`/`age_group`/`category` fields, matching what the
+     * admin panel (Admin\MatchController) now sets on creation.
+     */
+    private const BASE_RELATIONS = ['sport', 'homeTeam', 'awayTeam', 'format', 'ageCategory', 'matchCategory'];
+
     public function index(Request $request): JsonResponse
     {
-        $matches = GameMatch::with(['sport', 'homeTeam', 'awayTeam'])
+        $matches = GameMatch::with(self::BASE_RELATIONS)
             ->when($request->query('status'), fn ($query, $status) => $query->where('status', $status))
             ->orderByRaw("FIELD(status, 'live', 'upcoming', 'finished')")
             ->orderBy('scheduled_at')
@@ -31,12 +38,12 @@ class MatchController extends Controller
     }
 
     /**
-     * GET /matches/{match} — Match Detail, including live score fields and
-     * the admin-pasted YouTube stream URL.
+     * GET /matches/{match} — Match Detail, including live score fields, the
+     * admin-pasted YouTube stream URL, and each side's roster.
      */
     public function show(GameMatch $match): JsonResponse
     {
-        $match->load(['sport', 'homeTeam', 'awayTeam']);
+        $match->load([...self::BASE_RELATIONS, 'matchPlayers']);
 
         return $this->success(new GameMatchResource($match), 'Match retrieved successfully.');
     }
@@ -53,7 +60,7 @@ class MatchController extends Controller
         }
 
         $match->update($request->validated());
-        $match->load(['sport', 'homeTeam', 'awayTeam']);
+        $match->load(self::BASE_RELATIONS);
 
         return $this->success(new GameMatchResource($match), 'Match updated successfully.');
     }

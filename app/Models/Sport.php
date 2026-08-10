@@ -11,13 +11,15 @@ class Sport extends Model
 
     public const HOCKEY_SLUG = 'hockey';
 
+    public const VOLLEYBALL_SLUG = 'volleyball';
+
+    public const BADMINTON_SLUG = 'badminton';
+
     public const BASE_BALL_SLUG = 'base-ball';
 
     public const NETBALL_SLUG = 'netball';
 
     public const TENNIS_SLUG = 'tennis';
-
-    public const BADMINTON_SLUG = 'badminton';
 
     public const TABLE_TENNIS_SLUG = 'table-tennis';
 
@@ -41,11 +43,16 @@ class Sport extends Model
 
     public const SWIMMING_SLUG = 'swimming';
 
-    public const VOLLEYBALL_SLUG = 'volleyball';
-
     public const BEACH_VOLLEYBALL_SLUG = 'beach-volleyball';
 
     public const ELLE_SLUG = 'elle';
+
+    /** Sports the admin Live Score panel currently builds a scoreboard for. */
+    public const ADMIN_LIVE_SCORE_SLUGS = [
+        self::CRICKET_SLUG,
+        self::VOLLEYBALL_SLUG,
+        self::BADMINTON_SLUG,
+    ];
 
     /**
      * @var list<string>
