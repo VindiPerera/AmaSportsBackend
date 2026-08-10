@@ -45,7 +45,13 @@ class GameMatchResource extends JsonResource
             'country' => $this->country,
             'date' => $this->scheduled_at?->toDateString(),
             'live_score' => $this->live_score,
-            'youtube_stream_url' => $this->youtube_stream_url,
+            // Live Score itself is always free; only the embedded video is
+            // gated behind the admin's $5/match unlock (Phase 6 revision 2)
+            // — so the URL simply isn't in the payload until that's paid,
+            // and disappears again once the match finishes. The mobile/web
+            // "Watch Live Stream" button already only renders when this is
+            // truthy, so no client-side change was needed to hide it.
+            'youtube_stream_url' => $this->hasActiveStreamAccess() ? $this->youtube_stream_url : null,
         ];
     }
 

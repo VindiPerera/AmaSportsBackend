@@ -7,6 +7,7 @@ use App\Models\CricketProfile;
 use App\Models\Format;
 use App\Models\MatchCategory;
 use App\Models\Player;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -16,12 +17,28 @@ class CricketAnalysisTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The Analysis tab requires an active subscription (Phase 6 revision 2)
+     * — give every test player one so these tests keep exercising the
+     * analysis aggregation logic itself, not the paywall gate.
+     */
     private function actingPlayer(): Player
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        return Player::create(['user_id' => $user->id]);
+        $player = Player::create(['user_id' => $user->id]);
+
+        Subscription::create([
+            'player_id' => $player->id,
+            'amount' => Subscription::AMOUNT,
+            'currency' => 'USD',
+            'status' => Subscription::STATUS_ACTIVE,
+            'starts_at' => now(),
+            'expires_at' => now()->addYear(),
+        ]);
+
+        return $player;
     }
 
     public function test_returns_empty_shape_when_player_has_no_cricket_profile(): void

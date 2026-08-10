@@ -21,7 +21,10 @@ class UpdateMatchScoreRequest extends FormRequest
         return [
             'status' => ['sometimes', 'string', 'in:upcoming,live,finished'],
             'live_score' => ['sometimes', 'nullable', 'array'],
-            'youtube_stream_url' => ['sometimes', 'nullable', 'url', 'max:500'],
+            // No youtube_stream_url here — it's only ever set via the paid
+            // $5 unlock flow (Admin\StreamAccessController::updateUrl).
+            // Accepting it on this generic endpoint would let an admin set
+            // it for free.
         ];
     }
 }

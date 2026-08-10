@@ -19,7 +19,7 @@ class MatchController extends Controller
 {
     public function index(Request $request): View
     {
-        $matches = GameMatch::with(['sport', 'homeTeam', 'awayTeam'])
+        $matches = GameMatch::with(['sport', 'homeTeam', 'awayTeam', 'liveStreamAccess'])
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')))
             ->orderByRaw("FIELD(status, 'live', 'upcoming', 'finished')")
             ->orderBy('scheduled_at')
@@ -48,7 +48,9 @@ class MatchController extends Controller
             'status' => GameMatch::STATUS_UPCOMING,
             'scheduled_at' => $data['scheduled_at'],
             'venue' => $data['venue'] ?? null,
-            'youtube_stream_url' => $data['youtube_stream_url'] ?? null,
+            // No youtube_stream_url here — it's only ever set via the paid
+            // $5 unlock flow (Admin\StreamAccessController), never at
+            // match-creation time.
             'format_id' => $data['format_id'] ?? null,
             'age_category_id' => $data['age_category_id'] ?? null,
             'match_category_id' => $data['match_category_id'] ?? null,
@@ -96,7 +98,6 @@ class MatchController extends Controller
             'away_team_id' => $awayTeam->id,
             'scheduled_at' => $data['scheduled_at'],
             'venue' => $data['venue'] ?? null,
-            'youtube_stream_url' => $data['youtube_stream_url'] ?? null,
             'format_id' => $data['format_id'] ?? null,
             'age_category_id' => $data['age_category_id'] ?? null,
             'match_category_id' => $data['match_category_id'] ?? null,

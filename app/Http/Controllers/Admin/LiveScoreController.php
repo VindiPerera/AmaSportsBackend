@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LiveScoreUpdateRequest;
 use App\Models\GameMatch;
+use App\Models\LiveStreamAccess;
 use App\Models\Sport;
 use App\Services\FirebaseLiveScoreService;
 use Illuminate\Http\JsonResponse;
@@ -104,6 +105,14 @@ class LiveScoreController extends Controller
                 'last_updated' => now()->toISOString(),
             ],
         ]);
+
+        // Live streaming ability disables at the end of the match (Phase 6
+        // revision 2) — a fresh match, even between the same two teams,
+        // needs its own $5 unlock. Only touches an ACTIVE row; a never-paid
+        // or already-cancelled one is left alone.
+        LiveStreamAccess::where('match_id', $match->id)
+            ->where('status', LiveStreamAccess::STATUS_ACTIVE)
+            ->update(['status' => LiveStreamAccess::STATUS_EXPIRED, 'expires_at' => now()]);
 
         $pushed = $firebase->markFinished($match, [$scoreKey => $scoreBlock]);
 

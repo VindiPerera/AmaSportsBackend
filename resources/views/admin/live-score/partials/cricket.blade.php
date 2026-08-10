@@ -13,42 +13,44 @@
         <div id="cricket-status" class="hidden mb-4 rounded border px-4 py-3 text-sm"></div>
 
         {{-- ============ SCREEN 1: TOSS SETUP ============ --}}
-        <div id="toss-panel" class="bg-white rounded-lg border border-gray-200 p-5 max-w-lg">
-            <h2 class="text-base font-semibold mb-4">Toss Setup</h2>
+        <div id="toss-panel" class="bg-white rounded-2xl border border-slate-200/80 p-6 max-w-lg shadow-soft">
+            <h2 class="text-base font-extrabold text-slate-900 mb-4 border-b border-slate-100 pb-3">Toss & Match Initiation</h2>
 
-            <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Team A name</label>
-                    <input id="team-a-name" type="text" value="{{ $match->homeTeam->name }}" class="mt-1 w-full rounded border-gray-300">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Team A Name</label>
+                    <input id="team-a-name" type="text" value="{{ $match->homeTeam->name }}" 
+                           class="w-full rounded-xl bg-slate-50 border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-800 focus:bg-white focus:border-blue-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Team B name</label>
-                    <input id="team-b-name" type="text" value="{{ $match->awayTeam->name }}" class="mt-1 w-full rounded border-gray-300">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Team B Name</label>
+                    <input id="team-b-name" type="text" value="{{ $match->awayTeam->name }}" 
+                           class="w-full rounded-xl bg-slate-50 border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-800 focus:bg-white focus:border-blue-500 outline-none">
                 </div>
             </div>
 
-            <p class="text-sm font-medium text-gray-700 mb-2">Toss winner</p>
-            <div class="grid grid-cols-2 gap-2 mb-4">
-                <label class="flex items-center gap-2 rounded border border-gray-200 px-3 py-2 text-sm cursor-pointer">
-                    <input type="radio" name="toss-winner" value="home"> {{ $match->homeTeam->name }}
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Toss Winner</p>
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
+                    <input type="radio" name="toss-winner" value="home" class="text-blue-600 focus:ring-blue-500"> {{ $match->homeTeam->name }}
                 </label>
-                <label class="flex items-center gap-2 rounded border border-gray-200 px-3 py-2 text-sm cursor-pointer">
-                    <input type="radio" name="toss-winner" value="away"> {{ $match->awayTeam->name }}
-                </label>
-            </div>
-
-            <p class="text-sm font-medium text-gray-700 mb-2">Toss choice</p>
-            <div class="grid grid-cols-2 gap-2 mb-5">
-                <label class="flex items-center gap-2 rounded border border-gray-200 px-3 py-2 text-sm cursor-pointer">
-                    <input type="radio" name="toss-choice" value="bat"> Bat first
-                </label>
-                <label class="flex items-center gap-2 rounded border border-gray-200 px-3 py-2 text-sm cursor-pointer">
-                    <input type="radio" name="toss-choice" value="bowl"> Bowl first
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
+                    <input type="radio" name="toss-winner" value="away" class="text-blue-600 focus:ring-blue-500"> {{ $match->awayTeam->name }}
                 </label>
             </div>
 
-            <button type="button" data-action="start-match" class="w-full rounded bg-red-600 text-white py-2.5 text-sm font-medium hover:bg-red-500">
-                Start match
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Toss Choice</p>
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
+                    <input type="radio" name="toss-choice" value="bat" class="text-blue-600 focus:ring-blue-500"> Bat First 🏏
+                </label>
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
+                    <input type="radio" name="toss-choice" value="bowl" class="text-blue-600 focus:ring-blue-500"> Bowl First ⚾
+                </label>
+            </div>
+
+            <button type="button" data-action="start-match" class="w-full rounded-xl bg-red-600 hover:bg-red-500 text-white py-3 text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/30 hover:scale-[1.01] transition-all">
+                🚀 Start Match & Activate Live Score Engine
             </button>
         </div>
 

@@ -30,6 +30,26 @@ class Player extends Model
         return $this->hasMany(PlayerSport::class);
     }
 
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * The subscription row that currently governs this player's access —
+     * always the most recent one, never a merged/extended view of history
+     * (Phase 6 spec: "always check the most recent one for current access").
+     */
+    public function latestSubscription(): ?Subscription
+    {
+        return $this->subscriptions()->latest('id')->first();
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        return (bool) $this->latestSubscription()?->isActive();
+    }
+
     public function playerTeams(): HasMany
     {
         return $this->hasMany(PlayerTeam::class);

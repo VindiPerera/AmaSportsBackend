@@ -35,7 +35,8 @@ class MatchSetupRequest extends FormRequest
             'contact_mobile' => ['nullable', 'string', 'max:30'],
             'contact_whatsapp' => ['nullable', 'string', 'max:30'],
             'contact_email' => ['nullable', 'email', 'max:255'],
-            'youtube_stream_url' => ['nullable', 'url', 'max:500'],
+            // No youtube_stream_url here — set only via the paid $5 unlock
+            // flow (Admin\StreamAccessController::updateUrl).
 
             'home_team_id' => ['nullable', 'exists:teams,id'],
             'home_team_name' => ['required_without:home_team_id', 'nullable', 'string', 'max:255'],

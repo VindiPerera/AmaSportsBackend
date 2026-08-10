@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LiveScoreController;
 use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchPlayerController;
+use App\Http\Controllers\Admin\StreamAccessController;
 use App\Http\Controllers\Admin\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,14 @@ Route::middleware('admin')->group(function () {
     Route::post('/matches/{match}/live/start', [LiveScoreController::class, 'start'])->name('live-score.start');
     Route::post('/matches/{match}/live/update', [LiveScoreController::class, 'update'])->name('live-score.update');
     Route::post('/matches/{match}/live/finish', [LiveScoreController::class, 'finish'])->name('live-score.finish');
+
+    // $5/match live-stream unlock (Phase 6 revision 2) — Live Score stays
+    // free; this only gates whether the match's YouTube embed is exposed.
+    Route::get('/matches/{match}/stream', [StreamAccessController::class, 'show'])->name('matches.stream.show');
+    Route::post('/matches/{match}/stream/create-order', [StreamAccessController::class, 'createOrder'])->name('matches.stream.create-order');
+    Route::get('/matches/{match}/stream/return', [StreamAccessController::class, 'return'])->name('matches.stream.return');
+    Route::get('/matches/{match}/stream/cancel', [StreamAccessController::class, 'cancel'])->name('matches.stream.cancel');
+    Route::put('/matches/{match}/stream/url', [StreamAccessController::class, 'updateUrl'])->name('matches.stream.update-url');
 
     Route::get('/teams/search', [TeamController::class, 'search'])->name('teams.search');
 });

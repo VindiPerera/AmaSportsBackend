@@ -94,6 +94,34 @@ class GameMatch extends Model
         return $this->hasMany(MatchPlayer::class, 'match_id')->orderBy('sort_order');
     }
 
+    public function liveStreamAccess(): HasMany
+    {
+        return $this->hasMany(LiveStreamAccess::class, 'match_id');
+    }
+
+    /**
+     * The $5 pay-per-match streaming unlock that currently governs this
+     * match — always the most recent row, mirroring Player::latestSubscription().
+     * Reuses an already eager-loaded `liveStreamAccess` relation (see
+     * Api\MatchController::BASE_RELATIONS) instead of firing a fresh query
+     * per match, since GameMatchResource calls this once per row in the
+     * Live Score list.
+     */
+    public function latestLiveStreamAccess(): ?LiveStreamAccess
+    {
+        if ($this->relationLoaded('liveStreamAccess')) {
+            return $this->liveStreamAccess->sortByDesc('id')->first();
+        }
+
+        return $this->liveStreamAccess()->latest('id')->first();
+    }
+
+    /** Whether the admin-pasted YouTube URL should currently be exposed to viewers. */
+    public function hasActiveStreamAccess(): bool
+    {
+        return (bool) $this->latestLiveStreamAccess()?->isActive();
+    }
+
     public function homePlayers(): HasMany
     {
         return $this->matchPlayers()->where('side', MatchPlayer::SIDE_HOME);

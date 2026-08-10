@@ -24,7 +24,7 @@ class MatchController extends Controller
      * resource's `format`/`age_group`/`category` fields, matching what the
      * admin panel (Admin\MatchController) now sets on creation.
      */
-    private const BASE_RELATIONS = ['sport', 'homeTeam', 'awayTeam', 'format', 'ageCategory', 'matchCategory'];
+    private const BASE_RELATIONS = ['sport', 'homeTeam', 'awayTeam', 'format', 'ageCategory', 'matchCategory', 'liveStreamAccess'];
 
     public function index(Request $request): JsonResponse
     {
