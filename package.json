@@ -4,7 +4,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "deploy:web": "node scripts/deploy-web.mjs",
+        "build:web:local": "npm run build:web --prefix ../sport-mobile && npm run deploy:web"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
