@@ -16,6 +16,18 @@
 /public/build
 /public/hot
 /public/storage
+
+# Mobile app web export. `npm run deploy:web` (see scripts/deploy-web.mjs)
+# copies sport-mobile's built `dist/` into public/ below — same idea as
+# /public/build above, just for the Expo Router bundle instead of the
+# admin panel's. /mobile-dist is where you drop that `dist/` folder's
+# contents when sport-mobile isn't checked out alongside this repo.
+/mobile-dist
+/public/_expo
+/public/assets
+/public/favicon.ico
+/public/index.html
+/public/metadata.json
 /storage/*.key
 /storage/pail
 /storage/app/private/firebase-service-account.json
