@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AgeCategory;
 use App\Models\AthleticsEvent;
+use App\Models\BallType;
 use App\Models\BoxingWeightClass;
 use App\Models\CompetitionLevel;
 use App\Models\CricketMatchType;
+use App\Models\DropReason;
+use App\Models\FieldPosition;
 use App\Models\Format;
 use App\Models\KarateStyle;
 use App\Models\MatchCategory;
+use App\Models\PitchingLine;
 use App\Models\Sport;
 use App\Models\SwimmingEvent;
 use App\Models\WeightPosition;
@@ -41,6 +45,11 @@ class LookupController extends Controller
             'swimming_events' => SwimmingEvent::orderBy('sort_order')->get(['id', 'name']),
             'boxing_weight_classes' => BoxingWeightClass::orderBy('sort_order')->get(['id', 'name']),
             'karate_styles' => KarateStyle::orderBy('sort_order')->get(['id', 'name']),
+            // Phase 7 additions — Cricket Fielding/Bowling Analyses.
+            'field_positions' => FieldPosition::orderBy('sort_order')->get(['id', 'name']),
+            'drop_reasons' => DropReason::orderBy('sort_order')->get(['id', 'name']),
+            'pitching_lines' => PitchingLine::orderBy('sort_order')->get(['id', 'name']),
+            'ball_types' => BallType::orderBy('sort_order')->get(['id', 'name']),
         ], 'Lookups retrieved successfully.');
     }
 }

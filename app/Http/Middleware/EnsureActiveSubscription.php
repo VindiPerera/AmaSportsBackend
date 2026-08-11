@@ -21,6 +21,12 @@ class EnsureActiveSubscription
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // Dev-only escape hatch — see config/subscription.php. Leaves the
+        // real check below completely intact for when it's turned back off.
+        if (config('subscription.bypass')) {
+            return $next($request);
+        }
+
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
 
         if (! $player->hasActiveSubscription()) {

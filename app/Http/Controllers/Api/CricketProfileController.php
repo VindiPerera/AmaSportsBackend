@@ -30,7 +30,7 @@ class CricketProfileController extends Controller
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
 
         $profile = $player->cricketProfile()
-            ->with(['battingStats', 'bowlingStats', 'recentMatches'])
+            ->with(['battingStats', 'bowlingStats', 'recentMatches', 'dropCatches'])
             ->first();
 
         if (! $profile) {
@@ -38,6 +38,7 @@ class CricketProfileController extends Controller
             $profile->setRelation('battingStats', collect());
             $profile->setRelation('bowlingStats', collect());
             $profile->setRelation('recentMatches', collect());
+            $profile->setRelation('dropCatches', collect());
         }
 
         $profile->team_names = $this->teamNames($player);
@@ -61,6 +62,7 @@ class CricketProfileController extends Controller
                 $request->safe()->only([
                     'born', 'age', 'batting_style', 'bowling_style',
                     'playing_role', 'height', 'college_university',
+                    'pitching_line_breakdown', 'ball_type_breakdown',
                 ])
             );
 
@@ -72,6 +74,9 @@ class CricketProfileController extends Controller
 
             $profile->recentMatches()->delete();
             $profile->recentMatches()->createMany($request->input('recent_matches', []));
+
+            $profile->dropCatches()->delete();
+            $profile->dropCatches()->createMany($request->input('drop_catches', []));
 
             PlayerTeam::where('player_id', $player->id)->where('sport_id', $sport->id)->delete();
             foreach ($request->input('teams', []) as $teamName) {
@@ -90,7 +95,7 @@ class CricketProfileController extends Controller
             return $profile;
         });
 
-        $profile->load(['battingStats', 'bowlingStats', 'recentMatches']);
+        $profile->load(['battingStats', 'bowlingStats', 'recentMatches', 'dropCatches']);
         $profile->team_names = $this->teamNames($player);
 
         return $this->success(new CricketProfileResource($profile), 'Cricket profile saved successfully.');

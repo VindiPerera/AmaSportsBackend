@@ -88,6 +88,23 @@ class SubscriptionController extends Controller
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
         $subscription = $player->latestSubscription();
 
+        // Dev-only escape hatch — see config/subscription.php. Reports as
+        // subscribed/active so the mobile paywall never blocks Add Sport /
+        // Analysis locally, without touching the real subscription data.
+        if (config('subscription.bypass')) {
+            return $this->success([
+                'has_subscribed' => true,
+                'status' => Subscription::STATUS_ACTIVE,
+                'is_active' => true,
+                'starts_at' => $subscription?->starts_at?->toISOString(),
+                'expires_at' => null,
+                'days_remaining' => null,
+                'expiring_soon' => false,
+                'amount' => Subscription::AMOUNT,
+                'currency' => config('services.paypal.currency'),
+            ], 'Subscription status retrieved successfully.');
+        }
+
         if (! $subscription) {
             return $this->success([
                 'has_subscribed' => false,

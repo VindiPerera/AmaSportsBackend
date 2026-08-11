@@ -30,6 +30,14 @@ class StoreCricketProfileRequest extends FormRequest
             'height' => ['nullable', 'string', 'max:50'],
             'college_university' => ['nullable', 'string', 'max:255'],
 
+            // Career-to-date bowling breakdown — see Phase 7 migration note.
+            // Keyed by pitching_lines.id / ball_types.id (as strings, since
+            // JSON object keys are always strings); values are ball counts.
+            'pitching_line_breakdown' => ['nullable', 'array'],
+            'pitching_line_breakdown.*' => ['nullable', 'integer', 'min:0'],
+            'ball_type_breakdown' => ['nullable', 'array'],
+            'ball_type_breakdown.*' => ['nullable', 'integer', 'min:0'],
+
             'teams' => ['sometimes', 'array'],
             'teams.*' => ['string', 'max:255'],
 
@@ -54,6 +62,11 @@ class StoreCricketProfileRequest extends FormRequest
             'batting.*.sixes' => ['nullable', 'integer', 'min:0'],
             'batting.*.catches' => ['nullable', 'integer', 'min:0'],
             'batting.*.stumpings' => ['nullable', 'integer', 'min:0'],
+            'batting.*.run_outs' => ['nullable', 'integer', 'min:0'],
+            'batting.*.direct_hits' => ['nullable', 'integer', 'min:0'],
+            'batting.*.runs_saved' => ['nullable', 'integer', 'min:0'],
+            'batting.*.runs_giving' => ['nullable', 'integer', 'min:0'],
+            'batting.*.stumps_missing' => ['nullable', 'integer', 'min:0'],
 
             'bowling' => ['sometimes', 'array'],
             'bowling.*.format_id' => ['required', 'integer', 'exists:formats,id'],
@@ -63,6 +76,9 @@ class StoreCricketProfileRequest extends FormRequest
             'bowling.*.matches' => ['nullable', 'integer', 'min:0'],
             'bowling.*.innings' => ['nullable', 'integer', 'min:0'],
             'bowling.*.balls' => ['nullable', 'integer', 'min:0'],
+            'bowling.*.dot_balls' => ['nullable', 'integer', 'min:0'],
+            'bowling.*.wide_balls' => ['nullable', 'integer', 'min:0'],
+            'bowling.*.no_balls' => ['nullable', 'integer', 'min:0'],
             'bowling.*.runs' => ['nullable', 'integer', 'min:0'],
             'bowling.*.wickets' => ['nullable', 'integer', 'min:0'],
             'bowling.*.bbi' => ['nullable', 'string', 'max:20'],
@@ -87,6 +103,18 @@ class StoreCricketProfileRequest extends FormRequest
             'recent_matches.*.wickets' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.catches' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.stumpings' => ['nullable', 'integer', 'min:0'],
+
+            // Repeatable "Drop Catches" rows — Phase 7 spec §2. Format/Age/
+            // Category are optional context (unlike the batting/bowling
+            // tables, where they're required), since a player logging a
+            // single drop-catch event may not want to fill out the full
+            // career-bucket context every time.
+            'drop_catches' => ['sometimes', 'array'],
+            'drop_catches.*.format_id' => ['nullable', 'integer', 'exists:formats,id'],
+            'drop_catches.*.age_category_id' => ['nullable', 'integer', 'exists:age_categories,id'],
+            'drop_catches.*.match_category_id' => ['nullable', 'integer', 'exists:match_categories,id'],
+            'drop_catches.*.field_position_id' => ['nullable', 'integer', 'exists:field_positions,id'],
+            'drop_catches.*.drop_reason_id' => ['nullable', 'integer', 'exists:drop_reasons,id'],
         ];
     }
 }
