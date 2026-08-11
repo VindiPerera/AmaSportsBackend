@@ -20,6 +20,8 @@ class CricketProfile extends Model
         'playing_role',
         'height',
         'college_university',
+        'pitching_line_breakdown',
+        'ball_type_breakdown',
     ];
 
     /**
@@ -29,6 +31,11 @@ class CricketProfile extends Model
     {
         return [
             'born' => 'date',
+            // Player-entered career-to-date delivery breakdown — see Phase 7
+            // migration note on why this is a flat map, not per-delivery
+            // event tracking.
+            'pitching_line_breakdown' => 'array',
+            'ball_type_breakdown' => 'array',
         ];
     }
 
@@ -50,5 +57,10 @@ class CricketProfile extends Model
     public function recentMatches(): HasMany
     {
         return $this->hasMany(CricketRecentMatch::class);
+    }
+
+    public function dropCatches(): HasMany
+    {
+        return $this->hasMany(CricketDropCatch::class);
     }
 }

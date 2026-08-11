@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CricketBattingStat extends Model
+class CricketDropCatch extends Model
 {
     /**
      * @var list<string>
@@ -15,28 +15,8 @@ class CricketBattingStat extends Model
         'format_id',
         'age_category_id',
         'match_category_id',
-        'cricket_match_type_id',
-        'matches',
-        'won',
-        'lost',
-        'innings',
-        'not_out',
-        'runs',
-        'hs',
-        'average',
-        'best',
-        'sr',
-        'hundreds',
-        'fifties',
-        'fours',
-        'sixes',
-        'catches',
-        'stumpings',
-        'run_outs',
-        'direct_hits',
-        'runs_saved',
-        'runs_giving',
-        'stumps_missing',
+        'field_position_id',
+        'drop_reason_id',
     ];
 
     public function cricketProfile(): BelongsTo
@@ -59,8 +39,13 @@ class CricketBattingStat extends Model
         return $this->belongsTo(MatchCategory::class);
     }
 
-    public function cricketMatchType(): BelongsTo
+    public function fieldPosition(): BelongsTo
     {
-        return $this->belongsTo(CricketMatchType::class);
+        return $this->belongsTo(FieldPosition::class);
+    }
+
+    public function dropReason(): BelongsTo
+    {
+        return $this->belongsTo(DropReason::class);
     }
 }

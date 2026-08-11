@@ -25,6 +25,20 @@ class CricketProfileResource extends JsonResource
             'playing_role' => $this->playing_role,
             'height' => $this->height,
             'college_university' => $this->college_university,
+            // Career-to-date bowling breakdown — see Phase 7 migration note
+            // on cricket_profiles. Always an object, never null, so the
+            // mobile form doesn't need a null-guard per lookup category.
+            //
+            // Cast to (object): every key here is a numeric lookup id, and
+            // JsonResource::filter() -> removeMissingValues() silently
+            // reindexes any array whose keys are ALL numeric back to a
+            // 0-based list via array_values() — discarding the id => count
+            // mapping entirely and turning e.g. {"3": 20} into a bare
+            // position in a JSON array. Casting to stdClass skips that
+            // array-specific filtering path (is_array() is false) so the
+            // keys survive into the JSON response as object properties.
+            'pitching_line_breakdown' => (object) ($this->pitching_line_breakdown ?? []),
+            'ball_type_breakdown' => (object) ($this->ball_type_breakdown ?? []),
             // Set explicitly by the controller (player_teams is keyed by
             // player_id, not cricket_profile_id, so it isn't a real relation
             // on this model).
@@ -32,6 +46,7 @@ class CricketProfileResource extends JsonResource
             'batting' => $this->whenLoaded('battingStats', fn () => $this->battingStats),
             'bowling' => $this->whenLoaded('bowlingStats', fn () => $this->bowlingStats),
             'recent_matches' => $this->whenLoaded('recentMatches', fn () => $this->recentMatches),
+            'drop_catches' => $this->whenLoaded('dropCatches', fn () => $this->dropCatches),
         ];
     }
 }

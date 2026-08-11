@@ -28,6 +28,10 @@ class DatabaseSeeder extends Seeder
             SwimmingEventSeeder::class,
             BoxingWeightClassSeeder::class,
             KarateStyleSeeder::class,
+            FieldPositionSeeder::class,
+            DropReasonSeeder::class,
+            PitchingLineSeeder::class,
+            BallTypeSeeder::class,
         ]);
 
         User::factory()->coach()->create([
