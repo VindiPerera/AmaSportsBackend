@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\NetBallProfileController;
 use App\Http\Controllers\Api\PayPalWebhookController;
 use App\Http\Controllers\Api\PlayerProfileController;
+use App\Http\Controllers\Api\PlayerSearchController;
 use App\Http\Controllers\Api\PlayerSportController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RacketSportProfileController;
@@ -98,6 +99,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/player/cricket-profile', [CricketProfileController::class, 'show']);
     Route::put('/player/cricket-profile', [CricketProfileController::class, 'update'])->middleware('subscription.active');
+
+    // Player Search (new) — read-only discovery, deliberately not gated
+    // behind subscription.active like the Analysis/write routes above.
+    // Cricket-only for now: the only sport with real aggregated stats.
+    Route::get('/players/search', [PlayerSearchController::class, 'index']);
+    Route::get('/players/{player}/cricket-profile', [PlayerSearchController::class, 'cricketProfile']);
     // Read-only aggregated stats for the Analysis tab (spec Phase 5) — never
     // writes anything, so it lives alongside the profile routes but has no
     // PUT/POST counterpart. Analysis requires an active subscription.
