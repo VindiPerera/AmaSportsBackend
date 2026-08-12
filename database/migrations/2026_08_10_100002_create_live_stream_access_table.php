@@ -12,12 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         // Pay-per-match live streaming unlock (Phase 6 revision 2): the
-        // *admin* running a match pays $5 to enable that match's YouTube
-        // embed for viewers — Live Score itself always stays free for every
-        // player. Scoped to `match_id` (not `player_id`) because access is
-        // per-match, not account-wide, and automatically closes when the
-        // match finishes (see GameMatch::hasActiveStreamAccess() and
-        // Admin\LiveScoreController::finish()).
+        // admin running a match, or (revision 3) any player paying for "VIP
+        // access", pays $5 to enable that match's YouTube embed for every
+        // viewer — Live Score itself always stays free. Scoped to
+        // `match_id` (not `player_id`) because access is per-match, not
+        // account-wide, and automatically closes when the match finishes
+        // (see GameMatch::hasActiveStreamAccess() and
+        // Admin\LiveScoreController::finish()). `paid_by` records whichever
+        // user (admin or player) actually paid.
         Schema::create('live_stream_access', function (Blueprint $table) {
             $table->id();
             $table->foreignId('match_id')->constrained('matches')->cascadeOnDelete();

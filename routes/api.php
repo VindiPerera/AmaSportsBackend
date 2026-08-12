@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\PlayerSportController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RacketSportProfileController;
 use App\Http\Controllers\Api\RugbyProfileController;
+use App\Http\Controllers\Api\StreamAccessController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SwimmingProfileController;
 use App\Http\Controllers\Api\VolleyballProfileController;
@@ -79,6 +80,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // applied to each PUT/analysis route below.
     Route::post('/subscriptions/create-order', [SubscriptionController::class, 'createOrder']);
     Route::get('/player/subscription-status', [SubscriptionController::class, 'status']);
+
+    // $5/match "VIP" live-stream unlock, purchasable by any player from the
+    // stream screen itself — see Api\StreamAccessController. Match-scoped,
+    // not player-scoped: unlocks that match's embed for every viewer, same
+    // as the pre-existing admin-paid path (Admin\StreamAccessController).
+    Route::post('/matches/{match}/stream-access/create-order', [StreamAccessController::class, 'createOrder']);
 
     // No POST here — a player_sports row is only ever created inside a
     // sport profile's own submit endpoint (see PlayerSportController).

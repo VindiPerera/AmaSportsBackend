@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Payments\StreamAccessPaymentController;
 use App\Http\Controllers\Payments\SubscriptionPaymentController;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,16 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('payments/subscriptions')->name('payments.subscriptions.')->group(function () {
     Route::get('/return', [SubscriptionPaymentController::class, 'return'])->name('return');
     Route::get('/cancel', [SubscriptionPaymentController::class, 'cancel'])->name('cancel');
+});
+
+// Same, for a player's own $5 "VIP" live-stream unlock purchase (see
+// Api\StreamAccessController) — not to be confused with the admin-only
+// equivalent under /admin/matches/{match}/stream/{return,cancel}, which
+// stays gated behind the `admin` middleware since it's hit from an admin's
+// authenticated browser session, not a player's.
+Route::prefix('payments/stream-access')->name('payments.stream-access.')->group(function () {
+    Route::get('/return', [StreamAccessPaymentController::class, 'return'])->name('return');
+    Route::get('/cancel', [StreamAccessPaymentController::class, 'cancel'])->name('cancel');
 });
 
 // Mobile app (SPA shell).

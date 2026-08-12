@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Payments\StreamAccessPaymentController;
 use App\Http\Controllers\Payments\SubscriptionPaymentController;
 use App\Models\LiveStreamAccess;
 use App\Models\Subscription;
@@ -14,10 +15,12 @@ use Illuminate\Support\Facades\Log;
 /**
  * POST /api/paypal/webhook — server-to-server source of truth backing up
  * the return-URL capture flow (SubscriptionPaymentController,
- * Admin\StreamAccessController). Handles both order types via the
- * `custom_id` set at order creation ("subscription:{id}" or
- * "stream_access:{id}") since a single webhook endpoint is registered in
- * the PayPal dashboard for the whole app.
+ * StreamAccessPaymentController, Admin\StreamAccessController — the
+ * latter two both write `live_stream_access` rows, one from an admin's
+ * browser and one from a player's, so this webhook activates either the
+ * same way). Handles both order types via the `custom_id` set at order
+ * creation ("subscription:{id}" or "stream_access:{id}") since a single
+ * webhook endpoint is registered in the PayPal dashboard for the whole app.
  *
  * Every handler here is idempotent (PayPal retries undelivered webhooks)
  * and this endpoint always returns 200 once the signature is verified —
@@ -103,13 +106,8 @@ class PayPalWebhookController extends Controller
             return;
         }
 
-        if ($access->status === LiveStreamAccess::STATUS_ACTIVE) {
-            return;
-        }
-
-        $access->update([
-            'status' => LiveStreamAccess::STATUS_ACTIVE,
-            'purchased_at' => $access->purchased_at ?? now(),
-        ]);
+        // Idempotent — shares the exact same "already active? skip" guard
+        // as the return-URL flow, whichever of the two arrives first wins.
+        StreamAccessPaymentController::activate($access);
     }
 }

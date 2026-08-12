@@ -50,6 +50,24 @@ class Player extends Model
         return (bool) $this->latestSubscription()?->isActive();
     }
 
+    /**
+     * Whether a payment was ever actually captured for this player — i.e.
+     * "subscribe vs renew" copy should say "renew" only for players who
+     * really were paid subscribers at some point. Deliberately NOT "does
+     * the latest row exist": a `pending` row is created the instant
+     * checkout starts (Api\SubscriptionController::createOrder), before
+     * PayPal confirms anything, so a player who abandoned/failed checkout
+     * without ever completing one would otherwise be told their
+     * subscription "expired" despite never having paid. Checks every row,
+     * not just latestSubscription(), because a lapsed subscriber's most
+     * recent row can be a fresh abandoned renewal attempt (`pending`)
+     * sitting on top of an older, genuinely `active` one.
+     */
+    public function hasEverBeenSubscribed(): bool
+    {
+        return $this->subscriptions()->where('status', Subscription::STATUS_ACTIVE)->exists();
+    }
+
     public function playerTeams(): HasMany
     {
         return $this->hasMany(PlayerTeam::class);

@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * A single $5 "unlock live streaming for this match" payment, made by the
- * admin running the match (not by viewers — Live Score and the stream
- * itself stay free for every player). One match can have more than one
+ * A single $5 "unlock live streaming for this match" payment — either made
+ * by the admin running the match (Admin\StreamAccessController), or by any
+ * player paying for "VIP access" from the stream screen itself
+ * (Api\StreamAccessController, Phase 6 revision 3). Either way it's the
+ * same row/flow: access is match-scoped, not player-scoped, so whoever
+ * pays first unlocks the stream for every viewer — Live Score itself
+ * always stays free regardless. One match can have more than one
  * historical row (e.g. a cancelled attempt followed by a paid one); current
  * access is always resolved from the latest row for that match — see
  * GameMatch::hasActiveStreamAccess().

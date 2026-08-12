@@ -81,7 +81,9 @@ class SubscriptionController extends Controller
     /**
      * GET /player/subscription-status — drives both the paywall gate
      * ("can I add a sport / open Analysis?") and the Profile/Home status
-     * displays. Always resolved from the *latest* subscription row.
+     * displays. `is_active`/`status`/`expires_at` etc. are resolved from
+     * the *latest* subscription row, but `has_subscribed` is not — see
+     * Player::hasEverBeenSubscribed().
      */
     public function status(Request $request): JsonResponse
     {
@@ -123,7 +125,10 @@ class SubscriptionController extends Controller
         $daysRemaining = $isActive ? now()->diffInDays($subscription->expires_at, false) : null;
 
         return $this->success([
-            'has_subscribed' => true,
+            // Not just "a row exists" — see Player::hasEverBeenSubscribed().
+            // The latest row can be a `pending` checkout that was started
+            // and abandoned/failed, which must never read as "expired".
+            'has_subscribed' => $player->hasEverBeenSubscribed(),
             'status' => $subscription->status,
             'is_active' => $isActive,
             'starts_at' => $subscription->starts_at?->toISOString(),

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\GameMatch;
+use App\Models\LiveStreamAccess;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -46,12 +47,21 @@ class GameMatchResource extends JsonResource
             'date' => $this->scheduled_at?->toDateString(),
             'live_score' => $this->live_score,
             // Live Score itself is always free; only the embedded video is
-            // gated behind the admin's $5/match unlock (Phase 6 revision 2)
-            // — so the URL simply isn't in the payload until that's paid,
-            // and disappears again once the match finishes. The mobile/web
-            // "Watch Live Stream" button already only renders when this is
-            // truthy, so no client-side change was needed to hide it.
+            // gated behind the $5/match unlock (Phase 6 revision 2, extended
+            // in revision 3 to let any player pay it as "VIP access", not
+            // just the admin running the match) — so the URL simply isn't
+            // in the payload until that's paid, and disappears again once
+            // the match finishes. The mobile/web "Watch Live Stream" button
+            // already only renders when this is truthy, so no client-side
+            // change was needed to hide it.
             'youtube_stream_url' => $this->hasActiveStreamAccess() ? $this->youtube_stream_url : null,
+            // Separate from the URL above: lets the stream screen tell "not
+            // unlocked yet" (show the VIP paywall) apart from "unlocked but
+            // the admin hasn't pasted a URL yet" (show a waiting state)
+            // instead of treating both as the same blank result.
+            'stream_access_active' => $this->hasActiveStreamAccess(),
+            'stream_access_amount' => (float) LiveStreamAccess::AMOUNT,
+            'stream_access_currency' => config('services.paypal.currency'),
         ];
     }
 
