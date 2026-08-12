@@ -55,6 +55,11 @@ class PayPalService
                 'brand_name' => config('app.name'),
                 'user_action' => 'PAY_NOW',
                 'shipping_preference' => 'NO_SHIPPING',
+                // Land payers on the guest/card entry page instead of the
+                // PayPal login page — most payers here don't have (or don't
+                // want to create) a PayPal account, they just want to pay
+                // with a debit/credit card.
+                'landing_page' => 'BILLING',
                 'return_url' => $returnUrl,
                 'cancel_url' => $cancelUrl,
             ],

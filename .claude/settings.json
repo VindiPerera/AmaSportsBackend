@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer -V)",
+      "Bash(mysql --version)",
+      "Bash(awk -F= '/^PAYPAL_CLIENT_ID=/{print length\\($2\\)}' .env)",
+      "WebSearch"
+    ]
+  }
+}
