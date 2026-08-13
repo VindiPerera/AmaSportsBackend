@@ -3,27 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\GameMatch;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        $liveMatches = GameMatch::with(['sport', 'homeTeam', 'awayTeam'])
-            ->where('status', GameMatch::STATUS_LIVE)
-            ->orderBy('scheduled_at')
-            ->get();
-
-        $upcomingMatches = GameMatch::with(['sport', 'homeTeam', 'awayTeam'])
-            ->where('status', GameMatch::STATUS_UPCOMING)
-            ->orderBy('scheduled_at')
-            ->limit(10)
-            ->get();
-
-        return view('admin.dashboard', [
-            'liveMatches' => $liveMatches,
-            'upcomingMatches' => $upcomingMatches,
-        ]);
+        return redirect()->route('admin.users.index');
     }
 }

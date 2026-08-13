@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Payments\StreamAccessPaymentController;
 use App\Http\Controllers\Payments\SubscriptionPaymentController;
 use Illuminate\Support\Facades\Response;
@@ -24,6 +25,70 @@ Route::prefix('payments/stream-access')->name('payments.stream-access.')->group(
     Route::get('/cancel', [StreamAccessPaymentController::class, 'cancel'])->name('cancel');
 });
 
+use App\Http\Controllers\UserMatchController;
+use App\Http\Controllers\UserWebAuthController;
+
+// ─── Public Website ──────────────────────────────────────────────────────────
+Route::get('/', fn () => redirect('/home'))->name('public.root');
+Route::get('/home',    [PublicController::class, 'home'])->name('public.home');
+Route::get('/about',   [PublicController::class, 'about'])->name('public.about');
+Route::get('/contact', [PublicController::class, 'contact'])->name('public.contact');
+Route::post('/contact', [PublicController::class, 'contactStore'])->name('public.contact.store');
+Route::get('/matches', [PublicController::class, 'matches'])->name('public.matches');
+
+// ─── User Web Authentication ──────────────────────────────────────────────────
+Route::get('/login', [UserWebAuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [UserWebAuthController::class, 'login'])->name('login.store');
+Route::get('/register', [UserWebAuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserWebAuthController::class, 'register'])->name('register.store');
+Route::post('/logout', [UserWebAuthController::class, 'logout'])->name('user.logout');
+
+// ─── Mobile App Web Access (Temporary Route) ─────────────────────────────────
+Route::get('/spa.html', function () {
+    $shell = is_file(public_path('spa.html')) ? public_path('spa.html') : public_path('index.html');
+    abort_unless(is_file($shell), 404);
+    return Response::file($shell);
+});
+
+// The /app iframe embeds the mobile app at this dedicated sub-path rather
+// than at the domain root (root belongs to the public site above). Expo
+// Router resolves the current screen from the *browser* URL, so the
+// export used here was built with expo.experiments.baseUrl = "/mobile-preview"
+// (sport-mobile/app.json, set only for this build then reverted — the
+// root-relative export public/index.html/_expo/assets still deploy:web's
+// normally) — without that, the router doesn't recognize "/mobile-preview"
+// as one of its routes and falls back to its own "Unmatched Route" screen,
+// which is what was showing before this route existed.
+//
+// {any?} is required so hard-refreshing/deep-linking into a route the RN
+// app navigated to client-side (e.g. /mobile-preview/onboarding) still
+// resolves to the SPA shell instead of 404ing — real static files under
+// /mobile-preview (_expo/assets/favicon.ico) are served directly by the
+// webserver before this ever runs, same as the root-level fallback below.
+Route::get('/mobile-preview/{any?}', function () {
+    $shell = public_path('mobile-preview/index.html');
+    abort_unless(is_file($shell), 404);
+    return Response::file($shell);
+})->where('any', '.*')->name('public.mobile-preview');
+
+Route::get('/app', function () {
+    return view('public.app');
+})->name('public.app');
+
+Route::get('/mobile', function () {
+    return redirect()->route('public.app');
+})->name('public.mobile');
+
+// ─── Authenticated User Web Application (Matches & Schedule / Match Creation) ─
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [UserMatchController::class, 'index'])->name('dashboard');
+    Route::get('/user/matches', [UserMatchController::class, 'index'])->name('user.matches.index');
+    Route::get('/user/matches/create', [UserMatchController::class, 'create'])->name('user.matches.create');
+    Route::post('/user/matches', [UserMatchController::class, 'store'])->name('user.matches.store');
+    Route::get('/user/matches/{match}/edit', [UserMatchController::class, 'edit'])->name('user.matches.edit');
+    Route::put('/user/matches/{match}', [UserMatchController::class, 'update'])->name('user.matches.update');
+});
+
 // Mobile app (SPA shell).
 //
 // `npm run deploy:web` copies the Expo Router web export
@@ -42,7 +107,7 @@ Route::prefix('payments/stream-access')->name('payments.stream-access.')->group(
 Route::fallback(function () {
     abort_if(request()->is('api/*', 'admin/*'), 404);
 
-    $shell = public_path('index.html');
+    $shell = is_file(public_path('spa.html')) ? public_path('spa.html') : public_path('index.html');
 
     abort_unless(is_file($shell), 404);
 

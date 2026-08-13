@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Admin') — AmaSports Platform</title>
+    <title>@yield('title', 'Admin') — AmaX Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -19,23 +19,18 @@
             <div class="flex items-center justify-between h-14">
                 {{-- Left: Brand & Navigation --}}
                 <div class="flex items-center gap-8">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 font-black text-xl tracking-tighter text-white">
-                        <span class="bg-white text-[#0366D6] w-7 h-7 rounded-lg flex items-center justify-center font-black text-sm">A</span>
-                        AmaSports
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
+                        <img src="{{ asset('images/logo.png') }}" alt="AmaX" class="h-8 w-auto object-contain bg-white/90 px-2 py-1 rounded-lg" />
                     </a>
 
                     <nav class="hidden md:flex items-center space-x-1">
-                        <a href="{{ route('admin.dashboard') }}" 
-                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-                            Live Scores
+                        <a href="{{ route('admin.users.index') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.dashboard') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            Users
                         </a>
-                        <a href="{{ route('admin.matches.index') }}" 
-                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.matches.*') && !request()->routeIs('admin.matches.create') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-                            Matches & Schedule
-                        </a>
-                        <a href="{{ route('admin.matches.create') }}" 
-                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.matches.create') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-                            + New Match
+                        <a href="{{ route('admin.payments.index') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.payments.*') || request()->routeIs('admin.purchases.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            Payments
                         </a>
                     </nav>
                 </div>
@@ -47,12 +42,19 @@
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
 
-                    <form method="POST" action="{{ route('admin.logout') }}">
-                        @csrf
-                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-red-500 text-white transition-all text-xs font-extrabold">
-                            Log Out
-                        </button>
-                    </form>
+                    @auth
+                        <span class="hidden lg:inline text-blue-100 font-semibold normal-case">{{ Auth::user()->name }}</span>
+                        <form method="POST" action="{{ route('admin.logout') }}">
+                            @csrf
+                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-red-500 text-white transition-all text-xs font-extrabold">
+                                Log Out
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('admin.login') }}" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all text-xs font-extrabold">
+                            Log In
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -102,7 +104,7 @@
     {{-- Footer --}}
     <footer class="border-t border-slate-200 bg-white py-4 mt-auto text-xs text-slate-500">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            <p>&copy; {{ date('Y') }} AmaSports Platform. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} AmaX Platform. All rights reserved.</p>
             <p class="font-semibold text-slate-400">Minimalist Sports UI Engine</p>
         </div>
     </footer>

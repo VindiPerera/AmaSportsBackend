@@ -3,6 +3,52 @@
 @section('title', 'Live Scores & Matches')
 
 @section('content')
+    {{-- Public player search — anyone can look up any player's analysis,
+         no account needed. --}}
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs mb-6">
+        <h2 class="text-xs font-extrabold text-slate-900 tracking-wider uppercase mb-3">
+            Find a Player
+        </h2>
+        <form method="GET" action="{{ route('admin.dashboard') }}" class="flex gap-2">
+            <input
+                type="text"
+                name="q"
+                value="{{ $query }}"
+                placeholder="Search by player name..."
+                class="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0366D6]/40 focus:border-[#0366D6]"
+            >
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#0366D6] hover:bg-blue-700 text-white text-xs font-extrabold shadow-xs transition-all">
+                Search
+            </button>
+        </form>
+
+        @if ($searchResults !== null)
+            <div class="mt-4 space-y-2">
+                @if ($searchResults->isEmpty())
+                    <p class="text-xs font-semibold text-slate-500">No players found matching "{{ $query }}".</p>
+                @else
+                    @foreach ($searchResults as $result)
+                        <a href="{{ route('admin.players.show', $result['player']) }}"
+                           class="flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-[#0366D6] hover:bg-blue-50/40 transition-all">
+                            <div>
+                                <p class="text-sm font-extrabold text-slate-900">{{ $result['player']->full_name }}</p>
+                                <p class="text-[11px] text-slate-500 font-semibold">
+                                    {{ $result['team'] ?? 'No team' }} • Cricket
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold text-slate-600">
+                                <span>{{ $result['overview']['matches'] }} matches</span>
+                                <span>{{ $result['overview']['runs'] }} runs</span>
+                                <span>{{ $result['overview']['wickets'] }} wickets</span>
+                                <span class="text-[#0366D6]">View →</span>
+                            </div>
+                        </a>
+                    @endforeach
+                @endif
+            </div>
+        @endif
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {{-- LEFT / CENTER MAIN COLUMN (8 COLS) --}}

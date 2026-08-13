@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LiveScoreController;
 use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchPlayerController;
+use App\Http\Controllers\Admin\PlayerAnalysisController;
 use App\Http\Controllers\Admin\StreamAccessController;
+use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Admin\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,18 +17,28 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Registered under the `/admin` prefix + `admin.` name prefix from
-| bootstrap/app.php (withRouting -> then). Everything except the login
-| screen itself is gated by the `admin` middleware (EnsureAdmin).
+| bootstrap/app.php (withRouting -> then).
+|
+| Three tiers:
+|   - Public (no middleware beyond `web`): login form, the dashboard
+|     (now a public player-search/analysis home page — anyone can view
+|     it), and individual player analysis pages.
+|   - `admin` (EnsureAdmin): match creation/scoring/roster/streaming —
+|     unchanged from before.
+|   - `super_admin` (EnsureSuperAdmin): payments/users/clients overview
+|     — a stricter tier regular admins cannot reach.
 |
 */
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 
+// Public home — player search + analysis, visible to anyone, no login.
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/players/{player}', [PlayerAnalysisController::class, 'show'])->name('players.show');
+
 Route::middleware('admin')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
     Route::get('/matches/create', [MatchController::class, 'create'])->name('matches.create');
@@ -53,4 +65,16 @@ Route::middleware('admin')->group(function () {
     Route::put('/matches/{match}/stream/url', [StreamAccessController::class, 'updateUrl'])->name('matches.stream.update-url');
 
     Route::get('/teams/search', [TeamController::class, 'search'])->name('teams.search');
+
+    // Admin Users, Payments & Purchases management
+    Route::get('/users', [SuperAdminController::class, 'users'])->name('users.index');
+    Route::get('/payments', [SuperAdminController::class, 'payments'])->name('payments.index');
+    Route::get('/purchases', [SuperAdminController::class, 'purchases'])->name('purchases.index');
 });
+
+Route::middleware('super_admin')->prefix('super')->name('super.')->group(function () {
+    Route::get('/', [SuperAdminController::class, 'index'])->name('index');
+    Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
+    Route::get('/payments', [SuperAdminController::class, 'payments'])->name('payments');
+});
+
