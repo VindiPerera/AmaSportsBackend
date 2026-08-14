@@ -43,41 +43,29 @@ Route::get('/register', [UserWebAuthController::class, 'showRegister'])->name('r
 Route::post('/register', [UserWebAuthController::class, 'register'])->name('register.store');
 Route::post('/logout', [UserWebAuthController::class, 'logout'])->name('user.logout');
 
-// ─── Mobile App Web Access (Temporary Route) ─────────────────────────────────
-Route::get('/spa.html', function () {
-    $shell = is_file(public_path('spa.html')) ? public_path('spa.html') : public_path('index.html');
-    abort_unless(is_file($shell), 404);
-    return Response::file($shell);
-});
-
-// The /app iframe embeds the mobile app at this dedicated sub-path rather
-// than at the domain root (root belongs to the public site above). Expo
-// Router resolves the current screen from the *browser* URL, so the
-// export used here was built with expo.experiments.baseUrl = "/mobile-preview"
-// (sport-mobile/app.json, set only for this build then reverted — the
-// root-relative export public/index.html/_expo/assets still deploy:web's
-// normally) — without that, the router doesn't recognize "/mobile-preview"
-// as one of its routes and falls back to its own "Unmatched Route" screen,
-// which is what was showing before this route existed.
+// ─── Mobile App Web Access ────────────────────────────────────────────────────
+//
+// /app *is* the mobile app itself (no wrapper page, no iframe/phone-frame
+// preview — that was tried and dropped). Root `/` belongs to the public
+// site above, so the mobile app can't live there; Expo Router resolves the
+// current screen from the *browser* URL, so this export was built with
+// expo.experiments.baseUrl = "/app" (sport-mobile/app.json, set only for
+// this build then reverted — the root-relative export public/index.html/
+// _expo/assets/ used by the fallback below still deploy:web's normally).
+// Without that base path, the router doesn't recognize "/app" as one of
+// its own routes and shows its built-in "Unmatched Route" screen instead.
 //
 // {any?} is required so hard-refreshing/deep-linking into a route the RN
-// app navigated to client-side (e.g. /mobile-preview/onboarding) still
-// resolves to the SPA shell instead of 404ing — real static files under
-// /mobile-preview (_expo/assets/favicon.ico) are served directly by the
-// webserver before this ever runs, same as the root-level fallback below.
-Route::get('/mobile-preview/{any?}', function () {
-    $shell = public_path('mobile-preview/index.html');
+// app navigated to client-side (e.g. /app/login) still resolves to the SPA
+// shell instead of 404ing — real static files under /app (_expo/assets/
+// favicon.ico) are served directly by the webserver before this ever runs.
+Route::get('/app/{any?}', function () {
+    $shell = public_path('app/index.html');
     abort_unless(is_file($shell), 404);
     return Response::file($shell);
-})->where('any', '.*')->name('public.mobile-preview');
+})->where('any', '.*')->name('public.app');
 
-Route::get('/app', function () {
-    return view('public.app');
-})->name('public.app');
-
-Route::get('/mobile', function () {
-    return redirect()->route('public.app');
-})->name('public.mobile');
+Route::get('/mobile', fn () => redirect()->route('public.app'))->name('public.mobile');
 
 // ─── Authenticated User Web Application (Matches & Schedule / Match Creation) ─
 Route::middleware('auth')->group(function () {
