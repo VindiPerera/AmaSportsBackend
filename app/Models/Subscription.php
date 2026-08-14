@@ -34,6 +34,7 @@ class Subscription extends Model
         'amount',
         'currency',
         'status',
+        'is_trial',
         'starts_at',
         'expires_at',
     ];
@@ -45,6 +46,7 @@ class Subscription extends Model
     {
         return [
             'amount' => 'decimal:2',
+            'is_trial' => 'boolean',
             'starts_at' => 'datetime',
             'expires_at' => 'datetime',
         ];

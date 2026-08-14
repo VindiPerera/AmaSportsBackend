@@ -82,6 +82,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscriptions/create-order', [SubscriptionController::class, 'createOrder']);
     Route::get('/player/subscription-status', [SubscriptionController::class, 'status']);
 
+    // Free first month (Phase 8) — no PayPal order, immediate unlock. See
+    // SubscriptionController::startTrial() for eligibility enforcement.
+    Route::post('/subscriptions/start-trial', [SubscriptionController::class, 'startTrial']);
+
     // $5/match "VIP" live-stream unlock, purchasable by any player from the
     // stream screen itself — see Api\StreamAccessController. Match-scoped,
     // not player-scoped: unlocks that match's embed for every viewer, same

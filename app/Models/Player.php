@@ -20,6 +20,16 @@ class Player extends Model
         'photo_url',
     ];
 
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'trial_used_at' => 'datetime',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -66,6 +76,20 @@ class Player extends Model
     public function hasEverBeenSubscribed(): bool
     {
         return $this->subscriptions()->where('status', Subscription::STATUS_ACTIVE)->exists();
+    }
+
+    /**
+     * Whether this player can still start the one-time free trial month
+     * (Phase 8). `trial_used_at` is the single source of truth for this —
+     * deliberately not derived from `subscriptions` (e.g. "is there a row
+     * with is_trial=true") so it stays true even if a trial row is ever
+     * removed. Not fillable on this model on purpose: only
+     * Api\SubscriptionController::startTrial() may set it, via forceFill(),
+     * and nothing in the app UI exposes clearing it back to null.
+     */
+    public function isTrialEligible(): bool
+    {
+        return $this->trial_used_at === null;
     }
 
     public function playerTeams(): HasMany
