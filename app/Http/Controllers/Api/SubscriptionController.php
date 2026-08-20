@@ -153,7 +153,7 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * POST /subscriptions/start-trial — the one-time free first month
+     * POST /subscriptions/start-trial — the one-time free first 10 days
      * (Phase 8). No PayPal order: unlocks immediately. Re-validates
      * eligibility server-side regardless of what the UI shows, since a
      * stale client (or a direct API call) could otherwise let a player
@@ -182,7 +182,7 @@ class SubscriptionController extends Controller
             'status' => Subscription::STATUS_ACTIVE,
             'is_trial' => true,
             'starts_at' => $startsAt,
-            'expires_at' => $startsAt->copy()->addMonth(),
+            'expires_at' => $startsAt->copy()->addDays(10),
         ]);
 
         // forceFill, not fillable — trial_used_at is deliberately not mass
@@ -204,6 +204,6 @@ class SubscriptionController extends Controller
             'expiring_soon' => $daysRemaining <= 30,
             'amount' => (float) $subscription->amount,
             'currency' => $subscription->currency,
-        ], 'Your free trial month has started.');
+        ], 'Your free trial has started.');
     }
 }
