@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Phase 8 (Free Trial Month) — one free month on a player's
+        // Phase 8 (Free Trial) — one free 10-day trial on a player's
         // first-ever subscription, then the normal $10/year applies.
         Schema::table('subscriptions', function (Blueprint $table) {
             // True for the one subscription row created by

@@ -79,7 +79,7 @@ class Player extends Model
     }
 
     /**
-     * Whether this player can still start the one-time free trial month
+     * Whether this player can still start the one-time free 10-day trial
      * (Phase 8). `trial_used_at` is the single source of truth for this —
      * deliberately not derived from `subscriptions` (e.g. "is there a row
      * with is_trial=true") so it stays true even if a trial row is ever
@@ -186,5 +186,10 @@ class Player extends Model
     public function elleProfile(): HasOne
     {
         return $this->hasOne(ElleProfile::class);
+    }
+
+    public function softBallCricketProfile(): HasOne
+    {
+        return $this->hasOne(SoftBallCricketProfile::class);
     }
 }

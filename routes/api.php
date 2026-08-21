@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RacketSportProfileController;
 use App\Http\Controllers\Api\RugbyProfileController;
 use App\Http\Controllers\Api\StreamAccessController;
+use App\Http\Controllers\Api\SoftBallCricketProfileController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SwimmingProfileController;
 use App\Http\Controllers\Api\VolleyballProfileController;
@@ -82,7 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscriptions/create-order', [SubscriptionController::class, 'createOrder']);
     Route::get('/player/subscription-status', [SubscriptionController::class, 'status']);
 
-    // Free first month (Phase 8) — no PayPal order, immediate unlock. See
+    // Free first 10 days (Phase 8) — no PayPal order, immediate unlock. See
     // SubscriptionController::startTrial() for eligibility enforcement.
     Route::post('/subscriptions/start-trial', [SubscriptionController::class, 'startTrial']);
 
@@ -166,6 +167,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/player/elle-profile', [ElleProfileController::class, 'show']);
     Route::put('/player/elle-profile', [ElleProfileController::class, 'update'])->middleware('subscription.active');
+
+    Route::get('/player/soft-ball-cricket-profile', [SoftBallCricketProfileController::class, 'show']);
+    Route::put('/player/soft-ball-cricket-profile', [SoftBallCricketProfileController::class, 'update'])->middleware('subscription.active');
 
     Route::patch('/matches/{match}/score', [MatchController::class, 'updateScore']);
 
