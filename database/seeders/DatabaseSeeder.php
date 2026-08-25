@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             AgeCategorySeeder::class,
             MatchCategorySeeder::class,
             CricketMatchTypeSeeder::class,
+            CricketCategorySeeder::class,
+            CricketDivisionSeeder::class,
             WeightPositionSeeder::class,
             CompetitionLevelSeeder::class,
             AthleticsEventSeeder::class,
