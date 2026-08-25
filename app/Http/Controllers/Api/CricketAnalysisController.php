@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Format;
+use App\Models\CricketDivision;
 use App\Models\Player;
 use App\Services\CricketAnalysisService;
 use App\Traits\ApiResponse;
@@ -19,11 +19,11 @@ class CricketAnalysisController extends Controller
      * aggregates for the Analysis tab's Cricket screen (spec Phase 5 §2).
      * All averages/rates are computed here, never on the mobile client.
      *
-     * `?format=` accepts either a numeric Format id or its name (case
-     * insensitive) — see the "Format" note in CricketAnalysisService: this
-     * app's `formats` lookup is competition level (Div I, Premier, National,
-     * ...), the same field the Cricket profile form itself calls "Format".
-     * Omit it (or pass "all") for the unfiltered career totals.
+     * `?format=` accepts either a numeric Division id or its name (case
+     * insensitive) — this is Cricket's own `cricket_divisions` lookup (Div
+     * i, Div ii, Div iii, Others), the same field the Cricket profile form
+     * calls "Division". Omit it (or pass "all") for the unfiltered career
+     * totals.
      */
     public function __invoke(Request $request, CricketAnalysisService $service): JsonResponse
     {
@@ -45,6 +45,6 @@ class CricketAnalysisController extends Controller
             return (int) $raw;
         }
 
-        return Format::whereRaw('LOWER(name) = ?', [strtolower($raw)])->value('id');
+        return CricketDivision::whereRaw('LOWER(name) = ?', [strtolower($raw)])->value('id');
     }
 }

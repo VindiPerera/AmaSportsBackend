@@ -16,6 +16,7 @@ class CricketBattingStat extends Model
         'age_category_id',
         'match_category_id',
         'cricket_match_type_id',
+        'year',
         'matches',
         'won',
         'lost',
@@ -44,14 +45,16 @@ class CricketBattingStat extends Model
         return $this->belongsTo(CricketProfile::class);
     }
 
+    // Cricket-only lookups (see CricketDivision/CricketCategory migration
+    // notes) — not the shared Format/AgeCategory tables other sports use.
     public function format(): BelongsTo
     {
-        return $this->belongsTo(Format::class);
+        return $this->belongsTo(CricketDivision::class, 'format_id');
     }
 
     public function ageCategory(): BelongsTo
     {
-        return $this->belongsTo(AgeCategory::class);
+        return $this->belongsTo(CricketCategory::class, 'age_category_id');
     }
 
     public function matchCategory(): BelongsTo
