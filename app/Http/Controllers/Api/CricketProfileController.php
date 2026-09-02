@@ -9,11 +9,13 @@ use App\Models\CricketProfile;
 use App\Models\Player;
 use App\Models\PlayerSport;
 use App\Models\PlayerTeam;
+use App\Models\PlayerTeamLogo;
 use App\Models\Sport;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CricketProfileController extends Controller
 {
@@ -42,6 +44,7 @@ class CricketProfileController extends Controller
         }
 
         $profile->team_names = $this->teamNames($player);
+        $profile->team_logos = $this->teamLogos($player);
 
         return $this->success(new CricketProfileResource($profile), 'Cricket profile retrieved successfully.');
     }
@@ -97,8 +100,54 @@ class CricketProfileController extends Controller
 
         $profile->load(['battingStats', 'bowlingStats', 'recentMatches', 'dropCatches']);
         $profile->team_names = $this->teamNames($player);
+        $profile->team_logos = $this->teamLogos($player);
 
         return $this->success(new CricketProfileResource($profile), 'Cricket profile saved successfully.');
+    }
+
+    /**
+     * POST /player/cricket-profile/college-logo — uploads (or replaces) the
+     * College/University logo. Multipart, immediate — same pattern as the
+     * player's own avatar/cover photo (see PlayerProfileController) and the
+     * team logos (see PlayerTeamLogoController); unlike team logos, this
+     * lives directly on `cricket_profiles` since that row is stable
+     * (updateOrCreate) rather than deleted-and-recreated on every save.
+     */
+    public function uploadCollegeLogo(Request $request): JsonResponse
+    {
+        $request->validate(['logo' => ['required', 'image', 'max:5120']]);
+
+        $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+        $profile = CricketProfile::firstOrNew(['player_id' => $player->id]);
+
+        if ($profile->college_logo_path) {
+            Storage::disk('public')->delete($profile->college_logo_path);
+        }
+
+        $profile->college_logo_path = $request->file('logo')->store("players/{$player->id}/college", 'public');
+        $profile->save();
+
+        return $this->success([
+            'college_logo_url' => Storage::disk('public')->url($profile->college_logo_path),
+        ], 'College logo uploaded successfully.');
+    }
+
+    /**
+     * DELETE /player/cricket-profile/college-logo — removes the
+     * College/University logo (the college_university name itself is
+     * untouched).
+     */
+    public function removeCollegeLogo(Request $request): JsonResponse
+    {
+        $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+        $profile = CricketProfile::where('player_id', $player->id)->first();
+
+        if ($profile?->college_logo_path) {
+            Storage::disk('public')->delete($profile->college_logo_path);
+            $profile->update(['college_logo_path' => null]);
+        }
+
+        return $this->success(null, 'College logo removed successfully.');
     }
 
     /**
@@ -115,6 +164,31 @@ class CricketProfileController extends Controller
         return PlayerTeam::where('player_id', $player->id)
             ->where('sport_id', $sport->id)
             ->pluck('team_name')
+            ->all();
+    }
+
+    /**
+     * Logos are managed separately from `teams` above (see PlayerTeamLogo /
+     * PlayerTeamLogoController) — keyed by team name so the mobile app can
+     * match a logo to whichever of `teams` it belongs to.
+     *
+     * @return list<array{team_name: string, logo_url: string}>
+     */
+    private function teamLogos(Player $player): array
+    {
+        $sport = Sport::where('slug', Sport::CRICKET_SLUG)->first();
+
+        if (! $sport) {
+            return [];
+        }
+
+        return PlayerTeamLogo::where('player_id', $player->id)
+            ->where('sport_id', $sport->id)
+            ->get()
+            ->map(fn (PlayerTeamLogo $logo) => [
+                'team_name' => $logo->team_name,
+                'logo_url' => Storage::disk('public')->url($logo->logo_path),
+            ])
             ->all();
     }
 }
