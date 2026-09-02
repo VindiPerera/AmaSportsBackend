@@ -13,7 +13,7 @@ class FootballCareerStat extends Model
     protected $fillable = [
         'football_profile_id', 'format_id', 'age_category_id', 'match_category_id',
         'matches', 'win', 'lost', 'goals', 'assists', 'defensive_actions',
-        'goalkeeper_clean_sheets', 'goalkeeper_goals_conceded', 'yellow_card', 'red_card',
+        'goalkeeper_clean_sheets', 'goalkeeper_goals_conceded', 'yellow_card', 'red_card', 'year',
     ];
 
     public function footballProfile(): BelongsTo

@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\RacketSportProfileController;
 use App\Http\Controllers\Api\RugbyProfileController;
 use App\Http\Controllers\Api\StreamAccessController;
 use App\Http\Controllers\Api\SoftBallCricketProfileController;
+use App\Http\Controllers\Api\SportAnalysisController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SwimmingProfileController;
 use App\Http\Controllers\Api\VolleyballProfileController;
@@ -114,6 +115,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // writes anything, so it lives alongside the profile routes but has no
     // PUT/POST counterpart. Analysis requires an active subscription.
     Route::get('/player/cricket-analysis', CricketAnalysisController::class)->middleware('subscription.active');
+
+    // Generic counterpart to /player/cricket-analysis for every other sport
+    // whose stats fit a single career-stats table of plain counts — see
+    // SportAnalysisConfig for exactly which slugs are supported.
+    Route::get('/player/{sport}/analysis', SportAnalysisController::class)->middleware('subscription.active');
 
     Route::get('/player/hockey-profile', [HockeyProfileController::class, 'show']);
     Route::put('/player/hockey-profile', [HockeyProfileController::class, 'update'])->middleware('subscription.active');

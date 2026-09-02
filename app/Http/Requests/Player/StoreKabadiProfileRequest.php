@@ -47,6 +47,7 @@ class StoreKabadiProfileRequest extends FormRequest
             'career_stats.*.yellow_cards' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.green_cards' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.red_cards' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_matches' => ['sometimes', 'array'],
             'recent_matches.*.match_date' => ['nullable', 'date'],

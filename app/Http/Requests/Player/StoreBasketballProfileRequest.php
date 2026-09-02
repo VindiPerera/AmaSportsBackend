@@ -40,6 +40,7 @@ class StoreBasketballProfileRequest extends FormRequest
             'career_stats.*.blocks' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.steals' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.minutes' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_matches' => ['sometimes', 'array'],
             'recent_matches.*.match_date' => ['nullable', 'date'],

@@ -12,7 +12,7 @@ class BoxingCareerStat extends Model
      */
     protected $fillable = [
         'boxing_profile_id', 'format_id', 'age_category_id', 'match_category_id',
-        'weight_class_id', 'matches', 'win', 'lost', 'third_place', 'second_place', 'champion',
+        'weight_class_id', 'matches', 'win', 'lost', 'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function boxingProfile(): BelongsTo

@@ -12,7 +12,7 @@ class ChessCareerStat extends Model
      */
     protected $fillable = [
         'chess_profile_id', 'format_id', 'age_category_id', 'match_category_id',
-        'games', 'win', 'lost', 'third_place', 'second_place', 'champion',
+        'games', 'win', 'lost', 'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function chessProfile(): BelongsTo

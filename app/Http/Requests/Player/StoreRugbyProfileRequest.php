@@ -40,6 +40,7 @@ class StoreRugbyProfileRequest extends FormRequest
             'career_stats.*.drop_goal' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.yellow_card' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.red_card' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_matches' => ['sometimes', 'array'],
             'recent_matches.*.match_date' => ['nullable', 'date'],

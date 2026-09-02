@@ -13,7 +13,7 @@ class RugbyCareerStat extends Model
     protected $fillable = [
         'rugby_profile_id', 'format_id', 'age_category_id', 'match_category_id',
         'matches', 'win', 'lost', 'tries', 'conversion', 'penalty_kick', 'drop_goal',
-        'yellow_card', 'red_card',
+        'yellow_card', 'red_card', 'year',
     ];
 
     public function rugbyProfile(): BelongsTo

@@ -13,7 +13,7 @@ class NetBallCareerStat extends Model
     protected $fillable = [
         'net_ball_profile_id', 'format_id', 'age_category_id', 'match_category_id',
         'matches', 'matches_won', 'matches_lost', 'goals', 'attempts', 'goal_accuracy',
-        'result_won', 'result_lost',
+        'result_won', 'result_lost', 'year',
     ];
 
     public function netBallProfile(): BelongsTo

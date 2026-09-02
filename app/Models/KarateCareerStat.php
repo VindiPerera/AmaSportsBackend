@@ -13,7 +13,7 @@ class KarateCareerStat extends Model
     protected $fillable = [
         'karate_profile_id', 'format_id', 'age_category_id', 'match_category_id',
         'matches', 'fights', 'win', 'lost', 'stats', 'weight_category', 'age_category',
-        'third_place', 'second_place', 'champion',
+        'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function karateProfile(): BelongsTo
