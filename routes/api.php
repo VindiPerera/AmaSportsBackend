@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\PayPalWebhookController;
 use App\Http\Controllers\Api\PlayerProfileController;
 use App\Http\Controllers\Api\PlayerSearchController;
 use App\Http\Controllers\Api\PlayerSportController;
+use App\Http\Controllers\Api\PlayerTeamLogoController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RacketSportProfileController;
 use App\Http\Controllers\Api\RugbyProfileController;
@@ -105,6 +106,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/player/cricket-profile', [CricketProfileController::class, 'show']);
     Route::put('/player/cricket-profile', [CricketProfileController::class, 'update'])->middleware('subscription.active');
+
+    // Team logo upload (TeamsInput on the Cricket form) — immediate, not
+    // part of the bulk cricket-profile save; see PlayerTeamLogoController.
+    Route::post('/player/team-logo', [PlayerTeamLogoController::class, 'store'])->middleware('subscription.active');
+    Route::delete('/player/team-logo', [PlayerTeamLogoController::class, 'destroy'])->middleware('subscription.active');
+
+    // College/University logo — same "immediate, not part of the bulk save"
+    // idea as team-logo above.
+    Route::post('/player/cricket-profile/college-logo', [CricketProfileController::class, 'uploadCollegeLogo'])->middleware('subscription.active');
+    Route::delete('/player/cricket-profile/college-logo', [CricketProfileController::class, 'removeCollegeLogo'])->middleware('subscription.active');
 
     // Player Search (new) — read-only discovery, deliberately not gated
     // behind subscription.active like the Analysis/write routes above.
