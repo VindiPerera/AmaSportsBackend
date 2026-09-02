@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\CricketProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /** @mixin CricketProfile */
 class CricketProfileResource extends JsonResource
@@ -25,6 +26,7 @@ class CricketProfileResource extends JsonResource
             'playing_role' => $this->playing_role,
             'height' => $this->height,
             'college_university' => $this->college_university,
+            'college_logo_url' => $this->college_logo_path ? Storage::disk('public')->url($this->college_logo_path) : null,
             // Career-to-date bowling breakdown — see Phase 7 migration note
             // on cricket_profiles. Always an object, never null, so the
             // mobile form doesn't need a null-guard per lookup category.
@@ -43,6 +45,9 @@ class CricketProfileResource extends JsonResource
             // player_id, not cricket_profile_id, so it isn't a real relation
             // on this model).
             'teams' => $this->team_names ?? [],
+            // Keyed by team name — see PlayerTeamLogoController. A team in
+            // `teams` above with no matching entry here just has no logo.
+            'team_logos' => $this->team_logos ?? [],
             'batting' => $this->whenLoaded('battingStats', fn () => $this->battingStats),
             'bowling' => $this->whenLoaded('bowlingStats', fn () => $this->bowlingStats),
             'recent_matches' => $this->whenLoaded('recentMatches', fn () => $this->recentMatches),

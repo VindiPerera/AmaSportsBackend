@@ -24,9 +24,15 @@ class CricketCategoryMigrationRepairTest extends TestCase
     public function test_repoint_migration_succeeds_against_a_database_with_stale_legacy_rows(): void
     {
         // RefreshDatabase already ran every migration. Roll back to just
-        // before the repoint migration (and the one after it that depends
-        // on its nullable change) to reproduce the pre-fix schema state.
-        $this->artisan('migrate:rollback', ['--step' => 2])->run();
+        // before the repoint migration, reproducing the pre-fix schema
+        // state. Step count is computed (not hardcoded) — a fixed number
+        // here has already gone stale twice as later migrations landed;
+        // this counts however many migrations have run at/after the
+        // repoint one, however many that now is.
+        $stepsToRollback = DB::table('migrations')
+            ->where('migration', '>=', '2026_08_25_090002_repoint_cricket_stat_category_division_lookups')
+            ->count();
+        $this->artisan('migrate:rollback', ['--step' => $stepsToRollback])->run();
 
         $this->assertTrue(Schema::hasTable('age_categories'));
         $this->assertTrue(Schema::hasTable('cricket_batting_stats'));
