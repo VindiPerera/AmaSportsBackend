@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\NetBallProfileController;
 use App\Http\Controllers\Api\PayPalWebhookController;
+use App\Http\Controllers\Api\PlayerPhotoController;
 use App\Http\Controllers\Api\PlayerProfileController;
 use App\Http\Controllers\Api\PlayerSearchController;
 use App\Http\Controllers\Api\PlayerSportController;
@@ -103,6 +104,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // so it stays free regardless of subscription status.
     Route::get('/player/profile', [PlayerProfileController::class, 'show']);
     Route::post('/player/profile', [PlayerProfileController::class, 'update']);
+
+    // Photo gallery (up to PlayerPhoto::MAX_PHOTOS) — same "immediate, own
+    // endpoint" pattern as team-logo/college-logo below, and free regardless
+    // of subscription like the rest of this shared header.
+    Route::post('/player/photos', [PlayerPhotoController::class, 'store']);
+    Route::delete('/player/photos/{photo}', [PlayerPhotoController::class, 'destroy']);
 
     Route::get('/player/cricket-profile', [CricketProfileController::class, 'show']);
     Route::put('/player/cricket-profile', [CricketProfileController::class, 'update'])->middleware('subscription.active');

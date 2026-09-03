@@ -97,6 +97,12 @@ class Player extends Model
         return $this->hasMany(PlayerTeam::class);
     }
 
+    /** Gallery photos (see PlayerPhotoController) — capped at 10, enforced there. */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(PlayerPhoto::class);
+    }
+
     public function cricketProfile(): HasOne
     {
         return $this->hasOne(CricketProfile::class);
