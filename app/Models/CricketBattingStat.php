@@ -23,6 +23,7 @@ class CricketBattingStat extends Model
         'innings',
         'not_out',
         'runs',
+        'balls',
         'hs',
         'average',
         'best',

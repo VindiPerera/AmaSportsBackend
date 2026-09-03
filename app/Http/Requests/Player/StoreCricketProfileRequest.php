@@ -60,6 +60,7 @@ class StoreCricketProfileRequest extends FormRequest
             'batting.*.innings' => ['nullable', 'integer', 'min:0'],
             'batting.*.not_out' => ['nullable', 'integer', 'min:0'],
             'batting.*.runs' => ['nullable', 'integer', 'min:0'],
+            'batting.*.balls' => ['nullable', 'integer', 'min:0'],
             'batting.*.hs' => ['nullable', 'string', 'max:20'],
             'batting.*.average' => ['nullable', 'numeric'],
             'batting.*.best' => ['nullable', 'integer', 'min:0'],
