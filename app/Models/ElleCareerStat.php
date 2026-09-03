@@ -12,7 +12,7 @@ class ElleCareerStat extends Model
      */
     protected $fillable = [
         'elle_profile_id', 'format_id', 'age_category_id', 'match_category_id',
-        'matches', 'win', 'lost', 'runs', 'catches', 'third_place', 'second_place', 'champion', 'year',
+        'matches', 'win', 'lost', 'total_balls', 'runs', 'catches', 'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function elleProfile(): BelongsTo

@@ -11,7 +11,7 @@ class KarateCareerStat extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'karate_profile_id', 'format_id', 'age_category_id', 'match_category_id',
+        'karate_profile_id', 'format_id', 'age_category_id', 'match_category_id', 'style',
         'matches', 'fights', 'win', 'lost', 'stats', 'weight_category', 'age_category',
         'third_place', 'second_place', 'champion', 'year',
     ];

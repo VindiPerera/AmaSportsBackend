@@ -11,7 +11,7 @@ class FootballCareerStat extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'football_profile_id', 'format_id', 'age_category_id', 'match_category_id',
+        'football_profile_id', 'format_id', 'age_category_id', 'match_category_id', 'play_position',
         'matches', 'win', 'lost', 'goals', 'assists', 'defensive_actions',
         'goalkeeper_clean_sheets', 'goalkeeper_goals_conceded', 'yellow_card', 'red_card', 'year',
     ];

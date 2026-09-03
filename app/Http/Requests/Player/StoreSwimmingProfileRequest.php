@@ -44,6 +44,7 @@ class StoreSwimmingProfileRequest extends FormRequest
 
             'recent_events' => ['sometimes', 'array'],
             'recent_events.*.event_date' => ['nullable', 'date'],
+            'recent_events.*.format_id' => ['nullable', 'integer', 'exists:formats,id'],
             'recent_events.*.age_category_id' => ['required', 'integer', 'exists:age_categories,id'],
             'recent_events.*.match_category_id' => ['required', 'integer', 'exists:match_categories,id'],
             'recent_events.*.matches' => ['nullable', 'integer', 'min:0'],

@@ -12,7 +12,7 @@ class KabadiCareerStat extends Model
      */
     protected $fillable = [
         'kabadi_profile_id', 'format_id', 'age_category_id', 'match_category_id',
-        'matches', 'win', 'lost', 'cbp', 'raids', 'successful_raids', 'unsuccessful_raids',
+        'matches', 'win', 'lost', 'tpe', 'cbp', 'raids', 'successful_raids', 'unsuccessful_raids',
         'raid_touch_point', 'raid_bonus_point', 'tackles', 'successful_tackles',
         'unsuccessful_tackles', 'empty_raids', 'yellow_cards', 'green_cards', 'red_cards', 'year',
     ];
