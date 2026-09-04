@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\LiveScoreController;
 use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchPlayerController;
 use App\Http\Controllers\Admin\StreamAccessController;
+use App\Http\Controllers\Admin\SubscriptionPriceController;
 use App\Http\Controllers\Admin\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,4 +54,14 @@ Route::middleware('admin')->group(function () {
     Route::put('/matches/{match}/stream/url', [StreamAccessController::class, 'updateUrl'])->name('matches.stream.update-url');
 
     Route::get('/teams/search', [TeamController::class, 'search'])->name('teams.search');
+
+    // Per-country subscription pricing (see SubscriptionCountryPrice::amountFor(),
+    // consumed by Api\SubscriptionController) — a country with no row here
+    // just charges the flat default price.
+    Route::get('/subscription-prices', [SubscriptionPriceController::class, 'index'])->name('subscription-prices.index');
+    Route::get('/subscription-prices/create', [SubscriptionPriceController::class, 'create'])->name('subscription-prices.create');
+    Route::post('/subscription-prices', [SubscriptionPriceController::class, 'store'])->name('subscription-prices.store');
+    Route::get('/subscription-prices/{price}/edit', [SubscriptionPriceController::class, 'edit'])->name('subscription-prices.edit');
+    Route::put('/subscription-prices/{price}', [SubscriptionPriceController::class, 'update'])->name('subscription-prices.update');
+    Route::delete('/subscription-prices/{price}', [SubscriptionPriceController::class, 'destroy'])->name('subscription-prices.destroy');
 });

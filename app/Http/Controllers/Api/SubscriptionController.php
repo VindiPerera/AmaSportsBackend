@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Player;
 use App\Models\Subscription;
+use App\Models\SubscriptionCountryPrice;
 use App\Services\PayPalService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -40,17 +41,18 @@ class SubscriptionController extends Controller
 
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
         $currency = config('services.paypal.currency');
+        $amount = SubscriptionCountryPrice::amountFor($player->country);
 
         $subscription = Subscription::create([
             'player_id' => $player->id,
-            'amount' => Subscription::AMOUNT,
+            'amount' => $amount,
             'currency' => $currency,
             'status' => Subscription::STATUS_PENDING,
         ]);
 
         try {
             $order = $paypal->createOrder(
-                amount: Subscription::AMOUNT,
+                amount: $amount,
                 currency: $currency,
                 customId: "subscription:{$subscription->id}",
                 description: config('app.name').' Annual Subscription',
@@ -95,6 +97,11 @@ class SubscriptionController extends Controller
     {
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
         $subscription = $player->latestSubscription();
+        // What THIS player would pay right now — only relevant as a preview
+        // for the two branches below (no active/pending subscription yet);
+        // once a real subscription row exists its own stored `amount` is
+        // what was actually charged and must never be second-guessed here.
+        $previewAmount = SubscriptionCountryPrice::amountFor($player->country);
 
         // Dev-only escape hatch — see config/subscription.php. Reports as
         // subscribed/active so the mobile paywall never blocks Add Sport /
@@ -110,7 +117,7 @@ class SubscriptionController extends Controller
                 'expires_at' => null,
                 'days_remaining' => null,
                 'expiring_soon' => false,
-                'amount' => Subscription::AMOUNT,
+                'amount' => $previewAmount,
                 'currency' => config('services.paypal.currency'),
             ], 'Subscription status retrieved successfully.');
         }
@@ -126,7 +133,7 @@ class SubscriptionController extends Controller
                 'expires_at' => null,
                 'days_remaining' => null,
                 'expiring_soon' => false,
-                'amount' => Subscription::AMOUNT,
+                'amount' => $previewAmount,
                 'currency' => config('services.paypal.currency'),
             ], 'Subscription status retrieved successfully.');
         }
@@ -205,5 +212,22 @@ class SubscriptionController extends Controller
             'amount' => (float) $subscription->amount,
             'currency' => $subscription->currency,
         ], 'Your free trial has started.');
+    }
+
+    /**
+     * GET /subscription-prices — every admin-configured country price, plus
+     * the default, for the mobile app's country-selection screen (see
+     * Frontend app/(protected)/select-country.tsx) to preview a price for
+     * whichever country the player has highlighted before they've actually
+     * saved it to their profile yet. Country names match
+     * Frontend/src/constants/countries.ts exactly (see config/countries.php).
+     */
+    public function prices(): JsonResponse
+    {
+        return $this->success([
+            'default_amount' => Subscription::AMOUNT,
+            'currency' => config('services.paypal.currency'),
+            'prices' => SubscriptionCountryPrice::allAsMap(),
+        ], 'Subscription prices retrieved successfully.');
     }
 }

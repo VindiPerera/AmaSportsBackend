@@ -33,9 +33,13 @@
                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.matches.*') && !request()->routeIs('admin.matches.create') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                             Matches & Schedule
                         </a>
-                        <a href="{{ route('admin.matches.create') }}" 
+                        <a href="{{ route('admin.matches.create') }}"
                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.matches.create') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                             + New Match
+                        </a>
+                        <a href="{{ route('admin.subscription-prices.index') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.subscription-prices.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            Subscription Pricing
                         </a>
                     </nav>
                 </div>

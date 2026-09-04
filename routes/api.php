@@ -90,6 +90,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // SubscriptionController::startTrial() for eligibility enforcement.
     Route::post('/subscriptions/start-trial', [SubscriptionController::class, 'startTrial']);
 
+    // Per-country pricing preview for the country-selection screen — see
+    // SubscriptionController::prices().
+    Route::get('/subscription-prices', [SubscriptionController::class, 'prices']);
+
     // $5/match "VIP" live-stream unlock, purchasable by any player from the
     // stream screen itself — see Api\StreamAccessController. Match-scoped,
     // not player-scoped: unlocks that match's embed for every viewer, same
