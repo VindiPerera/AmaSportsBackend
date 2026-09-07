@@ -34,7 +34,7 @@ class AthleticsProfileController extends Controller
             $profile->setRelation('recentEvents', collect());
         }
 
-        $profile->team_names = $this->teamNames($player);
+        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
 
         return $this->success(new AthleticsProfileResource($profile), 'Athletics profile retrieved successfully.');
     }

@@ -31,7 +31,7 @@ class RugbyProfileController extends Controller
             $profile->setRelation('recentMatches', collect());
         }
 
-        $profile->team_names = $this->teamNames($player);
+        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
 
         return $this->success(new RugbyProfileResource($profile), 'Rugby profile retrieved successfully.');
     }

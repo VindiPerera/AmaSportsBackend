@@ -50,7 +50,7 @@ class RacketSportProfileController extends Controller
             $profile->setRelation('recentMatches', collect());
         }
 
-        $profile->team_names = $this->teamNames($player, $sport);
+        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player, $sport));
 
         return $this->success(new RacketSportProfileResource($profile), 'Racket sport profile retrieved successfully.');
     }

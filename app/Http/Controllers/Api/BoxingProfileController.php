@@ -31,7 +31,7 @@ class BoxingProfileController extends Controller
             $profile->setRelation('recentFights', collect());
         }
 
-        $profile->team_names = $this->teamNames($player);
+        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
 
         return $this->success(new BoxingProfileResource($profile), 'Boxing profile retrieved successfully.');
     }

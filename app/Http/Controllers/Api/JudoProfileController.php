@@ -31,7 +31,7 @@ class JudoProfileController extends Controller
             $profile->setRelation('recentFights', collect());
         }
 
-        $profile->team_names = $this->teamNames($player);
+        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
 
         return $this->success(new JudoProfileResource($profile), 'Judo profile retrieved successfully.');
     }

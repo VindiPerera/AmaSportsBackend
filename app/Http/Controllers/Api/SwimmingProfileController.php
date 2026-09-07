@@ -34,7 +34,7 @@ class SwimmingProfileController extends Controller
             $profile->setRelation('recentEvents', collect());
         }
 
-        $profile->team_names = $this->teamNames($player);
+        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
 
         return $this->success(new SwimmingProfileResource($profile), 'Swimming profile retrieved successfully.');
     }

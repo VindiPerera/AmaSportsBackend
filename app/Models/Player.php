@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -197,5 +198,127 @@ class Player extends Model
     public function softBallCricketProfile(): HasOne
     {
         return $this->hasOne(SoftBallCricketProfile::class);
+    }
+
+    /**
+     * Shared athlete overview facts across any sport profile already filled.
+     * Keeps common personal attributes (born, age, height, weight, dominant_hand,
+     * college_university, teams) synced/pre-filled when starting another sport.
+     *
+     * @return array{
+     *     born: ?string,
+     *     age: ?int,
+     *     height: ?string,
+     *     weight: ?string,
+     *     dominant_hand: ?string,
+     *     college_university: ?string,
+     *     teams: list<string>
+     * }
+     */
+    public function sharedOverview(): array
+    {
+        $profiles = [
+            $this->cricketProfile,
+            $this->softBallCricketProfile,
+            $this->racketSportProfiles()->first(),
+            $this->hockeyProfile,
+            $this->footballProfile,
+            $this->athleticsProfile,
+            $this->swimmingProfile,
+            $this->volleyballProfile,
+            $this->beachVolleyballProfile,
+            $this->basketballProfile,
+            $this->baseBallProfile,
+            $this->rugbyProfile,
+            $this->netBallProfile,
+            $this->kabadiProfile,
+            $this->judoProfile,
+            $this->karateProfile,
+            $this->boxingProfile,
+            $this->chessProfile,
+            $this->elleProfile,
+        ];
+
+        $born = null;
+        $age = null;
+        $height = null;
+        $weight = null;
+        $dominantHand = null;
+        $collegeUniversity = null;
+
+        foreach ($profiles as $p) {
+            if (! $p) {
+                continue;
+            }
+            if (! $born && ! empty($p->born)) {
+                $born = $p->born instanceof \DateTimeInterface ? $p->born->format('Y-m-d') : (string) $p->born;
+            }
+            if ($age === null && ! empty($p->age)) {
+                $age = (int) $p->age;
+            }
+            if (! $height && ! empty($p->height)) {
+                $height = (string) $p->height;
+            }
+            if (! $weight && ! empty($p->weight)) {
+                $weight = (string) $p->weight;
+            }
+            if (! $dominantHand && ! empty($p->dominant_hand)) {
+                $dominantHand = (string) $p->dominant_hand;
+            }
+            if (! $collegeUniversity && ! empty($p->college_university)) {
+                $collegeUniversity = (string) $p->college_university;
+            }
+        }
+
+        $teams = PlayerTeam::where('player_id', $this->id)
+            ->pluck('team_name')
+            ->unique()
+            ->values()
+            ->all();
+
+        return [
+            'born' => $born,
+            'age' => $age,
+            'height' => $height,
+            'weight' => $weight,
+            'dominant_hand' => $dominantHand,
+            'college_university' => $collegeUniversity,
+            'teams' => $teams,
+        ];
+    }
+
+    /**
+     * Fills empty overview fields on a sport profile instance with the
+     * player's previously saved details, and returns team names (falling
+     * back to existing teams if this sport has none yet).
+     *
+     * @param Model $profile
+     * @param list<string> $teamNames
+     * @return list<string>
+     */
+    public function fillEmptyOverview(Model $profile, array $teamNames = []): array
+    {
+        $overview = $this->sharedOverview();
+
+        if (empty($profile->born) && ! empty($overview['born'])) {
+            $profile->born = Carbon::parse($overview['born']);
+        }
+        if ($profile->age === null && $overview['age'] !== null) {
+            $profile->age = $overview['age'];
+        }
+        if (empty($profile->height) && ! empty($overview['height'])) {
+            $profile->height = $overview['height'];
+        }
+        if (isset($profile->weight) && empty($profile->weight) && ! empty($overview['weight'])) {
+            $profile->weight = $overview['weight'];
+        }
+        if (isset($profile->dominant_hand) && empty($profile->dominant_hand) && ! empty($overview['dominant_hand'])) {
+            $profile->dominant_hand = $overview['dominant_hand'];
+        }
+        if (empty($profile->college_university) && ! empty($overview['college_university'])) {
+            $profile->college_university = $overview['college_university'];
+        }
+
+        return ! empty($teamNames) ? $teamNames : $overview['teams'];
     }
 }

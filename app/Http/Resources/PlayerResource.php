@@ -27,6 +27,7 @@ class PlayerResource extends JsonResource
                 'id' => $photo->id,
                 'url' => Storage::disk('public')->url($photo->path),
             ])),
+            'overview' => $this->sharedOverview(),
         ];
     }
 }

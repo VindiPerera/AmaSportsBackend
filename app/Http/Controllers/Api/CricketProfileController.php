@@ -43,7 +43,7 @@ class CricketProfileController extends Controller
             $profile->setRelation('dropCatches', collect());
         }
 
-        $profile->team_names = $this->teamNames($player);
+        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
         $profile->team_logos = $this->teamLogos($player);
 
         return $this->success(new CricketProfileResource($profile), 'Cricket profile retrieved successfully.');
