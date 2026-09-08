@@ -11,6 +11,7 @@ use App\Models\PlayerTeam;
 use App\Models\SoftBallCricketProfile;
 use App\Models\Sport;
 use App\Traits\ApiResponse;
+use App\Traits\HasSportLogos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,10 +19,12 @@ use Illuminate\Support\Facades\DB;
 class SoftBallCricketProfileController extends Controller
 {
     use ApiResponse;
+    use HasSportLogos;
 
     public function show(Request $request): JsonResponse
     {
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+        $sport = Sport::where('slug', Sport::SOFT_BALL_CRICKET_SLUG)->first();
 
         $profile = $player->softBallCricketProfile()->with(['battingStats', 'bowlingStats', 'recentMatches'])->first();
 
@@ -32,7 +35,10 @@ class SoftBallCricketProfileController extends Controller
             $profile->setRelation('recentMatches', collect());
         }
 
-        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
+        if ($sport) {
+            $this->attachSportLogos($player, $sport, $profile);
+        }
+        $profile->team_names = $player->fillEmptyOverview($profile, $profile->team_names ?? $this->teamNames($player));
 
         return $this->success(new SoftBallCricketProfileResource($profile), 'Soft Ball Cricket profile retrieved successfully.');
     }
@@ -79,7 +85,7 @@ class SoftBallCricketProfileController extends Controller
         });
 
         $profile->load(['battingStats', 'bowlingStats', 'recentMatches']);
-        $profile->team_names = $this->teamNames($player);
+        $this->attachSportLogos($player, $sport, $profile);
 
         return $this->success(new SoftBallCricketProfileResource($profile), 'Soft Ball Cricket profile saved successfully.');
     }

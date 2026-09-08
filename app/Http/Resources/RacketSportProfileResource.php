@@ -26,7 +26,9 @@ class RacketSportProfileResource extends JsonResource
             'weight' => $this->weight,
             'current_ranking' => $this->current_ranking,
             'college_university' => $this->college_university,
+            'college_logo_url' => $this->college_logo_url ?? null,
             'teams' => $this->team_names ?? [],
+            'team_logos' => $this->team_logos ?? [],
             'career_stats' => $this->whenLoaded('careerStats', fn () => $this->careerStats),
             'recent_matches' => $this->whenLoaded('recentMatches', fn () => $this->recentMatches),
         ];

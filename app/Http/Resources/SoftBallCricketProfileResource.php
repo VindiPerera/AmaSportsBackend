@@ -26,6 +26,8 @@ class SoftBallCricketProfileResource extends JsonResource
             'height' => $this->height,
             'college_university' => $this->college_university,
             'teams' => $this->team_names ?? [],
+            'team_logos' => $this->team_logos ?? [],
+            'college_logo_url' => $this->college_logo_url ?? null,
             'batting' => $this->whenLoaded('battingStats', fn () => $this->battingStats),
             'bowling' => $this->whenLoaded('bowlingStats', fn () => $this->bowlingStats),
             'recent_matches' => $this->whenLoaded('recentMatches', fn () => $this->recentMatches),

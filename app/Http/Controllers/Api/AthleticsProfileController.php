@@ -11,6 +11,7 @@ use App\Models\PlayerSport;
 use App\Models\PlayerTeam;
 use App\Models\Sport;
 use App\Traits\ApiResponse;
+use App\Traits\HasSportLogos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,10 +19,12 @@ use Illuminate\Support\Facades\DB;
 class AthleticsProfileController extends Controller
 {
     use ApiResponse;
+    use HasSportLogos;
 
     public function show(Request $request): JsonResponse
     {
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+        $sport = Sport::where('slug', Sport::ATHLETICS_SLUG)->first();
 
         $profile = $player->athleticsProfile()
             ->with(['personalBests', 'careerStats', 'recentEvents'])
@@ -34,7 +37,10 @@ class AthleticsProfileController extends Controller
             $profile->setRelation('recentEvents', collect());
         }
 
-        $profile->team_names = $player->fillEmptyOverview($profile, $this->teamNames($player));
+        if ($sport) {
+            $this->attachSportLogos($player, $sport, $profile);
+        }
+        $profile->team_names = $player->fillEmptyOverview($profile, $profile->team_names ?? $this->teamNames($player));
 
         return $this->success(new AthleticsProfileResource($profile), 'Athletics profile retrieved successfully.');
     }
@@ -77,7 +83,7 @@ class AthleticsProfileController extends Controller
         });
 
         $profile->load(['personalBests', 'careerStats', 'recentEvents']);
-        $profile->team_names = $this->teamNames($player);
+        $this->attachSportLogos($player, $sport, $profile);
 
         return $this->success(new AthleticsProfileResource($profile), 'Athletics profile saved successfully.');
     }

@@ -293,10 +293,15 @@ class Player extends Model
         ];
     }
 
+    public function collegeLogos(): HasMany
+    {
+        return $this->hasMany(PlayerCollegeLogo::class);
+    }
+
     /**
      * Fills empty overview fields on a sport profile instance with the
-     * player's previously saved details, and returns team names (falling
-     * back to existing teams if this sport has none yet).
+     * player's previously saved details, and returns team names strictly
+     * scoped to this sport (never bleeding clubs/teams from other sports).
      *
      * @param Model $profile
      * @param list<string> $teamNames
@@ -325,6 +330,6 @@ class Player extends Model
             $profile->college_university = $overview['college_university'];
         }
 
-        return ! empty($teamNames) ? $teamNames : $overview['teams'];
+        return $teamNames;
     }
 }
