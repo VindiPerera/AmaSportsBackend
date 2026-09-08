@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             DropReasonSeeder::class,
             PitchingLineSeeder::class,
             BallTypeSeeder::class,
+            AchievementSeeder::class,
         ]);
 
         User::factory()->coach()->create([

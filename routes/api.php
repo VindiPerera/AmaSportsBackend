@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\NetBallProfileController;
 use App\Http\Controllers\Api\PayPalWebhookController;
+use App\Http\Controllers\Api\PlayerAchievementController;
 use App\Http\Controllers\Api\PlayerPhotoController;
 use App\Http\Controllers\Api\PlayerProfileController;
 use App\Http\Controllers\Api\PlayerSearchController;
@@ -114,6 +115,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // of subscription like the rest of this shared header.
     Route::post('/player/photos', [PlayerPhotoController::class, 'store']);
     Route::delete('/player/photos/{photo}', [PlayerPhotoController::class, 'destroy']);
+
+    // Achievements (badges) — free regardless of subscription, same as the
+    // rest of this shared header; the underlying stats they're computed
+    // from are already gated on the save side (subscription.active below).
+    Route::get('/player/achievements', [PlayerAchievementController::class, 'index']);
+    Route::post('/player/achievements/{playerAchievement}/post', [PlayerAchievementController::class, 'post']);
 
     Route::get('/player/cricket-profile', [CricketProfileController::class, 'show']);
     Route::put('/player/cricket-profile', [CricketProfileController::class, 'update'])->middleware('subscription.active');

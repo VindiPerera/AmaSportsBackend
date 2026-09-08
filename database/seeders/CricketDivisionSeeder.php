@@ -8,14 +8,17 @@ use Illuminate\Database\Seeder;
 class CricketDivisionSeeder extends Seeder
 {
     /**
-     * Cricket's own "Division" list — client-provided. Only offered for
-     * Categories U12...U19 (see CareerStatAddModal's
-     * DIVISION_ELIGIBLE_CATEGORIES on the mobile app); every other Category
-     * has no Division at all.
+     * Cricket's own "Category" list — client-provided. Every Format (see
+     * CricketCategorySeeder) can be paired with any of these; there's no
+     * age-based restriction on which Formats offer a Category (see
+     * CareerStatAddModal on the mobile app).
      *
      * @var list<string>
      */
-    private const DIVISIONS = ['Div i', 'Div ii', 'Div iii', 'Others'];
+    private const DIVISIONS = [
+        'Six a side', 'T10', 'T20', '30 Over', '40 Over', '50 Over',
+        'One Day', 'Two Day', 'Three Day', 'Four Day', 'Test',
+    ];
 
     public function run(): void
     {

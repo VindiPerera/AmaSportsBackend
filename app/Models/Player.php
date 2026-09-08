@@ -104,6 +104,12 @@ class Player extends Model
         return $this->hasMany(PlayerPhoto::class);
     }
 
+    /** Unlocked (and possibly posted) achievements — see AchievementService. */
+    public function playerAchievements(): HasMany
+    {
+        return $this->hasMany(PlayerAchievement::class);
+    }
+
     public function cricketProfile(): HasOne
     {
         return $this->hasOne(CricketProfile::class);

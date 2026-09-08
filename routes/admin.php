@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AchievementController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LiveScoreController;
@@ -64,4 +65,12 @@ Route::middleware('admin')->group(function () {
     Route::get('/subscription-prices/{price}/edit', [SubscriptionPriceController::class, 'edit'])->name('subscription-prices.edit');
     Route::put('/subscription-prices/{price}', [SubscriptionPriceController::class, 'update'])->name('subscription-prices.update');
     Route::delete('/subscription-prices/{price}', [SubscriptionPriceController::class, 'destroy'])->name('subscription-prices.destroy');
+
+    // Achievement (badge) templates — see AchievementService/PlayerAchievementController.
+    Route::get('/achievements', [AchievementController::class, 'index'])->name('achievements.index');
+    Route::get('/achievements/create', [AchievementController::class, 'create'])->name('achievements.create');
+    Route::post('/achievements', [AchievementController::class, 'store'])->name('achievements.store');
+    Route::get('/achievements/{achievement}/edit', [AchievementController::class, 'edit'])->name('achievements.edit');
+    Route::put('/achievements/{achievement}', [AchievementController::class, 'update'])->name('achievements.update');
+    Route::delete('/achievements/{achievement}', [AchievementController::class, 'destroy'])->name('achievements.destroy');
 });

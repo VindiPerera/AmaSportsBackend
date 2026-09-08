@@ -11,6 +11,7 @@ use App\Models\PlayerSport;
 use App\Models\PlayerTeam;
 use App\Models\PlayerTeamLogo;
 use App\Models\Sport;
+use App\Services\Achievements\AchievementService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,10 @@ use Illuminate\Support\Facades\Storage;
 class CricketProfileController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(private readonly AchievementService $achievements)
+    {
+    }
 
     /**
      * GET /player/cricket-profile — full nested read (overview + all three
@@ -101,6 +106,10 @@ class CricketProfileController extends Controller
         $profile->load(['battingStats', 'bowlingStats', 'recentMatches', 'dropCatches']);
         $profile->team_names = $this->teamNames($player);
         $profile->team_logos = $this->teamLogos($player);
+
+        // Cricket-only for now (see CricketMetricEvaluator) — the player's
+        // new career totals may have just crossed an Achievement threshold.
+        $this->achievements->evaluateForPlayer($player);
 
         return $this->success(new CricketProfileResource($profile), 'Cricket profile saved successfully.');
     }

@@ -41,6 +41,10 @@
                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.subscription-prices.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                             Subscription Pricing
                         </a>
+                        <a href="{{ route('admin.achievements.index') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.achievements.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            Achievements
+                        </a>
                     </nav>
                 </div>
 
