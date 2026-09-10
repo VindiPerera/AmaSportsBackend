@@ -13,7 +13,7 @@ class JudoCareerStat extends Model
     protected $fillable = [
         'judo_profile_id', 'format_id', 'age_category_id', 'match_category_id',
         'weight_position_id', 'competition_level_id', 'matches', 'win', 'lost',
-        'third_place', 'second_place', 'champion',
+        'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function judoProfile(): BelongsTo

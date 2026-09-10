@@ -11,8 +11,8 @@ class AthleticsRecentEvent extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'athletics_profile_id', 'event_date', 'age_category_id', 'match_category_id',
-        'matches', 'athletics_event_id', 'place',
+        'athletics_profile_id', 'event_date', 'format_id', 'age_category_id', 'match_category_id',
+        'matches', 'athletics_event_id', 'personal_best', 'place',
     ];
 
     /**

@@ -39,6 +39,7 @@ class StoreBoxingProfileRequest extends FormRequest
             'career_stats.*.third_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.second_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.champion' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_fights' => ['sometimes', 'array'],
             'recent_fights.*.fight_date' => ['nullable', 'date'],

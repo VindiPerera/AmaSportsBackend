@@ -20,13 +20,19 @@ use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\NetBallProfileController;
 use App\Http\Controllers\Api\PayPalWebhookController;
+use App\Http\Controllers\Api\PlayerAchievementController;
+use App\Http\Controllers\Api\PlayerCollegeLogoController;
+use App\Http\Controllers\Api\PlayerPhotoController;
 use App\Http\Controllers\Api\PlayerProfileController;
 use App\Http\Controllers\Api\PlayerSearchController;
 use App\Http\Controllers\Api\PlayerSportController;
+use App\Http\Controllers\Api\PlayerTeamLogoController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RacketSportProfileController;
 use App\Http\Controllers\Api\RugbyProfileController;
 use App\Http\Controllers\Api\StreamAccessController;
+use App\Http\Controllers\Api\SoftBallCricketProfileController;
+use App\Http\Controllers\Api\SportAnalysisController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SwimmingProfileController;
 use App\Http\Controllers\Api\VolleyballProfileController;
@@ -82,6 +88,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscriptions/create-order', [SubscriptionController::class, 'createOrder']);
     Route::get('/player/subscription-status', [SubscriptionController::class, 'status']);
 
+    // Free first 10 days (Phase 8) — no PayPal order, immediate unlock. See
+    // SubscriptionController::startTrial() for eligibility enforcement.
+    Route::post('/subscriptions/start-trial', [SubscriptionController::class, 'startTrial']);
+
+    // Per-country pricing preview for the country-selection screen — see
+    // SubscriptionController::prices().
+    Route::get('/subscription-prices', [SubscriptionController::class, 'prices']);
+
     // $5/match "VIP" live-stream unlock, purchasable by any player from the
     // stream screen itself — see Api\StreamAccessController. Match-scoped,
     // not player-scoped: unlocks that match's embed for every viewer, same
@@ -97,8 +111,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/player/profile', [PlayerProfileController::class, 'show']);
     Route::post('/player/profile', [PlayerProfileController::class, 'update']);
 
+    // Photo gallery (up to PlayerPhoto::MAX_PHOTOS) — same "immediate, own
+    // endpoint" pattern as team-logo/college-logo below, and free regardless
+    // of subscription like the rest of this shared header.
+    Route::post('/player/photos', [PlayerPhotoController::class, 'store']);
+    Route::delete('/player/photos/{photo}', [PlayerPhotoController::class, 'destroy']);
+
+    // Achievements (badges) — free regardless of subscription, same as the
+    // rest of this shared header; the underlying stats they're computed
+    // from are already gated on the save side (subscription.active below).
+    Route::get('/player/achievements', [PlayerAchievementController::class, 'index']);
+    Route::post('/player/achievements/{playerAchievement}/post', [PlayerAchievementController::class, 'post']);
+
     Route::get('/player/cricket-profile', [CricketProfileController::class, 'show']);
     Route::put('/player/cricket-profile', [CricketProfileController::class, 'update'])->middleware('subscription.active');
+
+    // Team logo upload (TeamsInput on the Cricket form) — immediate, not
+    // part of the bulk cricket-profile save; see PlayerTeamLogoController.
+    Route::post('/player/team-logo', [PlayerTeamLogoController::class, 'store'])->middleware('subscription.active');
+    Route::delete('/player/team-logo', [PlayerTeamLogoController::class, 'destroy'])->middleware('subscription.active');
+
+    // School / College / University logo — sport-scoped (immediate, not part of bulk save)
+    Route::post('/player/college-logo', [PlayerCollegeLogoController::class, 'store'])->middleware('subscription.active');
+    Route::delete('/player/college-logo', [PlayerCollegeLogoController::class, 'destroy'])->middleware('subscription.active');
+    Route::post('/player/cricket-profile/college-logo', [PlayerCollegeLogoController::class, 'store'])->middleware('subscription.active');
+    Route::delete('/player/cricket-profile/college-logo', [PlayerCollegeLogoController::class, 'destroy'])->middleware('subscription.active');
 
     // Player Search (new) — read-only discovery, deliberately not gated
     // behind subscription.active like the Analysis/write routes above.
@@ -109,6 +146,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // writes anything, so it lives alongside the profile routes but has no
     // PUT/POST counterpart. Analysis requires an active subscription.
     Route::get('/player/cricket-analysis', CricketAnalysisController::class)->middleware('subscription.active');
+
+    // Generic counterpart to /player/cricket-analysis for every other sport
+    // whose stats fit a single career-stats table of plain counts — see
+    // SportAnalysisConfig for exactly which slugs are supported.
+    Route::get('/player/{sport}/analysis', SportAnalysisController::class)->middleware('subscription.active');
 
     Route::get('/player/hockey-profile', [HockeyProfileController::class, 'show']);
     Route::put('/player/hockey-profile', [HockeyProfileController::class, 'update'])->middleware('subscription.active');
@@ -162,6 +204,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/player/elle-profile', [ElleProfileController::class, 'show']);
     Route::put('/player/elle-profile', [ElleProfileController::class, 'update'])->middleware('subscription.active');
+
+    Route::get('/player/soft-ball-cricket-profile', [SoftBallCricketProfileController::class, 'show']);
+    Route::put('/player/soft-ball-cricket-profile', [SoftBallCricketProfileController::class, 'update'])->middleware('subscription.active');
 
     Route::patch('/matches/{match}/score', [MatchController::class, 'updateScore']);
 

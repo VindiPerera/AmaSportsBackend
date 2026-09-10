@@ -22,6 +22,7 @@ class PlayerProfileController extends Controller
     public function show(Request $request): JsonResponse
     {
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+        $player->load('photos');
 
         return $this->success(new PlayerResource($player), 'Player profile retrieved successfully.');
     }
@@ -52,6 +53,6 @@ class PlayerProfileController extends Controller
 
         $player->save();
 
-        return $this->success(new PlayerResource($player->fresh()), 'Player profile updated successfully.');
+        return $this->success(new PlayerResource($player->fresh()->load('photos')), 'Player profile updated successfully.');
     }
 }

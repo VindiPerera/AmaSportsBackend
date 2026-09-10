@@ -11,7 +11,7 @@ class RugbyRecentMatch extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'rugby_profile_id', 'match_date', 'opponent', 'win', 'lost',
+        'rugby_profile_id', 'match_date', 'opponent', 'venue', 'play_position', 'win', 'lost',
         'tries', 'conversion', 'penalty_kick', 'drop_goal', 'yellow_card', 'red_card',
     ];
 

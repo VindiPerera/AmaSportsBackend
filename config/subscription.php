@@ -27,4 +27,20 @@ return [
 
     'bypass' => env('SUBSCRIPTION_BYPASS', false) && env('APP_ENV', 'production') !== 'production',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Mobile Deep Link Return URL
+    |--------------------------------------------------------------------------
+    |
+    | Where resources/views/payments/result.blade.php bounces the browser
+    | after rendering (subscription and stream-access PayPal flows both
+    | share that view). Must match the `scheme` in Frontend/app.json so
+    | expo-web-browser's openAuthSessionAsync() can detect the redirect and
+    | auto-close the in-app browser sheet. This carries no payment data —
+    | capture already happened server-side before this redirect fires.
+    |
+    */
+
+    'mobile_return_scheme' => env('SUBSCRIPTION_MOBILE_RETURN_URL', 'amasports://payment-return'),
+
 ];

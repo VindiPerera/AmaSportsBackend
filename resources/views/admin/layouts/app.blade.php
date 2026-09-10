@@ -32,6 +32,22 @@
                            class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.payments.*') || request()->routeIs('admin.purchases.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                             Payments
                         </a>
+                        <a href="{{ route('admin.matches.index') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.matches.*') && !request()->routeIs('admin.matches.create') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            Matches & Schedule
+                        </a>
+                        <a href="{{ route('admin.matches.create') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.matches.create') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            + New Match
+                        </a>
+                        <a href="{{ route('admin.subscription-prices.index') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.subscription-prices.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            Subscription Pricing
+                        </a>
+                        <a href="{{ route('admin.achievements.index') }}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ request()->routeIs('admin.achievements.*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                            Achievements
+                        </a>
                     </nav>
                 </div>
 
@@ -105,7 +121,11 @@
     <footer class="border-t border-slate-200 bg-white py-4 mt-auto text-xs text-slate-500">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <p>&copy; {{ date('Y') }} AmaX Platform. All rights reserved.</p>
-            <p class="font-semibold text-slate-400">Minimalist Sports UI Engine</p>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('terms') }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-500 hover:text-[#0366D6]">Terms &amp; Conditions</a>
+                <a href="{{ route('privacy-policy') }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-500 hover:text-[#0366D6]">Privacy Policy</a>
+                <p class="font-semibold text-slate-400">Minimalist Sports UI Engine</p>
+            </div>
         </div>
     </footer>
 </body>

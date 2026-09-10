@@ -12,7 +12,7 @@ class BaseBallCareerStat extends Model
      */
     protected $fillable = [
         'base_ball_profile_id', 'format_id', 'age_category_id', 'match_category_id',
-        'matches', 'nt', 'at_bats', 'runs', 'hits', 'rbi', 'won', 'lost',
+        'matches', 'nt', 'at_bats', 'runs', 'hits', 'rbi', 'won', 'lost', 'year',
     ];
 
     public function baseBallProfile(): BelongsTo
