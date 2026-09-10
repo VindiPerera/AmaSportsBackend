@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureActiveSubscription;
 use App\Http\Middleware\EnsureAdmin;
+use App\Http\Middleware\EnsureSuperAdmin;
 use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -36,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => EnsureUserHasRole::class,
             'admin' => EnsureAdmin::class,
+            'super_admin' => EnsureSuperAdmin::class,
             'subscription.active' => EnsureActiveSubscription::class,
         ]);
     })

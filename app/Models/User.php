@@ -20,6 +20,8 @@ class User extends Authenticatable
 
     public const ROLE_ADMIN = 'admin';
 
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,6 +30,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
         'role',
         'avatar_url',
@@ -67,7 +70,14 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        // super_admin is a superset of admin — anything a regular admin
+        // can do (match creation etc.), a super_admin can do too.
+        return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_SUPER_ADMIN], true);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
     }
 
     public function player(): HasOne
