@@ -24,6 +24,12 @@ Route::prefix('payments/stream-access')->name('payments.stream-access.')->group(
     Route::get('/cancel', [StreamAccessPaymentController::class, 'cancel'])->name('cancel');
 });
 
+// Public legal page — required by payment providers (PayHere, PayPal) as
+// part of merchant/domain verification, and linked from the admin footer,
+// the admin login screen, and the mobile app's registration screen. Kept
+// as a plain unauthenticated GET so it's reachable without logging in.
+Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy-policy');
+
 // Mobile app (SPA shell).
 //
 // `npm run deploy:web` copies the Expo Router web export
