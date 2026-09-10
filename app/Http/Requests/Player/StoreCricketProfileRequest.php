@@ -42,16 +42,25 @@ class StoreCricketProfileRequest extends FormRequest
             'teams.*' => ['string', 'max:255'],
 
             'batting' => ['sometimes', 'array'],
-            'batting.*.format_id' => ['required', 'integer', 'exists:formats,id'],
-            'batting.*.age_category_id' => ['required', 'integer', 'exists:age_categories,id'],
-            'batting.*.match_category_id' => ['required', 'integer', 'exists:match_categories,id'],
+            // Cricket's own Category/Division lookups (see CricketCategory/
+            // CricketDivision) — Division is nullable: only Categories
+            // U12...U19 have one (see CareerStatAddModal), everything else
+            // is Category-only.
+            'batting.*.format_id' => ['nullable', 'integer', 'exists:cricket_divisions,id'],
+            'batting.*.age_category_id' => ['required', 'integer', 'exists:cricket_categories,id'],
+            // "Format" (cricket_match_type_id) and "Match Category" are no
+            // longer collected in the Match Details step — both nullable so
+            // new entries save with neither filled in.
+            'batting.*.match_category_id' => ['nullable', 'integer', 'exists:match_categories,id'],
             'batting.*.cricket_match_type_id' => ['nullable', 'integer', 'exists:cricket_match_types,id'],
+            'batting.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'batting.*.matches' => ['nullable', 'integer', 'min:0'],
             'batting.*.won' => ['nullable', 'integer', 'min:0'],
             'batting.*.lost' => ['nullable', 'integer', 'min:0'],
             'batting.*.innings' => ['nullable', 'integer', 'min:0'],
             'batting.*.not_out' => ['nullable', 'integer', 'min:0'],
             'batting.*.runs' => ['nullable', 'integer', 'min:0'],
+            'batting.*.balls' => ['nullable', 'integer', 'min:0'],
             'batting.*.hs' => ['nullable', 'string', 'max:20'],
             'batting.*.average' => ['nullable', 'numeric'],
             'batting.*.best' => ['nullable', 'integer', 'min:0'],
@@ -69,10 +78,11 @@ class StoreCricketProfileRequest extends FormRequest
             'batting.*.stumps_missing' => ['nullable', 'integer', 'min:0'],
 
             'bowling' => ['sometimes', 'array'],
-            'bowling.*.format_id' => ['required', 'integer', 'exists:formats,id'],
-            'bowling.*.age_category_id' => ['required', 'integer', 'exists:age_categories,id'],
-            'bowling.*.match_category_id' => ['required', 'integer', 'exists:match_categories,id'],
+            'bowling.*.format_id' => ['nullable', 'integer', 'exists:cricket_divisions,id'],
+            'bowling.*.age_category_id' => ['required', 'integer', 'exists:cricket_categories,id'],
+            'bowling.*.match_category_id' => ['nullable', 'integer', 'exists:match_categories,id'],
             'bowling.*.cricket_match_type_id' => ['nullable', 'integer', 'exists:cricket_match_types,id'],
+            'bowling.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'bowling.*.matches' => ['nullable', 'integer', 'min:0'],
             'bowling.*.innings' => ['nullable', 'integer', 'min:0'],
             'bowling.*.balls' => ['nullable', 'integer', 'min:0'],
@@ -91,16 +101,37 @@ class StoreCricketProfileRequest extends FormRequest
             'bowling.*.ten_w' => ['nullable', 'integer', 'min:0'],
 
             'recent_matches' => ['sometimes', 'array'],
+            // "Format" and "Category" — same lookups the Career Stats tables
+            // use (see batting.*.age_category_id above), so this match's
+            // figures merge into the right aggregate row.
+            'recent_matches.*.age_category_id' => ['nullable', 'integer', 'exists:cricket_categories,id'],
+            'recent_matches.*.format_id' => ['nullable', 'integer', 'exists:cricket_divisions,id'],
             'recent_matches.*.match_date' => ['nullable', 'date'],
             'recent_matches.*.opponent' => ['nullable', 'string', 'max:255'],
+            'recent_matches.*.ground' => ['nullable', 'string', 'max:255'],
+            'recent_matches.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'recent_matches.*.played_xi' => ['nullable', 'boolean'],
+            'recent_matches.*.batting_innings' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.runs' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.balls' => ['nullable', 'integer', 'min:0'],
+            'recent_matches.*.not_out' => ['nullable', 'boolean'],
+            'recent_matches.*.hs' => ['nullable', 'string', 'max:20'],
             'recent_matches.*.fours' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.sixes' => ['nullable', 'integer', 'min:0'],
+            'recent_matches.*.hundreds' => ['nullable', 'boolean'],
+            'recent_matches.*.fifties' => ['nullable', 'boolean'],
             'recent_matches.*.overs' => ['nullable', 'numeric'],
             'recent_matches.*.maidens' => ['nullable', 'integer', 'min:0'],
+            'recent_matches.*.bowling_innings' => ['nullable', 'integer', 'min:0'],
+            'recent_matches.*.bowling_balls' => ['nullable', 'integer', 'min:0'],
+            'recent_matches.*.bowling_runs' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.wickets' => ['nullable', 'integer', 'min:0'],
+            'recent_matches.*.bbi' => ['nullable', 'string', 'max:20'],
+            'recent_matches.*.bbm' => ['nullable', 'string', 'max:20'],
+            'recent_matches.*.three_w' => ['nullable', 'boolean'],
+            'recent_matches.*.four_w' => ['nullable', 'boolean'],
+            'recent_matches.*.five_w' => ['nullable', 'boolean'],
+            'recent_matches.*.ten_w' => ['nullable', 'boolean'],
             'recent_matches.*.catches' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.stumpings' => ['nullable', 'integer', 'min:0'],
 

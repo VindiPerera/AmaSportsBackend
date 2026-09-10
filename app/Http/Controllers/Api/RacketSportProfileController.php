@@ -11,6 +11,7 @@ use App\Models\PlayerTeam;
 use App\Models\RacketSportProfile;
 use App\Models\Sport;
 use App\Traits\ApiResponse;
+use App\Traits\HasSportLogos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 class RacketSportProfileController extends Controller
 {
     use ApiResponse;
+    use HasSportLogos;
 
     private const ALLOWED_SLUGS = [Sport::TENNIS_SLUG, Sport::BADMINTON_SLUG, Sport::TABLE_TENNIS_SLUG];
 
@@ -50,7 +52,8 @@ class RacketSportProfileController extends Controller
             $profile->setRelation('recentMatches', collect());
         }
 
-        $profile->team_names = $this->teamNames($player, $sport);
+        $this->attachSportLogos($player, $sport, $profile);
+        $profile->team_names = $player->fillEmptyOverview($profile, $profile->team_names ?? $this->teamNames($player, $sport));
 
         return $this->success(new RacketSportProfileResource($profile), 'Racket sport profile retrieved successfully.');
     }
@@ -94,7 +97,7 @@ class RacketSportProfileController extends Controller
         });
 
         $profile->load(['careerStats', 'recentMatches']);
-        $profile->team_names = $this->teamNames($player, $sport);
+        $this->attachSportLogos($player, $sport, $profile);
 
         return $this->success(new RacketSportProfileResource($profile), 'Racket sport profile saved successfully.');
     }

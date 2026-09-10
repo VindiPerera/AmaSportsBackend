@@ -38,17 +38,21 @@ class StoreAthleticsProfileRequest extends FormRequest
             'career_stats.*.age_category_id' => ['required', 'integer', 'exists:age_categories,id'],
             'career_stats.*.match_category_id' => ['required', 'integer', 'exists:match_categories,id'],
             'career_stats.*.athletics_event_id' => ['required', 'integer', 'exists:athletics_events,id'],
+            'career_stats.*.personal_best' => ['nullable', 'string', 'max:50'],
             'career_stats.*.matches' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.third_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.second_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.champion' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_events' => ['sometimes', 'array'],
             'recent_events.*.event_date' => ['nullable', 'date'],
+            'recent_events.*.format_id' => ['nullable', 'integer', 'exists:formats,id'],
             'recent_events.*.age_category_id' => ['required', 'integer', 'exists:age_categories,id'],
             'recent_events.*.match_category_id' => ['required', 'integer', 'exists:match_categories,id'],
             'recent_events.*.matches' => ['nullable', 'integer', 'min:0'],
             'recent_events.*.athletics_event_id' => ['required', 'integer', 'exists:athletics_events,id'],
+            'recent_events.*.personal_best' => ['nullable', 'string', 'max:50'],
             'recent_events.*.place' => ['nullable', 'string', 'max:50'],
         ];
     }

@@ -11,7 +11,7 @@ class KarateRecentMatch extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'karate_profile_id', 'match_date', 'opponent', 'venue', 'win', 'lost',
+        'karate_profile_id', 'match_date', 'opponent', 'venue', 'style', 'win', 'lost',
         'stats', 'weight_category', 'age_category', 'place',
     ];
 

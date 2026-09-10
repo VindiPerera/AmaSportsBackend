@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\AgeCategory;
+use App\Models\CricketCategory;
+use App\Models\CricketDivision;
 use App\Models\CricketProfile;
-use App\Models\Format;
 use App\Models\MatchCategory;
 use App\Models\Player;
 use App\Models\Subscription;
@@ -59,9 +59,9 @@ class CricketAnalysisTest extends TestCase
         $player = $this->actingPlayer();
         $profile = CricketProfile::create(['player_id' => $player->id]);
 
-        $divI = Format::create(['name' => 'Div I', 'sort_order' => 1]);
-        $premier = Format::create(['name' => 'Premier', 'sort_order' => 2]);
-        $age = AgeCategory::create(['name' => 'Open', 'sort_order' => 1]);
+        $divI = CricketDivision::create(['name' => 'Div I', 'sort_order' => 1]);
+        $premier = CricketDivision::create(['name' => 'Premier', 'sort_order' => 2]);
+        $age = CricketCategory::create(['name' => 'Open', 'sort_order' => 1]);
         $category = MatchCategory::create(['name' => 'Club', 'sort_order' => 1]);
 
         // Two batting rows across two formats — average must be recomputed
@@ -114,9 +114,9 @@ class CricketAnalysisTest extends TestCase
         $player = $this->actingPlayer();
         $profile = CricketProfile::create(['player_id' => $player->id]);
 
-        $divI = Format::create(['name' => 'Div I', 'sort_order' => 1]);
-        $premier = Format::create(['name' => 'Premier', 'sort_order' => 2]);
-        $age = AgeCategory::create(['name' => 'Open', 'sort_order' => 1]);
+        $divI = CricketDivision::create(['name' => 'Div I', 'sort_order' => 1]);
+        $premier = CricketDivision::create(['name' => 'Premier', 'sort_order' => 2]);
+        $age = CricketCategory::create(['name' => 'Open', 'sort_order' => 1]);
         $category = MatchCategory::create(['name' => 'Club', 'sort_order' => 1]);
 
         $profile->battingStats()->createMany([
@@ -147,8 +147,8 @@ class CricketAnalysisTest extends TestCase
         $player = $this->actingPlayer();
         $profile = CricketProfile::create(['player_id' => $player->id]);
 
-        $divI = Format::create(['name' => 'Div I', 'sort_order' => 1]);
-        $age = AgeCategory::create(['name' => 'Open', 'sort_order' => 1]);
+        $divI = CricketDivision::create(['name' => 'Div I', 'sort_order' => 1]);
+        $age = CricketCategory::create(['name' => 'Open', 'sort_order' => 1]);
         $category = MatchCategory::create(['name' => 'Club', 'sort_order' => 1]);
 
         $profile->bowlingStats()->createMany([

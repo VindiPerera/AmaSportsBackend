@@ -20,6 +20,7 @@ class CricketProfile extends Model
         'playing_role',
         'height',
         'college_university',
+        'college_logo_path',
         'pitching_line_breakdown',
         'ball_type_breakdown',
     ];

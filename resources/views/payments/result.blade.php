@@ -42,6 +42,14 @@
         .icon.failure { background: #FEE2E2; color: #EF4444; }
         h1 { font-size: 20px; font-weight: 800; margin: 0 0 12px; }
         p { font-size: 14px; line-height: 1.6; color: #64748B; margin: 0; }
+        .return-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #2563EB;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +57,21 @@
         <div class="icon {{ $success ? 'success' : 'failure' }}">{{ $success ? '✓' : '!' }}</div>
         <h1>{{ $title }}</h1>
         <p>{{ $message }}</p>
+        <a class="return-link" href="{{ config('subscription.mobile_return_scheme') }}">Return to app</a>
     </div>
+    <script>
+        // Hit from the app's in-app browser sheet (expo-web-browser's
+        // openAuthSessionAsync) — bouncing straight to the app's deep link
+        // scheme is what lets that API detect the redirect and auto-close
+        // the sheet, instead of requiring the player to dismiss it by hand.
+        // Capture itself already happened server-side above this point
+        // (return()/cancel() in SubscriptionPaymentController /
+        // StreamAccessPaymentController, whichever rendered this view), so
+        // this redirect carries no payment-relevant data — it's purely a
+        // "hand control back to the app" signal. Read directly from config
+        // here rather than threaded through every controller call site
+        // that renders this shared view.
+        window.location.href = "{{ config('subscription.mobile_return_scheme') }}";
+    </script>
 </body>
 </html>

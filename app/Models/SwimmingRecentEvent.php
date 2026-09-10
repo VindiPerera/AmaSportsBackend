@@ -11,7 +11,7 @@ class SwimmingRecentEvent extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'swimming_profile_id', 'event_date', 'age_category_id', 'match_category_id',
+        'swimming_profile_id', 'event_date', 'format_id', 'age_category_id', 'match_category_id',
         'matches', 'swimming_event_id', 'performance_time', 'place',
     ];
 

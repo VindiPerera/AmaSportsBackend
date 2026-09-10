@@ -47,6 +47,8 @@ class Sport extends Model
 
     public const ELLE_SLUG = 'elle';
 
+    public const SOFT_BALL_CRICKET_SLUG = 'soft-ball-cricket';
+
     /** Sports the admin Live Score panel currently builds a scoreboard for. */
     public const ADMIN_LIVE_SCORE_SLUGS = [
         self::CRICKET_SLUG,

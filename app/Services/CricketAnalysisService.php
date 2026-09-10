@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Format;
+use App\Models\CricketDivision;
 use App\Models\Player;
 use Illuminate\Support\Collection;
 
@@ -210,12 +210,12 @@ class CricketAnalysisService
             return [];
         }
 
-        $formats = Format::whereIn('id', $rows->pluck('format_id')->unique())
+        $formats = CricketDivision::whereIn('id', $rows->pluck('format_id')->unique())
             ->orderBy('sort_order')
             ->get(['id', 'name']);
 
         return $formats
-            ->map(function (Format $format) use ($rows, $aggregate) {
+            ->map(function (CricketDivision $format) use ($rows, $aggregate) {
                 $formatRows = $rows->where('format_id', $format->id)->values();
                 if ($formatRows->isEmpty()) {
                     return null;
@@ -244,10 +244,10 @@ class CricketAnalysisService
             return collect();
         }
 
-        return Format::whereIn('id', $ids)
+        return CricketDivision::whereIn('id', $ids)
             ->orderBy('sort_order')
             ->get(['id', 'name'])
-            ->map(fn (Format $f) => ['id' => $f->id, 'name' => $f->name]);
+            ->map(fn (CricketDivision $f) => ['id' => $f->id, 'name' => $f->name]);
     }
 
     /**

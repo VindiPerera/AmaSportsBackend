@@ -24,7 +24,9 @@ class BasketballProfileResource extends JsonResource
             'dominant_hand' => $this->dominant_hand,
             'player_position' => $this->player_position,
             'college_university' => $this->college_university,
+            'college_logo_url' => $this->college_logo_url ?? null,
             'teams' => $this->team_names ?? [],
+            'team_logos' => $this->team_logos ?? [],
             'career_stats' => $this->whenLoaded('careerStats', fn () => $this->careerStats),
             'recent_matches' => $this->whenLoaded('recentMatches', fn () => $this->recentMatches),
         ];
