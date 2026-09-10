@@ -13,7 +13,7 @@ class VolleyballCareerStat extends Model
     protected $fillable = [
         'volleyball_profile_id', 'format_id', 'age_category_id', 'match_category_id',
         'matches', 'win', 'lost', 'passes', 'setting', 'serve', 'attacking', 'blocking',
-        'digging', 'third_place', 'second_place', 'champion',
+        'digging', 'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function volleyballProfile(): BelongsTo

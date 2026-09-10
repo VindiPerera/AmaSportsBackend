@@ -21,6 +21,8 @@ class StoreJudoProfileRequest extends FormRequest
             'age' => ['nullable', 'integer', 'min:1', 'max:120'],
             'height' => ['nullable', 'string', 'max:50'],
             'weight' => ['nullable', 'string', 'max:50'],
+            'weight_position_id' => ['nullable', 'integer', 'exists:weight_positions,id'],
+            'competition_level_id' => ['nullable', 'integer', 'exists:competition_levels,id'],
             'college_university' => ['nullable', 'string', 'max:255'],
             'current_ranking' => ['nullable', 'string', 'max:100'],
 
@@ -39,6 +41,7 @@ class StoreJudoProfileRequest extends FormRequest
             'career_stats.*.third_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.second_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.champion' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_fights' => ['sometimes', 'array'],
             'recent_fights.*.fight_date' => ['nullable', 'date'],

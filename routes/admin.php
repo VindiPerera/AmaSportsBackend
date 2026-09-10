@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AchievementController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LiveScoreController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Admin\MatchController;
 use App\Http\Controllers\Admin\MatchPlayerController;
 use App\Http\Controllers\Admin\PlayerAnalysisController;
 use App\Http\Controllers\Admin\StreamAccessController;
+use App\Http\Controllers\Admin\SubscriptionPriceController;
 use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Admin\TeamController;
 use Illuminate\Support\Facades\Route;
@@ -70,6 +72,24 @@ Route::middleware('admin')->group(function () {
     Route::get('/users', [SuperAdminController::class, 'users'])->name('users.index');
     Route::get('/payments', [SuperAdminController::class, 'payments'])->name('payments.index');
     Route::get('/purchases', [SuperAdminController::class, 'purchases'])->name('purchases.index');
+
+    // Per-country subscription pricing (see SubscriptionCountryPrice::amountFor(),
+    // consumed by Api\SubscriptionController) — a country with no row here
+    // just charges the flat default price.
+    Route::get('/subscription-prices', [SubscriptionPriceController::class, 'index'])->name('subscription-prices.index');
+    Route::get('/subscription-prices/create', [SubscriptionPriceController::class, 'create'])->name('subscription-prices.create');
+    Route::post('/subscription-prices', [SubscriptionPriceController::class, 'store'])->name('subscription-prices.store');
+    Route::get('/subscription-prices/{price}/edit', [SubscriptionPriceController::class, 'edit'])->name('subscription-prices.edit');
+    Route::put('/subscription-prices/{price}', [SubscriptionPriceController::class, 'update'])->name('subscription-prices.update');
+    Route::delete('/subscription-prices/{price}', [SubscriptionPriceController::class, 'destroy'])->name('subscription-prices.destroy');
+
+    // Achievement (badge) templates — see AchievementService/PlayerAchievementController.
+    Route::get('/achievements', [AchievementController::class, 'index'])->name('achievements.index');
+    Route::get('/achievements/create', [AchievementController::class, 'create'])->name('achievements.create');
+    Route::post('/achievements', [AchievementController::class, 'store'])->name('achievements.store');
+    Route::get('/achievements/{achievement}/edit', [AchievementController::class, 'edit'])->name('achievements.edit');
+    Route::put('/achievements/{achievement}', [AchievementController::class, 'update'])->name('achievements.update');
+    Route::delete('/achievements/{achievement}', [AchievementController::class, 'destroy'])->name('achievements.destroy');
 });
 
 Route::middleware('super_admin')->prefix('super')->name('super.')->group(function () {

@@ -11,7 +11,7 @@ class FootballRecentMatch extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'football_profile_id', 'match_date', 'opponent', 'venue', 'win', 'lost',
+        'football_profile_id', 'match_date', 'opponent', 'venue', 'play_position', 'win', 'lost',
         'goals', 'assists', 'defensive_actions', 'goalkeeper_clean_sheets',
         'goalkeeper_goals_conceded', 'yellow_card', 'red_card',
     ];

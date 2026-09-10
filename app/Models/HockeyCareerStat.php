@@ -25,6 +25,7 @@ class HockeyCareerStat extends Model
         'result_won',
         'result_lost',
         'result_drawn',
+        'year',
     ];
 
     public function hockeyProfile(): BelongsTo

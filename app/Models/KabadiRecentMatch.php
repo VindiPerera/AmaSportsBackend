@@ -12,7 +12,7 @@ class KabadiRecentMatch extends Model
      */
     protected $fillable = [
         'kabadi_profile_id', 'match_date', 'opponent', 'venue', 'win', 'lost',
-        'cbp', 'raids', 'successful_raids', 'unsuccessful_raids', 'raid_touch_point',
+        'tpe', 'cbp', 'raids', 'successful_raids', 'unsuccessful_raids', 'raid_touch_point',
         'raid_bonus_point', 'tackles', 'successful_tackles', 'unsuccessful_tackles',
         'empty_raids', 'yellow_cards', 'green_cards', 'red_cards',
     ];

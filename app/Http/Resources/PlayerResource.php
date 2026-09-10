@@ -23,6 +23,11 @@ class PlayerResource extends JsonResource
             'country' => $this->country,
             'cover_photo_url' => $this->cover_photo_url ? Storage::disk('public')->url($this->cover_photo_url) : null,
             'photo_url' => $this->photo_url ? Storage::disk('public')->url($this->photo_url) : null,
+            'photos' => $this->whenLoaded('photos', fn () => $this->photos->map(fn ($photo) => [
+                'id' => $photo->id,
+                'url' => Storage::disk('public')->url($photo->path),
+            ])),
+            'overview' => $this->sharedOverview(),
         ];
     }
 }

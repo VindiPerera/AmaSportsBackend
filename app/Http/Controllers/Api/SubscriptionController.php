@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Player;
 use App\Models\Subscription;
+use App\Models\SubscriptionCountryPrice;
 use App\Services\PayPalService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -26,9 +27,11 @@ class SubscriptionController extends Controller
      * POST /subscriptions/create-order — starts (or renews) a subscription.
      * Creates a `pending` row, then a matching PayPal order, and hands the
      * mobile app the PayPal-hosted approval URL to open in an in-app
-     * browser (WebBrowser.openBrowserAsync — deliberately not an auth
-     * session, since capture happens on PayPal's return_url page, not via a
-     * deep-link the app has to catch).
+     * browser (WebBrowser.openAuthSessionAsync — capture still happens
+     * server-side on PayPal's return_url page below, same as before; the
+     * return page just also bounces the browser to the app's deep link
+     * afterward, which is what lets openAuthSessionAsync auto-close the
+     * sheet instead of the player having to dismiss it manually).
      */
     public function createOrder(Request $request, PayPalService $paypal): JsonResponse
     {
@@ -38,17 +41,18 @@ class SubscriptionController extends Controller
 
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
         $currency = config('services.paypal.currency');
+        $amount = SubscriptionCountryPrice::amountFor($player->country);
 
         $subscription = Subscription::create([
             'player_id' => $player->id,
-            'amount' => Subscription::AMOUNT,
+            'amount' => $amount,
             'currency' => $currency,
             'status' => Subscription::STATUS_PENDING,
         ]);
 
         try {
             $order = $paypal->createOrder(
-                amount: Subscription::AMOUNT,
+                amount: $amount,
                 currency: $currency,
                 customId: "subscription:{$subscription->id}",
                 description: config('app.name').' Annual Subscription',
@@ -83,12 +87,21 @@ class SubscriptionController extends Controller
      * ("can I add a sport / open Analysis?") and the Profile/Home status
      * displays. `is_active`/`status`/`expires_at` etc. are resolved from
      * the *latest* subscription row, but `has_subscribed` is not — see
-     * Player::hasEverBeenSubscribed().
+     * Player::hasEverBeenSubscribed(). Also tells the mobile app which
+     * paywall variant to show (Phase 8): `is_trial` labels the *current*
+     * active subscription, `trial_eligible` is independent of it — a
+     * lapsed trial leaves `trial_eligible` false but `is_trial` moot
+     * (nothing is active).
      */
     public function status(Request $request): JsonResponse
     {
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
         $subscription = $player->latestSubscription();
+        // What THIS player would pay right now — only relevant as a preview
+        // for the two branches below (no active/pending subscription yet);
+        // once a real subscription row exists its own stored `amount` is
+        // what was actually charged and must never be second-guessed here.
+        $previewAmount = SubscriptionCountryPrice::amountFor($player->country);
 
         // Dev-only escape hatch — see config/subscription.php. Reports as
         // subscribed/active so the mobile paywall never blocks Add Sport /
@@ -98,11 +111,13 @@ class SubscriptionController extends Controller
                 'has_subscribed' => true,
                 'status' => Subscription::STATUS_ACTIVE,
                 'is_active' => true,
+                'is_trial' => false,
+                'trial_eligible' => false,
                 'starts_at' => $subscription?->starts_at?->toISOString(),
                 'expires_at' => null,
                 'days_remaining' => null,
                 'expiring_soon' => false,
-                'amount' => Subscription::AMOUNT,
+                'amount' => $previewAmount,
                 'currency' => config('services.paypal.currency'),
             ], 'Subscription status retrieved successfully.');
         }
@@ -112,11 +127,13 @@ class SubscriptionController extends Controller
                 'has_subscribed' => false,
                 'status' => 'none',
                 'is_active' => false,
+                'is_trial' => false,
+                'trial_eligible' => $player->isTrialEligible(),
                 'starts_at' => null,
                 'expires_at' => null,
                 'days_remaining' => null,
                 'expiring_soon' => false,
-                'amount' => Subscription::AMOUNT,
+                'amount' => $previewAmount,
                 'currency' => config('services.paypal.currency'),
             ], 'Subscription status retrieved successfully.');
         }
@@ -131,6 +148,8 @@ class SubscriptionController extends Controller
             'has_subscribed' => $player->hasEverBeenSubscribed(),
             'status' => $subscription->status,
             'is_active' => $isActive,
+            'is_trial' => $isActive && $subscription->is_trial,
+            'trial_eligible' => $player->isTrialEligible(),
             'starts_at' => $subscription->starts_at?->toISOString(),
             'expires_at' => $subscription->expires_at?->toISOString(),
             'days_remaining' => $daysRemaining !== null ? (int) $daysRemaining : null,
@@ -138,5 +157,77 @@ class SubscriptionController extends Controller
             'amount' => (float) $subscription->amount,
             'currency' => $subscription->currency,
         ], 'Subscription status retrieved successfully.');
+    }
+
+    /**
+     * POST /subscriptions/start-trial — the one-time free first 10 days
+     * (Phase 8). No PayPal order: unlocks immediately. Re-validates
+     * eligibility server-side regardless of what the UI shows, since a
+     * stale client (or a direct API call) could otherwise let a player
+     * double-dip.
+     */
+    public function startTrial(Request $request): JsonResponse
+    {
+        $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+
+        if (! $player->isTrialEligible()) {
+            return $this->error("You've already used your free trial.", 422);
+        }
+
+        if ($player->hasActiveSubscription()) {
+            return $this->error('You already have an active subscription.', 422);
+        }
+
+        // Server time throughout — never trust the client's clock for
+        // trial start/expiry.
+        $startsAt = now();
+
+        $subscription = Subscription::create([
+            'player_id' => $player->id,
+            'amount' => 0,
+            'currency' => config('services.paypal.currency'),
+            'status' => Subscription::STATUS_ACTIVE,
+            'is_trial' => true,
+            'starts_at' => $startsAt,
+            'expires_at' => $startsAt->copy()->addDays(10),
+        ]);
+
+        // forceFill, not fillable — trial_used_at is deliberately not mass
+        // assignable (see Player::isTrialEligible()); this is the one place
+        // allowed to set it.
+        $player->forceFill(['trial_used_at' => $startsAt])->save();
+
+        $daysRemaining = (int) now()->diffInDays($subscription->expires_at, false);
+
+        return $this->success([
+            'has_subscribed' => true,
+            'status' => $subscription->status,
+            'is_active' => true,
+            'is_trial' => true,
+            'trial_eligible' => false,
+            'starts_at' => $subscription->starts_at?->toISOString(),
+            'expires_at' => $subscription->expires_at?->toISOString(),
+            'days_remaining' => $daysRemaining,
+            'expiring_soon' => $daysRemaining <= 30,
+            'amount' => (float) $subscription->amount,
+            'currency' => $subscription->currency,
+        ], 'Your free trial has started.');
+    }
+
+    /**
+     * GET /subscription-prices — every admin-configured country price, plus
+     * the default, for the mobile app's country-selection screen (see
+     * Frontend app/(protected)/select-country.tsx) to preview a price for
+     * whichever country the player has highlighted before they've actually
+     * saved it to their profile yet. Country names match
+     * Frontend/src/constants/countries.ts exactly (see config/countries.php).
+     */
+    public function prices(): JsonResponse
+    {
+        return $this->success([
+            'default_amount' => Subscription::AMOUNT,
+            'currency' => config('services.paypal.currency'),
+            'prices' => SubscriptionCountryPrice::allAsMap(),
+        ], 'Subscription prices retrieved successfully.');
     }
 }

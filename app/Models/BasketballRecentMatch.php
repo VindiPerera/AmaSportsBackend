@@ -11,7 +11,7 @@ class BasketballRecentMatch extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'basketball_profile_id', 'match_date', 'opponent', 'venue', 'win', 'lost',
+        'basketball_profile_id', 'match_date', 'opponent', 'venue', 'play_position', 'win', 'lost',
         'points', 'rebounds', 'assists', 'blocks', 'steals', 'minutes',
     ];
 

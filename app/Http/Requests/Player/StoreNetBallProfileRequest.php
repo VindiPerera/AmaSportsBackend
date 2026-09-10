@@ -39,6 +39,7 @@ class StoreNetBallProfileRequest extends FormRequest
             'career_stats.*.goal_accuracy' => ['nullable', 'numeric'],
             'career_stats.*.result_won' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.result_lost' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_matches' => ['sometimes', 'array'],
             'recent_matches.*.match_date' => ['nullable', 'date'],
