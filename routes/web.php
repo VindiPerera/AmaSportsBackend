@@ -77,6 +77,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/user/matches/{match}', [UserMatchController::class, 'update'])->name('user.matches.update');
 });
 
+// Public legal pages — the Privacy Policy is required by PayHere as part
+// of merchant/domain verification, and both are linked from the admin
+// footer, the admin login screen, and the mobile app's registration
+// screen. Kept as plain unauthenticated GETs so they're reachable without
+// logging in.
+Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy-policy');
+Route::view('/terms', 'legal.terms')->name('terms');
+
 // Mobile app (SPA shell).
 //
 // `npm run deploy:web` copies the Expo Router web export

@@ -12,7 +12,7 @@ class SwimmingCareerStat extends Model
      */
     protected $fillable = [
         'swimming_profile_id', 'format_id', 'age_category_id', 'match_category_id',
-        'swimming_event_id', 'matches', 'current_time', 'third_place', 'second_place', 'champion',
+        'swimming_event_id', 'matches', 'current_time', 'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function swimmingProfile(): BelongsTo

@@ -16,11 +16,14 @@ use Throwable;
  * these stay outside the Sanctum-protected /api surface (routes/web.php).
  *
  * The mobile app never trusts this redirect happening at all: it opens the
- * PayPal approval URL in an in-app browser (WebBrowser.openBrowserAsync)
+ * PayPal approval URL in an in-app browser (WebBrowser.openAuthSessionAsync)
  * and, once the browser is dismissed for any reason, polls
  * GET /api/player/subscription-status itself. That's what actually unlocks
- * the UI — these pages exist only to (a) actually capture the payment and
- * (b) give the payer something to look at before they close the browser.
+ * the UI — these pages exist to (a) actually capture the payment, (b) give
+ * the payer something to look at before the browser closes, and (c) bounce
+ * the browser to the app's deep link scheme afterward (see
+ * config('subscription.mobile_return_scheme') / result.blade.php) so
+ * openAuthSessionAsync detects the redirect and auto-closes the sheet.
  */
 class SubscriptionPaymentController extends Controller
 {
