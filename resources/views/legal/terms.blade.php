@@ -1,297 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="index, follow">
-    <title>Terms &amp; Conditions — AmaSports</title>
-    <meta name="description" content="The terms that govern your use of the AmaSports app, website, and admin panel, including subscriptions, live-stream unlocks, and payments processed through PayHere.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --brand: #0366D6;
-            --brand-dark: #024FAC;
-            --ink: #1e293b;
-            --ink-soft: #475569;
-            --line: #e2e8f0;
-            --paper: #ffffff;
-            --wash: #f8fafc;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--ink);
-            background: var(--wash);
-            -webkit-font-smoothing: antialiased;
-        }
-        a { color: var(--brand); }
+@extends('public.layouts.app')
 
-        header.top {
-            background: var(--brand);
-            color: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 1px 2px rgba(0,0,0,.08);
-        }
-        .top-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .top-inner .mark {
-            width: 30px; height: 30px; border-radius: 8px;
-            background: #fff; color: var(--brand);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 14px;
-        }
-        .top-inner .brand { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
-        .top-inner .tag { margin-left: auto; font-size: 12px; font-weight: 600; color: #d6e8ff; }
+@section('title', 'Terms & Conditions')
+@section('meta_description', 'The terms that govern your use of the AmaSports app, website, and admin panel, including subscriptions, live-stream unlocks, and payments processed through PayHere.')
 
-        .hero {
-            background: linear-gradient(180deg, #eaf3ff 0%, var(--wash) 100%);
-            border-bottom: 1px solid var(--line);
-        }
-        .hero-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 20px 28px;
-        }
-        .eyebrow {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: var(--brand-dark);
-            background: #dceaff;
-            padding: 4px 10px;
-            border-radius: 999px;
-            margin-bottom: 12px;
-        }
-        .hero h1 {
-            margin: 0 0 8px;
-            font-size: clamp(28px, 4vw, 40px);
-            font-weight: 900;
-            letter-spacing: -0.02em;
-        }
-        .hero p.lead {
-            margin: 0;
-            color: var(--ink-soft);
-            font-size: 15px;
-            max-width: 65ch;
-            line-height: 1.6;
-        }
-        .meta-row {
-            margin-top: 18px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-size: 12px;
-            color: var(--ink-soft);
-        }
-        .meta-pill {
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-weight: 600;
-        }
+@section('content')
 
-        .layout {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 32px 20px 80px;
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            gap: 32px;
-            align-items: start;
-        }
-        @media (max-width: 820px) {
-            .layout { grid-template-columns: 1fr; }
-        }
+<style>
+    .doc-layout { display: grid; grid-template-columns: 240px 1fr; gap: 2rem; align-items: start; }
+    @media (max-width: 900px) { .doc-layout { grid-template-columns: 1fr; } }
+    .doc-toc { position: sticky; top: 5rem; padding: 1.25rem; }
+    .doc-toc h2 { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.6); margin: 0 0 0.75rem; font-weight: 800; }
+    .doc-toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+    .doc-toc a { display: block; text-decoration: none; color: rgba(203,213,225,0.75); font-size: 0.8125rem; font-weight: 600; padding: 0.4rem 0.5rem; border-radius: 0.5rem; }
+    .doc-toc a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+    .doc-main { padding: 0.5rem 2rem 2rem; }
+    .doc-main section { padding-top: 1.75rem; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 1.75rem; }
+    .doc-main section:first-of-type { border-top: none; margin-top: 0.5rem; }
+    .doc-main h2 { font-size: 1.1875rem; font-weight: 800; letter-spacing: -0.01em; color: #fff; display: flex; align-items: center; gap: 0.625rem; scroll-margin-top: 5rem; margin: 0 0 0.75rem; }
+    .doc-main h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 1.625rem; height: 1.625rem; border-radius: 0.5rem; background: rgba(99,102,241,0.15); color: #a5b4fc; font-size: 0.75rem; font-weight: 900; flex: none; }
+    .doc-main h3 { font-size: 0.875rem; font-weight: 800; margin: 1.125rem 0 0.5rem; color: #e2e8f0; }
+    .doc-main p, .doc-main li { font-size: 0.90625rem; line-height: 1.75; color: rgba(148,163,184,0.85); }
+    .doc-main ul { padding-left: 1.25rem; margin: 0.625rem 0; }
+    .doc-main li { margin-bottom: 0.375rem; }
+    .doc-main strong { color: #f1f5f9; }
+    .doc-main a { color: #f59e0b; font-weight: 600; }
+    .doc-callout { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); border-radius: 0.75rem; padding: 0.875rem 1rem; font-size: 0.84375rem; color: #c7d2fe; line-height: 1.7; margin: 0.875rem 0; }
+    .doc-callout strong { color: #e0e7ff; }
+    .doc-callout.warn { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.25); color: #fde68a; }
+    .doc-callout.warn strong { color: #fef3c7; }
+    .doc-offices { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; margin-top: 0.875rem; }
+    @media (max-width: 620px) { .doc-offices { grid-template-columns: 1fr; } }
+    .doc-office-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 0.75rem; padding: 0.875rem 1rem; background: rgba(255,255,255,0.03); }
+    .doc-office-card .flag { font-size: 0.8125rem; font-weight: 800; color: #a5b4fc; margin-bottom: 0.375rem; }
+    .doc-office-card p { margin: 0.125rem 0; font-size: 0.84375rem; }
+    .meta-row { margin-top: 1.125rem; display: flex; flex-wrap: wrap; gap: 0.625rem; font-size: 0.75rem; color: rgba(148,163,184,0.75); }
+    .meta-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.375rem 0.625rem; font-weight: 600; }
+</style>
 
-        nav.toc {
-            position: sticky;
-            top: 74px;
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 16px;
-        }
-        nav.toc h2 {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #94a3b8;
-            margin: 0 0 10px;
-            font-weight: 800;
-        }
-        nav.toc ol {
-            list-style: none;
-            margin: 0; padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        nav.toc a {
-            display: block;
-            text-decoration: none;
-            color: var(--ink-soft);
-            font-size: 13px;
-            font-weight: 600;
-            padding: 7px 8px;
-            border-radius: 8px;
-        }
-        nav.toc a:hover { background: var(--wash); color: var(--brand); }
-
-        main.doc {
-            background: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 8px 32px 32px;
-        }
-        section { padding-top: 28px; border-top: 1px solid var(--line); margin-top: 28px; }
-        section:first-of-type { border-top: none; margin-top: 8px; }
-        section h2 {
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            scroll-margin-top: 80px;
-        }
-        section h2 .num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 26px; height: 26px;
-            border-radius: 8px;
-            background: #eaf3ff;
-            color: var(--brand-dark);
-            font-size: 12px;
-            font-weight: 900;
-            flex: none;
-        }
-        section h3 {
-            font-size: 14px;
-            font-weight: 800;
-            margin: 18px 0 8px;
-            color: var(--ink);
-        }
-        section p, section li {
-            font-size: 14.5px;
-            line-height: 1.75;
-            color: var(--ink-soft);
-        }
-        section ul, section ol.plain { padding-left: 20px; margin: 10px 0; }
-        section li { margin-bottom: 6px; }
-        strong { color: var(--ink); }
-
-        table.data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 14px 0;
-            font-size: 13.5px;
-        }
-        table.data-table th, table.data-table td {
-            text-align: left;
-            padding: 10px 12px;
-            border: 1px solid var(--line);
-            vertical-align: top;
-            line-height: 1.6;
-            color: var(--ink-soft);
-        }
-        table.data-table th {
-            background: var(--wash);
-            color: var(--ink);
-            font-size: 11.5px;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .callout {
-            background: #eaf3ff;
-            border: 1px solid #cfe3ff;
-            border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 13.5px;
-            color: #0a3d78;
-            line-height: 1.7;
-            margin: 14px 0;
-        }
-        .callout strong { color: #0a3d78; }
-        .callout.warn {
-            background: #fff7ed;
-            border-color: #fed7aa;
-            color: #9a3412;
-        }
-        .callout.warn strong { color: #9a3412; }
-
-        .offices {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-top: 14px;
-        }
-        @media (max-width: 620px) { .offices { grid-template-columns: 1fr; } }
-        .office-card {
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 14px 16px;
-            background: var(--wash);
-        }
-        .office-card .flag { font-size: 13px; font-weight: 800; color: var(--brand-dark); margin-bottom: 6px; }
-        .office-card p { margin: 2px 0; font-size: 13.5px; }
-
-        footer.site {
-            border-top: 1px solid var(--line);
-            background: #fff;
-            padding: 18px 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #94a3b8;
-        }
-        footer.site a { color: #64748b; font-weight: 700; }
-    </style>
-</head>
-<body>
-
-    <header class="top">
-        <div class="top-inner">
-            <span class="mark">A</span>
-            <span class="brand">AmaSports</span>
-            <span class="tag">Operated by AmaX Ltd.</span>
+{{-- Hero --}}
+<section style="position: relative; overflow: hidden; padding: 3.5rem 1.5rem 1.5rem;">
+    <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%); pointer-events: none;"></div>
+    <div style="position: relative; max-width: 1280px; margin: 0 auto;">
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); border-radius: 2rem; padding: 0.375rem 1rem; font-size: 0.75rem; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem;">
+            Legal
         </div>
-    </header>
-
-    <div class="hero">
-        <div class="hero-inner">
-            <span class="eyebrow">Legal</span>
-            <h1>Terms &amp; Conditions</h1>
-            <p class="lead">
-                These Terms &amp; Conditions govern your use of the AmaSports mobile app, website, and
-                admin/control panel (together, the "Platform"), and your purchase of any subscription or
-                live-stream unlock through our payment partner <strong>PayHere</strong>. Please read them
-                carefully before creating an account or making a payment.
-            </p>
-            <div class="meta-row">
-                <span class="meta-pill">Effective date: 10 September 2026</span>
-                <span class="meta-pill">Applies to: AmaSports app, amasports.app, admin panel</span>
-                <span class="meta-pill">Contact: alex@amaxlk.com</span>
-            </div>
+        <h1 style="font-weight: 900; font-size: clamp(1.875rem, 4vw, 2.75rem); color: #fff; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1rem;">Terms &amp; Conditions</h1>
+        <p style="font-size: 0.9375rem; color: rgba(148,163,184,0.85); line-height: 1.75; max-width: 68ch;">
+            These Terms &amp; Conditions govern your use of the AmaSports mobile app, website, and
+            admin/control panel (together, the "Platform"), and your purchase of any subscription or
+            live-stream unlock through our payment partner <strong style="color:#e2e8f0;">PayHere</strong>.
+            Please read them carefully before creating an account or making a payment.
+        </p>
+        <div class="meta-row">
+            <span class="meta-pill">Effective date: 10 September 2026</span>
+            <span class="meta-pill">Applies to: AmaSports app, website, admin panel</span>
+            <span class="meta-pill">Contact: alex@amaxlk.com</span>
         </div>
     </div>
+</section>
 
-    <div class="layout">
-        <nav class="toc">
+<section style="max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.5rem 5rem;">
+    <div class="doc-layout">
+        <nav class="glass-card doc-toc">
             <h2>On this page</h2>
             <ol>
                 <li><a href="#acceptance">1. Acceptance of terms</a></li>
@@ -313,7 +83,7 @@
             </ol>
         </nav>
 
-        <main class="doc">
+        <main class="glass-card doc-main">
 
             <section id="acceptance">
                 <h2><span class="num">1</span> Acceptance of terms</h2>
@@ -363,7 +133,7 @@
                     <li>Search and view other players' public profiles and statistics;</li>
                     <li>Contact our support team and, for coaches and academy partners, manage matches, teams, and live scoring through the admin/control panel.</li>
                 </ul>
-                <div class="callout">
+                <div class="doc-callout">
                     Live scores and statistics are provided for informational and entertainment purposes
                     only. While we aim for accuracy, real-time data may occasionally lag, be corrected after
                     the fact, or differ from a match's official scorebook — AmaSports is not a substitute for
@@ -378,8 +148,8 @@
                     Adding additional sports to a player profile, and editing sport profiles you've already
                     registered, requires an active annual subscription. The standard price is <strong>USD
                     10.00 per year</strong>; we may set a different amount for your country, shown to you
-                    before checkout. Some players may be eligible for a free trial period, offered entirely
-                    at our discretion.
+                    before checkout — see our <a href="{{ route('pricing') }}">Pricing</a> page. Some
+                    players may be eligible for a free trial period, offered entirely at our discretion.
                 </p>
                 <h3>b. Live-stream unlock</h3>
                 <p>
@@ -399,23 +169,16 @@
                 <h2><span class="num">6</span> Refunds &amp; cancellations</h2>
                 <p>
                     Because subscriptions and live-stream unlocks grant immediate digital access, payments
-                    are <strong>generally non-refundable</strong> once access has been activated, except:
+                    are <strong>generally non-refundable</strong> once access has been activated, except in
+                    the circumstances described in our dedicated <a href="{{ route('refund-policy') }}">Refund
+                    Policy</a>. In short:
                 </p>
                 <ul>
-                    <li>Where you were charged in error or charged twice for the same subscription or match;</li>
-                    <li>Where a live stream you paid to unlock failed to become available due to a fault on our side;</li>
-                    <li>Where a refund is required by the consumer-protection law that applies to you.</li>
+                    <li>Eligible refunds include duplicate charges, a charge that was never activated on your account, or a live stream that failed due to a fault on our side;</li>
+                    <li><strong>Any refund we approve is paid back to the original payment method you used at checkout</strong> — the same card, bank account, or e‑wallet processed by PayHere. We do not issue refunds by any other method.</li>
+                    <li>Since neither product auto-renews, there is nothing to "cancel" going forward — simply choose not to purchase again when your access expires.</li>
                 </ul>
-                <p>
-                    To request a refund, contact <a href="mailto:alex@amaxlk.com">alex@amaxlk.com</a>
-                    with your account email and payment reference within 7 days of the charge. Approved
-                    refunds are returned to your original PayHere payment method and may take a few business
-                    days to appear, depending on your bank.
-                </p>
-                <p>
-                    Since neither the subscription nor the live-stream unlock auto-renews, there is nothing
-                    to "cancel" going forward — simply choose not to purchase again when your access expires.
-                </p>
+                <p>See the full <a href="{{ route('refund-policy') }}">Refund Policy</a> for eligibility, timelines, and how to request one.</p>
             </section>
 
             <section id="conduct">
@@ -497,7 +260,7 @@
                     Platform or a payment made through it is limited to the amount you paid to us for the
                     subscription or live-stream unlock giving rise to the claim.
                 </p>
-                <div class="callout warn">
+                <div class="doc-callout warn">
                     Nothing in these Terms limits any liability that cannot be limited or excluded under the
                     law that applies to you, including liability for fraud or for death or personal injury
                     caused by our negligence.
@@ -509,7 +272,7 @@
                 <ul>
                     <li>You may stop using the Platform and request deletion of your account at any time by contacting <a href="mailto:alex@amaxlk.com">alex@amaxlk.com</a>.</li>
                     <li>We may suspend or terminate your access to the Platform, with or without notice, if you breach these Terms, if we reasonably suspect fraud or abuse, or if required by law.</li>
-                    <li>Termination does not entitle you to a refund for subscriptions or unlocks already used, except as described in <a href="#refunds">Section 6</a>.</li>
+                    <li>Termination does not entitle you to a refund for subscriptions or unlocks already used, except as described in our <a href="{{ route('refund-policy') }}">Refund Policy</a>.</li>
                 </ul>
             </section>
 
@@ -538,8 +301,8 @@
             <section id="contact">
                 <h2><span class="num">16</span> Contact us</h2>
                 <p>If you have questions about these Terms, reach us at:</p>
-                <div class="offices">
-                    <div class="office-card">
+                <div class="doc-offices">
+                    <div class="doc-office-card">
                         <div class="flag">🇱🇰 Head Office — Colombo</div>
                         <p><strong>AmaX Headquarters</strong></p>
                         <p>AmaX, Sutton Indoor Cricket Center</p>
@@ -547,7 +310,7 @@
                         <p>Phone: +94 75 220 6006</p>
                         <p>Email: <a href="mailto:alex@amaxlk.com">alex@amaxlk.com</a></p>
                     </div>
-                    <div class="office-card">
+                    <div class="doc-office-card">
                         <div class="flag">🇮🇳 India Regional Hub — Moradabad</div>
                         <p><strong>AmaX India Regional Hub</strong></p>
                         <p>AmaX, Modern Public School</p>
@@ -560,12 +323,6 @@
 
         </main>
     </div>
+</section>
 
-    <footer class="site">
-        &copy; {{ date('Y') }} AmaX Ltd. All rights reserved. &nbsp;·&nbsp;
-        <a href="{{ route('privacy-policy') }}">Privacy Policy</a> &nbsp;·&nbsp;
-        <a href="{{ url('/') }}">AmaSports</a>
-    </footer>
-
-</body>
-</html>
+@endsection

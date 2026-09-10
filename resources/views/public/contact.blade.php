@@ -23,9 +23,10 @@
         {{-- Left — Contact Info --}}
         <div style="display: flex; flex-direction: column; gap: 1rem;">
             @foreach([
-                ['📧', 'Email', 'hello@amax.com', null],
-                ['📱', 'Mobile', 'Available on iOS & Android', null],
-                ['🌐', 'Web', 'amax.com', null],
+                ['📧', 'Email', 'alex@amaxlk.com', null],
+                ['📞', 'Phone', '+94 75 220 6006', null],
+                ['📍', 'Head Office', 'AmaX, Sutton Indoor Cricket Center, 29 Maitland Place, Colombo 07, Sri Lanka', null],
+                ['📱', 'Mobile App', 'Available on iOS & Android', null],
             ] as [$icon, $label, $value, $href])
             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 1.25rem; display: flex; align-items: flex-start; gap: 0.875rem;">
                 <div style="font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem;">{{ $icon }}</div>

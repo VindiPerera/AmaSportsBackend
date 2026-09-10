@@ -155,6 +155,10 @@
                         <span class="live-dot" style="margin-right: 0.125rem;"></span>
                         Matches &amp; Schedule
                     </a>
+                    <a href="{{ route('pricing') }}"
+                       class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}">
+                        Pricing
+                    </a>
                     <a href="{{ route('public.app') }}"
                        class="nav-link {{ request()->routeIs('public.app') ? 'active' : '' }}" style="color: #fbbf24;">
                         📱 Mobile Web App
@@ -186,6 +190,7 @@
                 <a href="{{ route('public.matches') }}" class="nav-link {{ request()->routeIs('public.matches') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75); display: flex; align-items: center; gap: 0.375rem;">
                     <span class="live-dot"></span> Matches &amp; Schedule
                 </a>
+                <a href="{{ route('pricing') }}" class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75);">Pricing</a>
                 <a href="{{ route('public.app') }}" class="nav-link {{ request()->routeIs('public.app') ? 'active' : '' }}" style="color: #fbbf24; display: flex; align-items: center; gap: 0.375rem;">
                     📱 Mobile Web App
                 </a>
@@ -232,10 +237,20 @@
                     </div>
                 </div>
 
+                <div>
+                    <p style="font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.6); margin-bottom: 0.875rem;">Legal</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a href="{{ route('pricing') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Pricing</a>
+                        <a href="{{ route('terms') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Terms &amp; Conditions</a>
+                        <a href="{{ route('privacy-policy') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Privacy Policy</a>
+                        <a href="{{ route('refund-policy') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Refund Policy</a>
+                    </div>
+                </div>
+
             </div>
 
             <div style="border-top: 1px solid rgba(255,255,255,0.07); padding-top: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem;">
-                <p style="color: rgba(100,116,139,0.8); font-size: 0.75rem;">&copy; {{ date('Y') }} AmaX Platform. All rights reserved.</p>
+                <p style="color: rgba(100,116,139,0.8); font-size: 0.75rem;">&copy; {{ date('Y') }} AmaX Ltd. All rights reserved.</p>
                 <p style="color: rgba(100,116,139,0.6); font-size: 0.75rem; font-weight: 600;">Every Sport, Live.</p>
             </div>
         </div>
