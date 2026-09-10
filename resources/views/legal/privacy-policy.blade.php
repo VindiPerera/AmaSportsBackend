@@ -311,7 +311,7 @@
             <section id="introduction">
                 <h2><span class="num">1</span> Introduction</h2>
                 <p>
-                    AmaX Ltd. ("<strong>AmaX</strong>", "<strong>AmaSports</strong>", "<strong>we</strong>",
+                    AmaX Ltd. ("<strong>AmaX</strong>", "<strong>we</strong>",
                     "<strong>us</strong>", or "<strong>our</strong>") builds and operates the AmaSports
                     platform: a mobile application for player profiles, live scoring and match statistics
                     across multiple sports, a companion website, and an administrative control panel used
