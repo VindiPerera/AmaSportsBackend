@@ -7,6 +7,7 @@ use App\Http\Resources\CricketProfileResource;
 use App\Models\CricketProfile;
 use App\Models\Player;
 use App\Models\PlayerTeam;
+use App\Models\PlayerTeamLogo;
 use App\Models\Sport;
 use App\Services\CricketAnalysisService;
 use App\Traits\ApiResponse;
@@ -93,6 +94,14 @@ class PlayerSearchController extends Controller
         $sport = Sport::where('slug', Sport::CRICKET_SLUG)->first();
         $profile->team_names = $sport
             ? PlayerTeam::where('player_id', $player->id)->where('sport_id', $sport->id)->pluck('team_name')->all()
+            : [];
+        $profile->team_logos = $sport
+            ? PlayerTeamLogo::where('player_id', $player->id)->where('sport_id', $sport->id)->get()
+                ->map(fn (PlayerTeamLogo $logo) => [
+                    'team_name' => $logo->team_name,
+                    'logo_url' => Storage::disk('public')->url($logo->logo_path),
+                ])
+                ->all()
             : [];
 
         return $this->success([

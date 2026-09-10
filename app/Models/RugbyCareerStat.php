@@ -11,9 +11,9 @@ class RugbyCareerStat extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'rugby_profile_id', 'format_id', 'age_category_id', 'match_category_id',
+        'rugby_profile_id', 'format_id', 'age_category_id', 'match_category_id', 'play_position',
         'matches', 'win', 'lost', 'tries', 'conversion', 'penalty_kick', 'drop_goal',
-        'yellow_card', 'red_card',
+        'yellow_card', 'red_card', 'year',
     ];
 
     public function rugbyProfile(): BelongsTo

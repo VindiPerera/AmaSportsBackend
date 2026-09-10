@@ -39,6 +39,7 @@ class StoreBaseBallProfileRequest extends FormRequest
             'career_stats.*.rbi' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.won' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.lost' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_matches' => ['sometimes', 'array'],
             'recent_matches.*.match_date' => ['nullable', 'date'],

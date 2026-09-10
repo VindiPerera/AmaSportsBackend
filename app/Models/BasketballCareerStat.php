@@ -11,8 +11,8 @@ class BasketballCareerStat extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'basketball_profile_id', 'format_id', 'age_category_id', 'match_category_id',
-        'matches', 'win', 'lost', 'points', 'rebounds', 'assists', 'blocks', 'steals', 'minutes',
+        'basketball_profile_id', 'format_id', 'age_category_id', 'match_category_id', 'play_position',
+        'matches', 'win', 'lost', 'points', 'rebounds', 'assists', 'blocks', 'steals', 'minutes', 'year',
     ];
 
     public function basketballProfile(): BelongsTo

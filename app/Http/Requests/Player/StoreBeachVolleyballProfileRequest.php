@@ -46,6 +46,7 @@ class StoreBeachVolleyballProfileRequest extends FormRequest
             'career_stats.*.third_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.second_place' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.champion' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_matches' => ['sometimes', 'array'],
             'recent_matches.*.match_date' => ['nullable', 'date'],
