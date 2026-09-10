@@ -26,6 +26,9 @@ class CricketDivisionSeeder extends Seeder
             CricketDivision::updateOrCreate(['name' => $name], ['sort_order' => $index]);
         }
 
-        CricketDivision::whereNotIn('name', self::DIVISIONS)->delete();
+        // Older rows outside this list are intentionally left in place —
+        // existing stat rows still reference some of them via foreign key,
+        // so they can't be deleted. The dropdown hides them client-side
+        // instead (see CRICKET_CATEGORIES in cricketLookups.ts).
     }
 }

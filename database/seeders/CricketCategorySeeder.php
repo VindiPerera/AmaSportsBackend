@@ -41,9 +41,9 @@ class CricketCategorySeeder extends Seeder
             CricketCategory::updateOrCreate(['name' => $name], ['sort_order' => $index]);
         }
 
-        // Keep the table in sync with the list above — drop anything no
-        // longer in it (safe: the Add Stat flow has no self-service
-        // "create new" any more, so nothing outside this seeder adds rows).
-        CricketCategory::whereNotIn('name', self::CATEGORIES)->delete();
+        // Older rows outside this list are intentionally left in place —
+        // existing stat rows still reference some of them via foreign key,
+        // so they can't be deleted. The dropdown hides them client-side
+        // instead (see CRICKET_FORMATS in cricketLookups.ts).
     }
 }
