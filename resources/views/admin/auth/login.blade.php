@@ -56,7 +56,9 @@
             </button>
         </form>
 
-        <p class="mt-6 text-center text-[11px] text-slate-500">
+        <p class="mt-6 text-center text-[11px] text-slate-500 space-x-3">
+            <a href="{{ route('terms') }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-400 hover:text-blue-400">Terms &amp; Conditions</a>
+            <span class="text-slate-700">·</span>
             <a href="{{ route('privacy-policy') }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-400 hover:text-blue-400">Privacy Policy</a>
         </p>
     </div>

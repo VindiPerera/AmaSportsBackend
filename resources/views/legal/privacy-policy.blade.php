@@ -279,7 +279,7 @@
             <div class="meta-row">
                 <span class="meta-pill">Effective date: 10 September 2026</span>
                 <span class="meta-pill">Applies to: AmaSports app, amasports.app, admin panel</span>
-                <span class="meta-pill">Contact: support@amaxsports.com</span>
+                <span class="meta-pill">Contact: alex@amaxlk.com</span>
             </div>
         </div>
     </div>
@@ -467,7 +467,7 @@
                 </p>
                 <p>
                     If you believe a minor has provided us personal data directly and without appropriate
-                    consent, please contact us at <a href="mailto:support@amaxsports.com">support@amaxsports.com</a>
+                    consent, please contact us at <a href="mailto:alex@amaxlk.com">alex@amaxlk.com</a>
                     and we will review and remove it as appropriate.
                 </p>
             </section>
@@ -505,7 +505,7 @@
                     <li>Withdraw consent previously given, where processing relies on consent.</li>
                 </ul>
                 <p>
-                    To exercise any of these rights, contact <a href="mailto:support@amaxsports.com">support@amaxsports.com</a>.
+                    To exercise any of these rights, contact <a href="mailto:alex@amaxlk.com">alex@amaxlk.com</a>.
                     Depending on where you live — for example under the Sri Lanka Personal Data Protection
                     Act, No. 9 of 2022, the EU/UK GDPR, or other local law — you may have additional rights;
                     we will honour requests to the extent required by the law that applies to you.
@@ -551,7 +551,7 @@
                         <p>AmaX, Sutton Indoor Cricket Center</p>
                         <p>29 Maitland Place, Colombo 07, Sri Lanka</p>
                         <p>Phone: +94 75 220 6006</p>
-                        <p>Email: <a href="mailto:support@amaxsports.com">support@amaxsports.com</a></p>
+                        <p>Email: <a href="mailto:alex@amaxlk.com">alex@amaxlk.com</a></p>
                     </div>
                     <div class="office-card">
                         <div class="flag">🇮🇳 India Regional Hub — Moradabad</div>
@@ -559,7 +559,7 @@
                         <p>AmaX, Modern Public School</p>
                         <p>Delhi Road, Near Circuit House, Moradabad 244001, Uttar Pradesh, India</p>
                         <p>Phone: +91 95289 43413</p>
-                        <p>Email: <a href="mailto:support@amaxsports.com">support@amaxsports.com</a></p>
+                        <p>Email: <a href="mailto:alex@amaxlk.com">alex@amaxlk.com</a></p>
                     </div>
                 </div>
             </section>

@@ -112,6 +112,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <p>&copy; {{ date('Y') }} AmaSports Platform. All rights reserved.</p>
             <div class="flex items-center gap-4">
+                <a href="{{ route('terms') }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-500 hover:text-[#0366D6]">Terms &amp; Conditions</a>
                 <a href="{{ route('privacy-policy') }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-500 hover:text-[#0366D6]">Privacy Policy</a>
                 <p class="font-semibold text-slate-400">Minimalist Sports UI Engine</p>
             </div>
