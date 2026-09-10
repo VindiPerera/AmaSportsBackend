@@ -8,6 +8,8 @@ use App\Models\AthleticsEvent;
 use App\Models\BallType;
 use App\Models\BoxingWeightClass;
 use App\Models\CompetitionLevel;
+use App\Models\CricketCategory;
+use App\Models\CricketDivision;
 use App\Models\CricketMatchType;
 use App\Models\DropReason;
 use App\Models\FieldPosition;
@@ -50,6 +52,12 @@ class LookupController extends Controller
             'drop_reasons' => DropReason::orderBy('sort_order')->get(['id', 'name']),
             'pitching_lines' => PitchingLine::orderBy('sort_order')->get(['id', 'name']),
             'ball_types' => BallType::orderBy('sort_order')->get(['id', 'name']),
+            // Cricket's own Category/Division lists for the Batting/Bowling
+            // Career Stats "Add New Stat" flow — a fixed, curated set (no
+            // self-service "add new" any more), deliberately separate from
+            // the shared age_categories/formats every other sport uses.
+            'cricket_categories' => CricketCategory::orderBy('sort_order')->get(['id', 'name']),
+            'cricket_divisions' => CricketDivision::orderBy('sort_order')->get(['id', 'name']),
         ], 'Lookups retrieved successfully.');
     }
 }

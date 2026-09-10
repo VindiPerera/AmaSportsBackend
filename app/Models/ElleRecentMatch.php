@@ -11,7 +11,7 @@ class ElleRecentMatch extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'elle_profile_id', 'match_date', 'opponent', 'venue', 'win', 'lost', 'runs', 'catches', 'place',
+        'elle_profile_id', 'match_date', 'opponent', 'venue', 'win', 'lost', 'total_balls', 'runs', 'catches', 'place',
     ];
 
     /**

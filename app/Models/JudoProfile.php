@@ -12,7 +12,8 @@ class JudoProfile extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'player_id', 'born', 'age', 'height', 'weight', 'college_university', 'current_ranking',
+        'player_id', 'born', 'age', 'height', 'weight', 'weight_position_id', 'competition_level_id',
+        'college_university', 'current_ranking',
     ];
 
     /**

@@ -19,7 +19,7 @@ class RacketSportCareerStat extends Model
     protected $fillable = [
         'racket_sport_profile_id', 'category', 'format_id', 'age_category_id', 'match_category_id',
         'matches', 'win', 'lost', 'set_win', 'set_lost', 'quarter_final', 'semi_final',
-        'third_place', 'second_place', 'champion',
+        'third_place', 'second_place', 'champion', 'year',
     ];
 
     public function racketSportProfile(): BelongsTo

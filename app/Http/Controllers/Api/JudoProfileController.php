@@ -11,6 +11,7 @@ use App\Models\PlayerSport;
 use App\Models\PlayerTeam;
 use App\Models\Sport;
 use App\Traits\ApiResponse;
+use App\Traits\HasSportLogos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,10 +19,12 @@ use Illuminate\Support\Facades\DB;
 class JudoProfileController extends Controller
 {
     use ApiResponse;
+    use HasSportLogos;
 
     public function show(Request $request): JsonResponse
     {
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+        $sport = Sport::where('slug', Sport::JUDO_SLUG)->first();
 
         $profile = $player->judoProfile()->with(['careerStats', 'recentFights'])->first();
 
@@ -31,7 +34,10 @@ class JudoProfileController extends Controller
             $profile->setRelation('recentFights', collect());
         }
 
-        $profile->team_names = $this->teamNames($player);
+        if ($sport) {
+            $this->attachSportLogos($player, $sport, $profile);
+        }
+        $profile->team_names = $player->fillEmptyOverview($profile, $profile->team_names ?? $this->teamNames($player));
 
         return $this->success(new JudoProfileResource($profile), 'Judo profile retrieved successfully.');
     }
@@ -71,7 +77,7 @@ class JudoProfileController extends Controller
         });
 
         $profile->load(['careerStats', 'recentFights']);
-        $profile->team_names = $this->teamNames($player);
+        $this->attachSportLogos($player, $sport, $profile);
 
         return $this->success(new JudoProfileResource($profile), 'Judo profile saved successfully.');
     }

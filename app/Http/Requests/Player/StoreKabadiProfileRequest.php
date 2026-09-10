@@ -34,6 +34,7 @@ class StoreKabadiProfileRequest extends FormRequest
             'career_stats.*.matches' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.win' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.lost' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.tpe' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.cbp' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.raids' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.successful_raids' => ['nullable', 'integer', 'min:0'],
@@ -47,6 +48,7 @@ class StoreKabadiProfileRequest extends FormRequest
             'career_stats.*.yellow_cards' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.green_cards' => ['nullable', 'integer', 'min:0'],
             'career_stats.*.red_cards' => ['nullable', 'integer', 'min:0'],
+            'career_stats.*.year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
 
             'recent_matches' => ['sometimes', 'array'],
             'recent_matches.*.match_date' => ['nullable', 'date'],
@@ -54,6 +56,7 @@ class StoreKabadiProfileRequest extends FormRequest
             'recent_matches.*.venue' => ['nullable', 'string', 'max:255'],
             'recent_matches.*.win' => ['nullable', 'boolean'],
             'recent_matches.*.lost' => ['nullable', 'boolean'],
+            'recent_matches.*.tpe' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.cbp' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.raids' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.successful_raids' => ['nullable', 'integer', 'min:0'],
