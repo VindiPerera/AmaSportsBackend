@@ -134,6 +134,17 @@ class StoreCricketProfileRequest extends FormRequest
             'recent_matches.*.ten_w' => ['nullable', 'boolean'],
             'recent_matches.*.catches' => ['nullable', 'integer', 'min:0'],
             'recent_matches.*.stumpings' => ['nullable', 'integer', 'min:0'],
+            // Set via the separate /player/cricket-profile/score-sheet
+            // upload endpoint, which returns this URL for the client to
+            // carry along on the next bulk save — not a file upload itself.
+            // Deliberately nullable even though the mobile form now requires
+            // it for any match added through AddCricketMatchModal: this
+            // whole array is re-validated (and re-saved) on every profile
+            // save, including matches added before this field existed —
+            // making it required here would permanently block those players
+            // from ever saving their profile again, since there's no way to
+            // attach a photo to a match after the fact.
+            'recent_matches.*.score_sheet_url' => ['nullable', 'string', 'max:500'],
 
             // Repeatable "Drop Catches" rows — Phase 7 spec §2. Format/Age/
             // Category are optional context (unlike the batting/bowling

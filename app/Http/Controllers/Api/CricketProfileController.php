@@ -160,6 +160,29 @@ class CricketProfileController extends Controller
     }
 
     /**
+     * POST /player/cricket-profile/score-sheet — uploads a photo of one
+     * match's physical/official scoresheet. Multipart, immediate — same
+     * "immediate, own endpoint" pattern as the college logo above and the
+     * team logos (see PlayerTeamLogoController), because a Recent Match row
+     * doesn't exist yet (and so has nothing to attach a file to) until the
+     * whole Cricket profile form is submitted. The returned URL travels back
+     * with that match's `score_sheet_url` on the next PUT and is stored
+     * as-is; it isn't tied to a player/profile record here.
+     */
+    public function uploadScoreSheet(Request $request): JsonResponse
+    {
+        $request->validate(['image' => ['required', 'image', 'max:5120']]);
+
+        $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
+
+        $path = $request->file('image')->store("players/{$player->id}/cricket/score-sheets", 'public');
+
+        return $this->success([
+            'score_sheet_url' => Storage::disk('public')->url($path),
+        ], 'Score sheet uploaded successfully.');
+    }
+
+    /**
      * @return list<string>
      */
     private function teamNames(Player $player): array

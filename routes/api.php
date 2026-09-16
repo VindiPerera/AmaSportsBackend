@@ -137,6 +137,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/player/cricket-profile/college-logo', [PlayerCollegeLogoController::class, 'store'])->middleware('subscription.active');
     Route::delete('/player/cricket-profile/college-logo', [PlayerCollegeLogoController::class, 'destroy'])->middleware('subscription.active');
 
+    // Scoresheet photo for one Recent Match — immediate, not part of the
+    // bulk cricket-profile save; see CricketProfileController::uploadScoreSheet.
+    Route::post('/player/cricket-profile/score-sheet', [CricketProfileController::class, 'uploadScoreSheet'])->middleware('subscription.active');
+
     // Player Search (new) — read-only discovery, deliberately not gated
     // behind subscription.active like the Analysis/write routes above.
     // Cricket-only for now: the only sport with real aggregated stats.

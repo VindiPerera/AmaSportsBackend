@@ -42,6 +42,7 @@ class CricketRecentMatch extends Model
         'ten_w',
         'catches',
         'stumpings',
+        'score_sheet_url',
     ];
 
     /**
