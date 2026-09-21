@@ -159,11 +159,24 @@
                        class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}">
                         Pricing
                     </a>
-                    <a href="{{ route('public.app') }}"
-                       class="nav-link {{ request()->routeIs('public.app') ? 'active' : '' }}" style="color: #fbbf24;">
-                        📱 Mobile Web App
-                    </a>
                 </nav>
+
+                {{-- Desktop Global Search --}}
+                <div style="position: relative; display: none; align-items: center; width: 220px;" class="desktop-search-wrap">
+                    <div style="position: relative; width: 100%;">
+                        <input type="text"
+                               id="navbar-search-input"
+                               placeholder="Search players..."
+                               autocomplete="off"
+                               style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 2rem; padding: 0.35rem 0.75rem 0.35rem 2.1rem; color: #fff; font-size: 0.8125rem; outline: none; transition: all 0.2s;"
+                               onfocus="this.style.borderColor='#f59e0b'; this.style.background='rgba(255,255,255,0.1)';"
+                               onblur="this.style.borderColor='rgba(255,255,255,0.14)'; this.style.background='rgba(255,255,255,0.06)';" />
+                        <span style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: rgba(148,163,184,0.6); font-size: 0.8125rem; pointer-events: none;">🔍</span>
+                    </div>
+                    <div id="navbar-search-dropdown"
+                         style="display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 340px; background: #0c1322; border: 1px solid rgba(255,255,255,0.15); border-radius: 0.875rem; box-shadow: 0 16px 36px rgba(0,0,0,0.7); z-index: 100; max-height: 380px; overflow-y: auto; padding: 0.5rem 0;">
+                    </div>
+                </div>
 
                 {{-- Login CTA (desktop) --}}
                 <div style="display: none; align-items: center; gap: 0.75rem;" class="desktop-actions">
@@ -183,6 +196,20 @@
 
         {{-- Mobile Menu --}}
         <div id="mobile-menu" style="background: rgba(10,15,30,0.98); border-top: 1px solid rgba(255,255,255,0.07); padding: 1rem 1.5rem 1.5rem;">
+            {{-- Mobile Search Input --}}
+            <div style="position: relative; margin-bottom: 1rem;">
+                <input type="text"
+                       id="mobile-search-input"
+                       placeholder="Search players..."
+                       autocomplete="off"
+                       class="form-input"
+                       style="padding-left: 2.5rem; font-size: 0.875rem;" />
+                <span style="position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: rgba(148,163,184,0.6); font-size: 0.875rem;">🔍</span>
+                <div id="mobile-search-dropdown"
+                     style="display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #0c1322; border: 1px solid rgba(255,255,255,0.15); border-radius: 0.875rem; box-shadow: 0 16px 36px rgba(0,0,0,0.7); z-index: 100; max-height: 300px; overflow-y: auto; padding: 0.5rem 0;">
+                </div>
+            </div>
+
             <nav style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem;">
                 <a href="{{ route('public.home') }}" class="nav-link {{ request()->routeIs('public.home') ? 'active' : '' }}" style="color: #fff;">Home</a>
                 <a href="{{ route('public.about') }}" class="nav-link {{ request()->routeIs('public.about') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75);">About</a>
@@ -191,9 +218,6 @@
                     <span class="live-dot"></span> Matches &amp; Schedule
                 </a>
                 <a href="{{ route('pricing') }}" class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75);">Pricing</a>
-                <a href="{{ route('public.app') }}" class="nav-link {{ request()->routeIs('public.app') ? 'active' : '' }}" style="color: #fbbf24; display: flex; align-items: center; gap: 0.375rem;">
-                    📱 Mobile Web App
-                </a>
             </nav>
             <div style="display: flex; flex-direction: column; gap: 0.625rem;">
                 <a href="{{ route('login') }}" style="display: block; text-align: center; padding: 0.625rem; border-radius: 0.625rem; border: 1px solid rgba(255,255,255,0.15); color: #fff; font-weight: 600; font-size: 0.875rem; text-decoration: none;">Log In</a>
@@ -260,7 +284,7 @@
         // Desktop nav & actions responsive show
         function setResponsive() {
             const isWide = window.innerWidth >= 768;
-            document.querySelectorAll('.desktop-nav, .desktop-actions').forEach(el => {
+            document.querySelectorAll('.desktop-nav, .desktop-actions, .desktop-search-wrap').forEach(el => {
                 el.style.display = isWide ? 'flex' : 'none';
             });
             document.getElementById('hamburger').style.display = isWide ? 'none' : 'flex';
@@ -272,6 +296,134 @@
         document.getElementById('hamburger').addEventListener('click', () => {
             document.getElementById('mobile-menu').classList.toggle('open');
         });
+
+        // ── Reusable Live Player Autocomplete ──
+        function initPlayerAutocomplete(inputId, dropdownId) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            if (!input || !dropdown) return;
+
+            let debounceTimer = null;
+            let selectedIndex = -1;
+            let currentResults = [];
+
+            const escapeHtml = (str) => String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+
+            const highlightMatch = (text, query) => {
+                if (!query) return escapeHtml(text);
+                const safeText = escapeHtml(text);
+                const safeQuery = escapeHtml(query);
+                const regex = new RegExp('(' + safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                return safeText.replace(regex, '<span style="color:#f59e0b; text-decoration:underline;">$1</span>');
+            };
+
+            input.addEventListener('input', function() {
+                const query = this.value.trim();
+                clearTimeout(debounceTimer);
+                selectedIndex = -1;
+
+                if (query.length < 1) {
+                    dropdown.style.display = 'none';
+                    dropdown.innerHTML = '';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetch(`/search/players?q=${encodeURIComponent(query)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            currentResults = data.results || [];
+                            if (currentResults.length === 0) {
+                                dropdown.innerHTML = `<div style="padding: 1rem; text-align: center; color: rgba(148,163,184,0.7); font-size: 0.8125rem;">No players found matching "<strong>${escapeHtml(query)}</strong>"</div>`;
+                                dropdown.style.display = 'block';
+                                return;
+                            }
+
+                            let html = `<div style="padding: 0.35rem 0.75rem; font-size: 0.6875rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.5);">Matching Players</div>`;
+                            currentResults.forEach((player, idx) => {
+                                const sportsBadges = (player.sports || []).map(s => `<span style="display:inline-flex; align-items:center; gap:2px; font-size:0.6875rem; background:rgba(255,255,255,0.06); padding:0.15rem 0.45rem; border-radius:1rem; color:#f59e0b;">${s.icon} ${s.name}</span>`).join(' ');
+                                const teamInfo = player.primary_team ? `<span style="font-size:0.75rem; color:rgba(148,163,184,0.7);">🛡️ ${escapeHtml(player.primary_team)}</span>` : '';
+                                const countryInfo = player.country ? `<span style="font-size:0.75rem; color:rgba(148,163,184,0.7);">📍 ${escapeHtml(player.country)}</span>` : '';
+
+                                const avatarHtml = player.photo_url
+                                    ? `<img src="${player.photo_url}" style="width:2.25rem; height:2.25rem; border-radius:50%; object-fit:cover; flex-shrink:0;" />`
+                                    : `<div style="width:2.25rem; height:2.25rem; border-radius:50%; background:linear-gradient(135deg, #f59e0b, #eab308); color:#111827; font-weight:900; font-size:0.875rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${player.name.substring(0, 1).toUpperCase()}</div>`;
+
+                                html += `
+                                    <a href="${player.url}"
+                                       class="search-item"
+                                       data-index="${idx}"
+                                       style="display:flex; align-items:center; gap:0.75rem; padding:0.625rem 0.875rem; text-decoration:none; color:#fff; transition:background 0.15s; cursor:pointer;"
+                                       onmouseover="this.style.background='rgba(245,158,11,0.1)';"
+                                       onmouseout="this.style.background='transparent';">
+                                        ${avatarHtml}
+                                        <div style="flex:1; min-width:0;">
+                                            <div style="font-weight:700; font-size:0.875rem; color:#fff; display:flex; align-items:center; justify-content:space-between;">
+                                                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${highlightMatch(player.name, query)}</span>
+                                                <span style="font-size:0.75rem; color:#f59e0b; font-weight:700;">View →</span>
+                                            </div>
+                                            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-top:0.2rem;">
+                                                ${countryInfo}
+                                                ${teamInfo}
+                                                ${sportsBadges}
+                                            </div>
+                                        </div>
+                                    </a>
+                                `;
+                            });
+
+                            dropdown.innerHTML = html;
+                            dropdown.style.display = 'block';
+                        })
+                        .catch(() => {
+                            dropdown.style.display = 'none';
+                        });
+                }, 250);
+            });
+
+            input.addEventListener('keydown', function(e) {
+                const items = dropdown.querySelectorAll('.search-item');
+                if (items.length === 0 || dropdown.style.display === 'none') return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedIndex = (selectedIndex + 1) % items.length;
+                    updateItemSelection(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                    updateItemSelection(items);
+                } else if (e.key === 'Enter') {
+                    if (selectedIndex >= 0 && items[selectedIndex]) {
+                        e.preventDefault();
+                        items[selectedIndex].click();
+                    }
+                } else if (e.key === 'Escape') {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            function updateItemSelection(items) {
+                items.forEach((it, i) => {
+                    if (i === selectedIndex) {
+                        it.style.background = 'rgba(245,158,11,0.2)';
+                        it.scrollIntoView({ block: 'nearest' });
+                    } else {
+                        it.style.background = 'transparent';
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize header & mobile search
+        initPlayerAutocomplete('navbar-search-input', 'navbar-search-dropdown');
+        initPlayerAutocomplete('mobile-search-input', 'mobile-search-dropdown');
     </script>
 
     @stack('scripts')

@@ -54,19 +54,25 @@
             </div>
         </div>
 
-        {{-- Search Input Form --}}
-        <form method="GET" action="{{ route('public.home') }}" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        {{-- Search Input Form with Live Autocomplete --}}
+        <form method="GET" action="{{ route('public.home') }}" style="display: flex; gap: 0.75rem; flex-wrap: wrap; position: relative;">
             <div style="flex: 1; min-width: 260px; position: relative;">
                 <input
                     type="text"
+                    id="hero-player-search"
                     name="q"
                     value="{{ $query }}"
                     placeholder="Search player by name (e.g. Dasun, Kusal, Wanindu)..."
                     class="form-input"
+                    autocomplete="off"
                     style="padding-left: 2.75rem; background: rgba(255,255,255,0.06);"
                 >
                 <div style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: rgba(148,163,184,0.6); pointer-events: none;">
                     🔍
+                </div>
+                {{-- Live Floating Suggestions Dropdown --}}
+                <div id="hero-search-dropdown"
+                     style="display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: #0c1322; border: 1px solid rgba(255,255,255,0.15); border-radius: 0.875rem; box-shadow: 0 16px 36px rgba(0,0,0,0.7); z-index: 100; max-height: 380px; overflow-y: auto; padding: 0.5rem 0;">
                 </div>
             </div>
             <button type="submit" class="btn-primary" style="padding: 0.75rem 1.5rem;">
@@ -81,6 +87,38 @@
 
         {{-- Search Results Display --}}
         @if ($searchResults !== null)
+            @php
+                // Presentation-only label overrides for GenericSportAnalysisService's
+                // flat overview keys — anything not listed here falls back to a
+                // humanized version of the raw column/derived-field name.
+                $statLabels = [
+                    'matches' => 'Matches',
+                    'games' => 'Games',
+                    'win_percentage' => 'Win %',
+                    'goal_accuracy' => 'Goal Accuracy',
+                    'points_per_match' => 'Pts / Match',
+                    'champion' => 'Championships',
+                    'second_place' => 'Runner-up',
+                    'third_place' => 'Third Place',
+                ];
+                $percentKeys = ['win_percentage', 'goal_accuracy'];
+                $statLabel = fn ($key) => $statLabels[$key] ?? \Illuminate\Support\Str::headline($key);
+                $statValue = function ($key, $value) use ($percentKeys) {
+                    if ($value === null) {
+                        return '—';
+                    }
+                    return is_numeric($value) && in_array($key, $percentKeys, true)
+                        ? number_format((float) $value, 1).'%'
+                        : $value;
+                };
+                $sportIcons = [
+                    'hockey' => '🏑', 'football' => '⚽', 'basketball' => '🏀', 'netball' => '🥅',
+                    'rugby' => '🏉', 'boxing' => '🥊', 'karate' => '🥋', 'judo' => '🥋',
+                    'chess' => '♟️', 'athletics' => '🏃', 'swimming' => '🏊', 'volleyball' => '🏐',
+                    'beach-volleyball' => '🏖️', 'elle' => '🏏', 'kabadi' => '🤼', 'base-ball' => '⚾',
+                    'badminton' => '🏸', 'tennis' => '🎾', 'table-tennis' => '🏓',
+                ];
+            @endphp
             <div style="margin-top: 2rem;">
                 @if ($searchResults->isEmpty())
                     <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 1rem; padding: 2.5rem; text-align: center; color: rgba(148,163,184,0.7);">
@@ -92,11 +130,8 @@
                         @foreach ($searchResults as $result)
                             @php
                                 $player = $result['player'];
-                                $team = $result['team'];
-                                $analysis = $result['analysis'];
-                                $batting = $analysis['overview']['career_batting'] ?? null;
-                                $bowling = $analysis['overview']['career_bowling'] ?? null;
-                                $recentForm = $analysis['recent_form'] ?? collect();
+                                $displayName = $result['display_name'];
+                                $sports = $result['sports'];
                             @endphp
 
                             <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(245,158,11,0.25); border-radius: 1.25rem; padding: 1.5rem; transition: all 0.2s;">
@@ -105,108 +140,165 @@
                                 <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem;">
                                     <div style="display: flex; align-items: center; gap: 1rem;">
                                         <div style="width: 3.25rem; height: 3.25rem; background: linear-gradient(135deg, #f59e0b, #eab308); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.25rem; color: #111827;">
-                                            {{ strtoupper(substr($player->full_name, 0, 1)) }}
+                                            {{ strtoupper(substr($displayName, 0, 1)) }}
                                         </div>
                                         <div>
-                                            <h3 style="font-weight: 800; font-size: 1.25rem; color: #fff; margin-bottom: 0.15rem;">{{ $player->full_name }}</h3>
-                                            <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.8125rem; color: rgba(148,163,184,0.8);">
-                                                <span>🛡️ {{ $team }}</span>
-                                                <span>•</span>
-                                                <span style="color: #fbbf24; font-weight: 700;">Cricket</span>
+                                            <h3 style="font-weight: 800; font-size: 1.25rem; color: #fff; margin-bottom: 0.15rem;">{{ $displayName }}</h3>
+                                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: #fbbf24; font-weight: 700; flex-wrap: wrap;">
+                                                @forelse($sports as $s)
+                                                    <span>{{ $s['sport']->name }}</span>
+                                                    @unless($loop->last)<span style="color: rgba(148,163,184,0.4);">•</span>@endunless
+                                                @empty
+                                                    <span style="color: rgba(148,163,184,0.6); font-weight: 600;">No sport profile yet</span>
+                                                @endforelse
                                             </div>
                                         </div>
                                     </div>
+                                    <a href="{{ route('public.players.show', ['player' => $player->id]) }}" class="btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8125rem;">
+                                        View Full Profile →
+                                    </a>
                                 </div>
 
-                                {{-- Stats Grid: Batting & Bowling --}}
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+                                @if($sports->isEmpty())
+                                    <p style="font-size: 0.8125rem; color: rgba(100,116,139,0.7); text-align: center; padding: 1rem 0;">No career stats recorded yet.</p>
+                                @else
+                                    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                                        @foreach($sports as $sportResult)
+                                            @php
+                                                $sport = $sportResult['sport'];
+                                                $team = $sportResult['team'];
+                                                $analysis = $sportResult['analysis'];
+                                            @endphp
 
-                                    {{-- Batting Stats Card --}}
-                                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 0.875rem; padding: 1.25rem;">
-                                        <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #fbbf24; margin-bottom: 0.875rem; display: flex; align-items: center; gap: 0.375rem;">
-                                            🏏 Batting Career Statistics
-                                        </div>
-                                        @if($batting && ($batting['matches'] > 0 || $batting['runs'] > 0))
-                                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; text-align: center;">
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Matches</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $batting['matches'] }}</div>
+                                            <div style="{{ !$loop->last ? 'border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 1.25rem;' : '' }}">
+                                                {{-- Sport Sub-header --}}
+                                                <div style="display: flex; align-items: center; gap: 0.625rem; margin-bottom: 0.875rem;">
+                                                    <span style="font-size: 1rem;">{{ $sport->slug === 'cricket' ? '🏏' : ($sportIcons[$sport->slug] ?? '🏅') }}</span>
+                                                    <span style="font-weight: 800; font-size: 0.9375rem; color: #fff;">{{ $sport->name }}</span>
+                                                    @if($team)
+                                                        <span style="font-size: 0.75rem; color: rgba(148,163,184,0.7);">🛡️ {{ $team }}</span>
+                                                    @endif
                                                 </div>
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Runs</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #f59e0b;">{{ $batting['runs'] }}</div>
-                                                </div>
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Average</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $batting['average'] !== null ? number_format($batting['average'], 2) : '—' }}</div>
-                                                </div>
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">High Score</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $batting['highest_score'] ?? '—' }}</div>
-                                                </div>
-                                            </div>
-                                            <div style="display: flex; gap: 1rem; justify-content: space-around; margin-top: 0.875rem; font-size: 0.75rem; color: rgba(203,213,225,0.8); font-weight: 600;">
-                                                <span>Strike Rate: <strong style="color: #fff;">{{ $batting['strike_rate'] ? number_format($batting['strike_rate'], 1) : '—' }}</strong></span>
-                                                <span>100s: <strong style="color: #fbbf24;">{{ $batting['hundreds'] }}</strong></span>
-                                                <span>50s: <strong style="color: #fbbf24;">{{ $batting['fifties'] }}</strong></span>
-                                            </div>
-                                        @else
-                                            <p style="font-size: 0.8125rem; color: rgba(100,116,139,0.7); text-align: center; padding: 1rem 0;">No batting stats recorded yet.</p>
-                                        @endif
-                                    </div>
 
-                                    {{-- Bowling Stats Card --}}
-                                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 0.875rem; padding: 1.25rem;">
-                                        <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #818cf8; margin-bottom: 0.875rem; display: flex; align-items: center; gap: 0.375rem;">
-                                            ⚾ Bowling Career Statistics
-                                        </div>
-                                        @if($bowling && ($bowling['overs'] > 0 || $bowling['wickets'] > 0))
-                                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; text-align: center;">
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Overs</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $bowling['overs'] }}</div>
-                                                </div>
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Wickets</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #818cf8;">{{ $bowling['wickets'] }}</div>
-                                                </div>
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Economy</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $bowling['economy'] !== null ? number_format($bowling['economy'], 2) : '—' }}</div>
-                                                </div>
-                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
-                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Best</div>
-                                                    <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $bowling['best_bowling'] ?? '—' }}</div>
-                                                </div>
-                                            </div>
-                                            <div style="display: flex; gap: 1rem; justify-content: space-around; margin-top: 0.875rem; font-size: 0.75rem; color: rgba(203,213,225,0.8); font-weight: 600;">
-                                                <span>Bowling Avg: <strong style="color: #fff;">{{ $bowling['average'] !== null ? number_format($bowling['average'], 2) : '—' }}</strong></span>
-                                                <span>5w Hauls: <strong style="color: #818cf8;">{{ $bowling['five_wickets'] }}</strong></span>
-                                            </div>
-                                        @else
-                                            <p style="font-size: 0.8125rem; color: rgba(100,116,139,0.7); text-align: center; padding: 1rem 0;">No bowling stats recorded yet.</p>
-                                        @endif
-                                    </div>
+                                                @if($sportResult['type'] === 'unsupported')
+                                                    <p style="font-size: 0.8125rem; color: rgba(100,116,139,0.7);">Stats tracking for {{ $sport->name }} is coming soon.</p>
 
-                                </div>
+                                                @elseif($sportResult['type'] === 'cricket')
+                                                    @php
+                                                        $batting = $analysis['overview']['career_batting'] ?? null;
+                                                        $bowling = $analysis['overview']['career_bowling'] ?? null;
+                                                        $recentForm = $analysis['recent_form'] ?? collect();
+                                                    @endphp
 
-                                {{-- Recent Form --}}
-                                @if(!empty($recentForm) && count($recentForm) > 0)
-                                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.75rem; padding: 1rem;">
-                                        <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.6); margin-bottom: 0.625rem;">
-                                            📊 Recent Match Form
-                                        </div>
-                                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                                            @foreach($recentForm as $matchForm)
-                                                <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem;">
-                                                    <span style="font-weight: 700; color: #fff;">vs {{ $matchForm['opponent'] ?? 'Opponent' }}</span>
-                                                    <span style="color: rgba(148,163,184,0.7); margin-left: 0.375rem;">
-                                                        @if(isset($matchForm['runs_scored'])) {{ $matchForm['runs_scored'] }} runs @endif
-                                                        @if(isset($matchForm['wickets_taken'])) ({{ $matchForm['wickets_taken'] }} wkts) @endif
-                                                    </span>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                                    {{-- Stats Grid: Batting & Bowling --}}
+                                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+
+                                                        {{-- Batting Stats Card --}}
+                                                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 0.875rem; padding: 1.25rem;">
+                                                            <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #fbbf24; margin-bottom: 0.875rem; display: flex; align-items: center; gap: 0.375rem;">
+                                                                🏏 Batting Career Statistics
+                                                            </div>
+                                                            @if($batting && ($batting['matches'] > 0 || $batting['runs'] > 0))
+                                                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; text-align: center;">
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Matches</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $batting['matches'] }}</div>
+                                                                    </div>
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Runs</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #f59e0b;">{{ $batting['runs'] }}</div>
+                                                                    </div>
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Average</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $batting['average'] !== null ? number_format($batting['average'], 2) : '—' }}</div>
+                                                                    </div>
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">High Score</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $batting['highest_score'] ?? '—' }}</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="display: flex; gap: 1rem; justify-content: space-around; margin-top: 0.875rem; font-size: 0.75rem; color: rgba(203,213,225,0.8); font-weight: 600;">
+                                                                    <span>Strike Rate: <strong style="color: #fff;">{{ $batting['strike_rate'] ? number_format($batting['strike_rate'], 1) : '—' }}</strong></span>
+                                                                    <span>100s: <strong style="color: #fbbf24;">{{ $batting['hundreds'] }}</strong></span>
+                                                                    <span>50s: <strong style="color: #fbbf24;">{{ $batting['fifties'] }}</strong></span>
+                                                                </div>
+                                                            @else
+                                                                <p style="font-size: 0.8125rem; color: rgba(100,116,139,0.7); text-align: center; padding: 1rem 0;">No batting stats recorded yet.</p>
+                                                            @endif
+                                                        </div>
+
+                                                        {{-- Bowling Stats Card --}}
+                                                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 0.875rem; padding: 1.25rem;">
+                                                            <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #818cf8; margin-bottom: 0.875rem; display: flex; align-items: center; gap: 0.375rem;">
+                                                                ⚾ Bowling Career Statistics
+                                                            </div>
+                                                            @if($bowling && ($bowling['overs'] > 0 || $bowling['wickets'] > 0))
+                                                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; text-align: center;">
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Overs</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $bowling['overs'] }}</div>
+                                                                    </div>
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Wickets</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #818cf8;">{{ $bowling['wickets'] }}</div>
+                                                                    </div>
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Economy</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $bowling['economy'] !== null ? number_format($bowling['economy'], 2) : '—' }}</div>
+                                                                    </div>
+                                                                    <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">Best</div>
+                                                                        <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $bowling['best_bowling'] ?? '—' }}</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div style="display: flex; gap: 1rem; justify-content: space-around; margin-top: 0.875rem; font-size: 0.75rem; color: rgba(203,213,225,0.8); font-weight: 600;">
+                                                                    <span>Bowling Avg: <strong style="color: #fff;">{{ $bowling['average'] !== null ? number_format($bowling['average'], 2) : '—' }}</strong></span>
+                                                                    <span>5w Hauls: <strong style="color: #818cf8;">{{ $bowling['five_wickets'] }}</strong></span>
+                                                                </div>
+                                                            @else
+                                                                <p style="font-size: 0.8125rem; color: rgba(100,116,139,0.7); text-align: center; padding: 1rem 0;">No bowling stats recorded yet.</p>
+                                                            @endif
+                                                        </div>
+
+                                                    </div>
+
+                                                    {{-- Recent Form --}}
+                                                    @if(!empty($recentForm) && count($recentForm) > 0)
+                                                        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.75rem; padding: 1rem;">
+                                                            <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.6); margin-bottom: 0.625rem;">
+                                                                📊 Recent Match Form
+                                                            </div>
+                                                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                                                @foreach($recentForm as $matchForm)
+                                                                    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem;">
+                                                                        <span style="font-weight: 700; color: #fff;">vs {{ $matchForm['opponent'] ?? 'Opponent' }}</span>
+                                                                        <span style="color: rgba(148,163,184,0.7); margin-left: 0.375rem;">
+                                                                            @if(isset($matchForm['runs_scored'])) {{ $matchForm['runs_scored'] }} runs @endif
+                                                                            @if(isset($matchForm['wickets_taken'])) ({{ $matchForm['wickets_taken'] }} wkts) @endif
+                                                                        </span>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @endif
+
+                                                @else
+                                                    {{-- Generic Sport Stats Grid --}}
+                                                    @if(($analysis['has_any_stats'] ?? false) && !empty($analysis['overview']))
+                                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; text-align: center;">
+                                                            @foreach($analysis['overview'] as $key => $value)
+                                                                <div style="background: rgba(255,255,255,0.04); padding: 0.625rem; border-radius: 0.5rem;">
+                                                                    <div style="font-size: 0.65rem; color: rgba(148,163,184,0.6); text-transform: uppercase; font-weight: 700;">{{ $statLabel($key) }}</div>
+                                                                    <div style="font-weight: 900; font-size: 1rem; color: #fff;">{{ $statValue($key, $value) }}</div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        <p style="font-size: 0.8125rem; color: rgba(100,116,139,0.7); text-align: center; padding: 1rem 0;">No {{ $sport->name }} stats recorded yet.</p>
+                                                    @endif
+                                                @endif
+                                            </div>
+                                        @endforeach
                                     </div>
                                 @endif
 
@@ -369,5 +461,13 @@
         </div>
     </div>
 </section>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initPlayerAutocomplete('hero-player-search', 'hero-search-dropdown');
+    });
+</script>
+@endpush
 
 @endsection

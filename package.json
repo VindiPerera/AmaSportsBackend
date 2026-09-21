@@ -5,6 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
+        "serve": "cmd /c serve.bat",
         "deploy:web": "node scripts/deploy-web.mjs",
         "build:web:local": "npm run build:web --prefix ../sport-mobile && npm run deploy:web"
     },

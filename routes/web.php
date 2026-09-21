@@ -28,6 +28,8 @@ Route::prefix('payments/stream-access')->name('payments.stream-access.')->group(
 use App\Http\Controllers\UserMatchController;
 use App\Http\Controllers\UserWebAuthController;
 
+use App\Http\Controllers\PublicPlayerProfileController;
+
 // ─── Public Website ──────────────────────────────────────────────────────────
 Route::get('/', fn () => redirect('/home'))->name('public.root');
 Route::get('/home',    [PublicController::class, 'home'])->name('public.home');
@@ -35,6 +37,10 @@ Route::get('/about',   [PublicController::class, 'about'])->name('public.about')
 Route::get('/contact', [PublicController::class, 'contact'])->name('public.contact');
 Route::post('/contact', [PublicController::class, 'contactStore'])->name('public.contact.store');
 Route::get('/matches', [PublicController::class, 'matches'])->name('public.matches');
+
+// ─── Public Player Search & Profile ──────────────────────────────────────────
+Route::get('/search/players', [PublicPlayerProfileController::class, 'search'])->name('public.players.search');
+Route::get('/players/{player}/{sportSlug?}', [PublicPlayerProfileController::class, 'show'])->name('public.players.show');
 
 // ─── User Web Authentication ──────────────────────────────────────────────────
 Route::get('/login', [UserWebAuthController::class, 'showLogin'])->name('login');
