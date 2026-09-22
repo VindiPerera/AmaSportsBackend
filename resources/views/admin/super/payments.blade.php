@@ -13,15 +13,15 @@
     {{-- Type Tabs --}}
     <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
         <a href="{{ route('admin.payments.index', ['type' => 'all']) }}"
-           class="px-4 py-2 rounded-xl text-xs font-extrabold transition-all {{ $type === 'all' ? 'bg-slate-900 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
+           class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $type === 'all' ? 'bg-brand-red text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
             All Transactions
         </a>
         <a href="{{ route('admin.payments.index', ['type' => 'subscriptions']) }}"
-           class="px-4 py-2 rounded-xl text-xs font-extrabold transition-all {{ $type === 'subscriptions' ? 'bg-slate-900 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
+           class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $type === 'subscriptions' ? 'bg-brand-red text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
             App Subscriptions ($10/yr)
         </a>
         <a href="{{ route('admin.payments.index', ['type' => 'stream']) }}"
-           class="px-4 py-2 rounded-xl text-xs font-extrabold transition-all {{ $type === 'stream' ? 'bg-slate-900 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
+           class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $type === 'stream' ? 'bg-brand-red text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}">
             Live Stream Unlocks ($5/match)
         </a>
     </div>
@@ -30,15 +30,15 @@
 
         @if($type === 'all' || $type === 'subscriptions')
         {{-- App Subscriptions Table --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <x-card class="p-0 overflow-hidden">
             <div class="p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                    <h2 class="text-xs font-extrabold text-slate-900 tracking-wider uppercase">
+                    <h2 class="text-xs font-black uppercase tracking-wider text-slate-900">
                         Annual App Subscriptions ($10/year)
                     </h2>
-                    <p class="text-[11px] text-slate-500 font-medium mt-0.5">Player subscription purchases granting full analysis & sport editing features.</p>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">Player subscription purchases granting full analysis &amp; multi-sport registration features.</p>
                 </div>
-                <span class="px-2.5 py-1 rounded-full bg-blue-50 text-[#0366D6] text-[10px] font-black uppercase">
+                <span class="px-2.5 py-1 rounded-full bg-red-50 text-brand-red border border-red-200 text-[10px] font-black uppercase">
                     {{ $subscriptions->count() }} Total
                 </span>
             </div>
@@ -90,20 +90,20 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-card>
         @endif
 
         @if($type === 'all' || $type === 'stream')
         {{-- Live Stream Unlocks Table --}}
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <x-card class="p-0 overflow-hidden">
             <div class="p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                    <h2 class="text-xs font-extrabold text-slate-900 tracking-wider uppercase">
+                    <h2 class="text-xs font-black uppercase tracking-wider text-slate-900">
                         Live Stream VIP Unlocks ($5/match)
                     </h2>
-                    <p class="text-[11px] text-slate-500 font-medium mt-0.5">Per-match VIP stream access purchases by viewers and players.</p>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">Per-match VIP stream access purchases by viewers and fans.</p>
                 </div>
-                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-black uppercase">
+                <span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black uppercase">
                     {{ $streamPayments->count() }} Total
                 </span>
             </div>
@@ -113,38 +113,39 @@
                     <thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
                         <tr>
                             <th class="px-5 py-3">Match Fixture</th>
-                            <th class="px-5 py-3">Purchased By</th>
+                            <th class="px-5 py-3">Paid By</th>
                             <th class="px-5 py-3">Amount</th>
                             <th class="px-5 py-3">Status</th>
                             <th class="px-5 py-3">PayPal Order</th>
-                            <th class="px-5 py-3">Purchased Date</th>
+                            <th class="px-5 py-3">Purchased At</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
-                        @forelse ($streamPayments as $payment)
+                        @forelse ($streamPayments as $stream)
                             <tr class="hover:bg-slate-50/80 transition-colors">
                                 <td class="px-5 py-3 font-bold text-slate-800">
-                                    {{ $payment->match?->homeTeam?->name }} <span class="text-slate-400 font-normal">vs</span> {{ $payment->match?->awayTeam?->name }}
+                                    {{ $stream->match?->homeTeam?->name }} vs {{ $stream->match?->awayTeam?->name }}
+                                    <div class="text-[11px] text-slate-400 font-normal">Match #{{ $stream->match_id }}</div>
                                 </td>
-                                <td class="px-5 py-3 text-slate-700 font-semibold">
-                                    {{ $payment->paidByUser?->name ?? $payment->paidByUser?->email ?? 'Admin/Guest' }}
-                                    @if($payment->paidByUser?->email)
-                                        <div class="text-[11px] text-slate-400 font-normal">{{ $payment->paidByUser->email }}</div>
+                                <td class="px-5 py-3 font-medium text-slate-700">
+                                    {{ $stream->paidByUser?->name ?? 'Admin Unlock' }}
+                                    @if($stream->paidByUser?->email)
+                                        <div class="text-[11px] text-slate-400">{{ $stream->paidByUser->email }}</div>
                                     @endif
                                 </td>
                                 <td class="px-5 py-3 font-black text-slate-900">
-                                    {{ $payment->currency }} {{ $payment->amount }}
+                                    {{ $stream->currency }} {{ $stream->amount }}
                                 </td>
                                 <td class="px-5 py-3">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase {{ $payment->status === 'active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-slate-100 text-slate-500' }}">
-                                        {{ $payment->status }}
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase {{ $stream->status === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-amber-50 text-amber-600' }}">
+                                        {{ $stream->status }}
                                     </span>
                                 </td>
                                 <td class="px-5 py-3 font-mono text-[11px] text-slate-600">
-                                    {{ $payment->paypal_order_id ?? 'N/A' }}
+                                    {{ $stream->paypal_order_id ?? 'N/A' }}
                                 </td>
                                 <td class="px-5 py-3 text-slate-600 font-medium">
-                                    {{ $payment->purchased_at?->format('Y-m-d H:i') ?? '—' }}
+                                    {{ $stream->purchased_at?->format('Y-m-d H:i') ?? '—' }}
                                 </td>
                             </tr>
                         @empty
@@ -157,7 +158,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-card>
         @endif
 
     </div>

@@ -93,6 +93,7 @@ Route::view('/pricing', 'legal.pricing')->name('pricing');
 Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy-policy');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::view('/refund-policy', 'legal.refund-policy')->name('refund-policy');
+Route::view('/design-system', 'design-system')->name('design-system');
 
 // Mobile app (SPA shell).
 //

@@ -1,45 +1,48 @@
 @extends('public.layouts.app')
 
 @section('title', $displayName . ' — ' . ($activeSport ? $activeSport->name : 'Player') . ' Profile & Career Stats')
-@section('meta_description', 'Explore career statistics, batting/bowling averages, recent matches, and bio of ' . $displayName . ' on AmaX.')
+@section('meta_description', 'Explore verified career statistics, averages, recent matches, and bio of ' . $displayName . ' on AmaX.')
 
 @section('content')
 
-{{-- ═══ HERO COVER & IDENTITY HEADER ═════════════════════════════════════════ --}}
-<section style="position: relative; background: #070b14; border-bottom: 1px solid rgba(255,255,255,0.08);">
+{{-- ═══ 1. HERO COVER & ATHLETE IDENTITY (PlayerProfile.io Signature Style) ═══ --}}
+<section class="relative bg-white border-b border-slate-200/80">
     {{-- Cover Photo Banner --}}
-    <div style="position: relative; height: 260px; width: 100%; overflow: hidden; background: linear-gradient(135deg, #0b1f3a 0%, #1e1b4b 50%, #0a0f1e 100%);">
+    <div class="relative h-56 sm:h-72 w-full overflow-hidden bg-slate-900">
         @if($coverPhotoUrl)
             <img src="{{ $coverPhotoUrl }}"
                  alt="{{ $displayName }} Cover"
-                 style="width: 100%; height: 100%; object-fit: cover; opacity: 0.65; cursor: pointer;"
+                 class="w-full h-full object-cover cursor-pointer transition-opacity hover:opacity-95"
                  onclick="openLightbox('{{ $coverPhotoUrl }}')"
-                 title="Click to view cover photo" />
+                 title="Click to zoom cover photo" />
         @else
-            {{-- Modern sports pattern fallback --}}
-            <div style="position: absolute; inset: 0; background: radial-gradient(circle at 80% 20%, rgba(245,158,11,0.2) 0%, transparent 60%), radial-gradient(circle at 20% 80%, rgba(99,102,241,0.15) 0%, transparent 60%);"></div>
-            <div style="position: absolute; inset: 0; opacity: 0.05; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 24px 24px;"></div>
+            {{-- Default Cinematic Arena Cover --}}
+            <img src="{{ asset('images/stadium-cta.jpg') }}"
+                 alt="Stadium Arena"
+                 class="w-full h-full object-cover object-center filter brightness-[0.75] saturate-110" />
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-slate-900/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(250,189,21,0.25),transparent_60%)]"></div>
         @endif
-        <div style="position: absolute; inset: 0; background: linear-gradient(to top, #070b14 0%, rgba(7,11,20,0.4) 60%, transparent 100%);"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent"></div>
     </div>
 
-    {{-- Player Header Strip --}}
-    <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; position: relative;">
-        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem; margin-top: -5rem; padding-bottom: 2rem;">
+    {{-- Athlete Identity Bar --}}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 -mt-20 sm:-mt-24 pb-8">
 
-            {{-- Avatar & Identity --}}
-            <div style="display: flex; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap;">
-                {{-- Circular Avatar --}}
-                <div style="position: relative; flex-shrink: 0;">
-                    <div style="width: 8.5rem; height: 8.5rem; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, #f59e0b, #eab308, #6366f1); box-shadow: 0 12px 30px rgba(0,0,0,0.6);">
+            {{-- Avatar & Bio Info --}}
+            <div class="flex flex-col sm:flex-row sm:items-end gap-5 sm:gap-6">
+                {{-- Circular Avatar with Light Ring --}}
+                <div class="relative shrink-0">
+                    <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full p-1 bg-white shadow-xl ring-4 ring-slate-100/80">
                         @if($photoUrl)
                             <img src="{{ $photoUrl }}"
                                  alt="{{ $displayName }}"
-                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #1e293b; cursor: pointer; display: block;"
+                                 class="w-full h-full rounded-full object-cover cursor-pointer hover:opacity-95 transition-opacity"
                                  onclick="openLightbox('{{ $photoUrl }}')"
-                                 title="Click to zoom profile photo" />
+                                 title="Click to view full photo" />
                         @else
-                            <div style="width: 100%; height: 100%; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 2.75rem; font-weight: 900; color: #f59e0b; text-transform: uppercase;">
+                            <div class="w-full h-full rounded-full bg-slate-100 flex items-center justify-center text-4xl font-black text-slate-700">
                                 {{ strtoupper(substr($displayName, 0, 1)) }}
                             </div>
                         @endif
@@ -47,90 +50,100 @@
                     @if($photoUrl)
                         <button onclick="openLightbox('{{ $photoUrl }}')"
                                 title="Zoom photo"
-                                style="position: absolute; bottom: 6px; right: 6px; background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 13px;">
-                            🔍
+                                class="absolute bottom-1 right-1 bg-white border border-slate-200 rounded-full w-8 h-8 flex items-center justify-center shadow-md text-slate-600 hover:text-brand-red transition-colors cursor-pointer"
+                                aria-label="Zoom profile image">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </button>
                     @endif
                 </div>
 
-                {{-- Name, Country & Roles --}}
-                <div style="margin-bottom: 0.5rem;">
-                    <div style="display: flex; align-items: center; gap: 0.625rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
-                        <h1 style="font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 900; color: #fff; line-height: 1.1; letter-spacing: -0.02em;">
+                {{-- Name & Primary Badges --}}
+                <div class="space-y-2 mb-1">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <h1 class="text-2xl sm:text-4xl font-black text-brand-charcoal tracking-tight">
                             {{ $displayName }}
                         </h1>
-                        <span style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #34d399; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.2rem 0.6rem; border-radius: 2rem;">
-                            ✓ Verified Player
-                        </span>
+                        <x-badge variant="gold" size="md" dot>Verified Athlete</x-badge>
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; color: rgba(203,213,225,0.8); font-size: 0.875rem;">
+                    <div class="flex flex-wrap items-center gap-2.5 text-xs font-semibold text-slate-600">
                         @if($player->country)
-                            <span style="display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.06); padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-weight: 600; color: #f1f5f9;">
+                            <span class="inline-flex items-center gap-1 bg-slate-100 px-2.5 py-1 rounded-full text-slate-800">
                                 📍 {{ $player->country }}
                             </span>
                         @endif
 
                         @if($detailedAge)
-                            <span style="background: rgba(255,255,255,0.06); padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-weight: 600; color: #f1f5f9;">
-                                ⏳ Age: <strong style="color: #fff;">{{ $detailedAge }}</strong>
+                            <span class="inline-flex items-center gap-1 bg-slate-100 px-2.5 py-1 rounded-full text-slate-800">
+                                ⏳ Age: <strong class="font-extrabold text-slate-900">{{ $detailedAge }}</strong>
                             </span>
                         @endif
 
                         @if(!empty($sportData['profile']?->playing_role))
-                            <span style="color: #fbbf24; font-weight: 700;">
-                                • {{ $sportData['profile']->playing_role }}
+                            <span class="inline-flex items-center gap-1 bg-red-50 text-brand-red border border-red-100 px-2.5 py-1 rounded-full font-bold">
+                                🏅 {{ $sportData['profile']->playing_role }}
                             </span>
                         @elseif(!empty($sportData['profile']?->player_position))
-                            <span style="color: #fbbf24; font-weight: 700;">
-                                • {{ $sportData['profile']->player_position }}
+                            <span class="inline-flex items-center gap-1 bg-red-50 text-brand-red border border-red-100 px-2.5 py-1 rounded-full font-bold">
+                                🏅 {{ $sportData['profile']->player_position }}
                             </span>
                         @endif
                     </div>
                 </div>
             </div>
 
-            {{-- Team & College Affiliations --}}
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; margin-bottom: 0.5rem;">
-                {{-- College / University Badge --}}
-                @if(!empty($sportData['college_university']))
-                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.375rem 0.875rem;">
-                        @if($collegeLogoUrl)
-                            <img src="{{ $collegeLogoUrl }}" alt="College" style="width: 1.5rem; height: 1.5rem; object-fit: contain; border-radius: 0.25rem;" />
-                        @else
-                            <span style="font-size: 1rem;">🎓</span>
-                        @endif
-                        <span style="font-size: 0.8125rem; font-weight: 700; color: #f1f5f9;">{{ $sportData['college_university'] }}</span>
-                    </div>
-                @endif
+            {{-- Right: Actions & Team Badges --}}
+            <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end gap-3 mb-1">
+                {{-- Team / College Chips --}}
+                <div class="flex flex-wrap items-center gap-2 justify-start lg:justify-end">
+                    @if(!empty($sportData['college_university']))
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-bold text-slate-700">
+                            @if($collegeLogoUrl)
+                                <img src="{{ $collegeLogoUrl }}" alt="College" class="w-4 h-4 object-contain rounded-xs" />
+                            @else
+                                <span>🎓</span>
+                            @endif
+                            <span>{{ $sportData['college_university'] }}</span>
+                        </div>
+                    @endif
 
-                {{-- Teams Pills --}}
-                @if(!empty($teamNames))
-                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
+                    @if(!empty($teamNames))
                         @foreach($teamNames as $teamName)
-                            <div style="display: inline-flex; align-items: center; gap: 0.375rem; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); border-radius: 0.625rem; padding: 0.3rem 0.75rem;">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold">
                                 @if(isset($teamLogos[$teamName]))
-                                    <img src="{{ $teamLogos[$teamName] }}" alt="{{ $teamName }}" style="width: 1.25rem; height: 1.25rem; object-fit: contain; border-radius: 0.25rem;" />
+                                    <img src="{{ $teamLogos[$teamName] }}" alt="{{ $teamName }}" class="w-4 h-4 object-contain rounded-xs" />
                                 @else
-                                    <span style="font-size: 0.875rem;">🛡️</span>
+                                    <span>🛡️</span>
                                 @endif
-                                <span style="font-size: 0.75rem; font-weight: 800; color: #f59e0b;">{{ $teamName }}</span>
+                                <span>{{ $teamName }}</span>
                             </div>
                         @endforeach
-                    </div>
-                @endif
-            </div>
+                    @endif
+                </div>
 
+                {{-- Action CTAs --}}
+                <div class="flex items-center gap-2">
+                    <x-button type="button" variant="secondary" size="sm" onclick="copyProfileLink()" id="share-btn">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                        <span id="share-btn-text">Share Profile</span>
+                    </x-button>
+
+                    <x-button type="button" variant="dark" size="sm" onclick="window.print()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        <span>Print CV</span>
+                    </x-button>
+                </div>
+            </div>
         </div>
 
-        {{-- ── MULTI-SPORT SWITCHER (If Player has multiple sports) ── --}}
+        {{-- Multi-Sport Switcher Bar (if player plays multiple sports) --}}
         @if($playerSportsList->count() > 1)
-            <div style="display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.75rem; margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.875rem;">
-                <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.7); margin-right: 0.5rem; white-space: nowrap;">Sports:</span>
+            <div class="border-t border-slate-100 py-3 flex items-center gap-2 overflow-x-auto scrollbar-none">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mr-2 shrink-0">Sport:</span>
                 @foreach($playerSportsList as $s)
                     @php $isActiveSport = ($s['slug'] === $activeSlug); @endphp
                     <a href="{{ route('public.players.show', ['player' => $player->id, 'sportSlug' => $s['slug']]) }}"
-                       style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.4rem 0.875rem; border-radius: 2rem; font-size: 0.8125rem; font-weight: 700; text-decoration: none; transition: all 0.15s; white-space: nowrap; {{ $isActiveSport ? 'background: #f59e0b; color: #111827; box-shadow: 0 4px 12px rgba(245,158,11,0.3);' : 'background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.1);' }}">
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 {{ $isActiveSport ? 'bg-brand-red text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                         <span>{{ $s['icon'] }}</span>
                         <span>{{ $s['name'] }}</span>
                     </a>
@@ -140,194 +153,183 @@
     </div>
 </section>
 
-{{-- ═══ CRICINFO-STYLE QUICK PERSONAL BIO STRIP ═══════════════════════════════ --}}
-<section style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 1rem 1.5rem;">
-    <div style="max-width: 1280px; margin: 0 auto;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; text-align: left;">
+{{-- ═══ 2. QUICK BIOGRAPHICAL ATTRIBUTES BAR ═════════════════════════════════ --}}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4 text-left">
             <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Full Name</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ $displayName }}</div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Full Name</span>
+                <span class="text-sm font-bold text-slate-900 block mt-0.5 truncate">{{ $displayName }}</span>
             </div>
-
             @if($bornDateFormatted)
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Born</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ $bornDateFormatted }}</div>
-            </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Birth Date</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ $bornDateFormatted }}</span>
+                </div>
             @endif
-
             @if($detailedAge)
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Age</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #f59e0b; margin-top: 0.15rem;">{{ $detailedAge }}</div>
-            </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Current Age</span>
+                    <span class="text-sm font-bold text-brand-red block mt-0.5">{{ $detailedAge }}</span>
+                </div>
             @endif
-
             @if(!empty($sportData['height']))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Height</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ $sportData['height'] }}</div>
-            </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Height</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ $sportData['height'] }}</span>
+                </div>
             @endif
-
-            @if(!empty($sportData['profile']?->playing_role))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Playing Role</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ $sportData['profile']->playing_role }}</div>
-            </div>
-            @endif
-
             @if(!empty($sportData['profile']?->batting_style))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Batting Style</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ $sportData['profile']->batting_style }}</div>
-            </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Batting Style</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ $sportData['profile']->batting_style }}</span>
+                </div>
             @endif
-
             @if(!empty($sportData['profile']?->bowling_style))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Bowling Style</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ $sportData['profile']->bowling_style }}</div>
-            </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Bowling Style</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ $sportData['profile']->bowling_style }}</span>
+                </div>
             @endif
-
-            @if(!empty($sportData['profile']?->player_position))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Position</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ $sportData['profile']->player_position }}</div>
-            </div>
-            @endif
-
-            @if(!empty($sportData['profile']?->dominant_leg))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Dominant Leg</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ ucfirst((string) $sportData['profile']->dominant_leg) }}</div>
-            </div>
-            @endif
-
             @if(!empty($sportData['profile']?->dominant_hand))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Dominant Hand</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #fff; margin-top: 0.15rem;">{{ ucfirst((string) $sportData['profile']->dominant_hand) }}</div>
-            </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Dominant Hand</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ ucfirst((string) $sportData['profile']->dominant_hand) }}</span>
+                </div>
             @endif
-
+            @if(!empty($sportData['profile']?->dominant_leg))
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Dominant Leg</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ ucfirst((string) $sportData['profile']->dominant_leg) }}</span>
+                </div>
+            @endif
+            @if(!empty($sportData['profile']?->player_position))
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Position</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ $sportData['profile']->player_position }}</span>
+                </div>
+            @endif
+            @if(!empty($sportData['profile']?->weight))
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Weight</span>
+                    <span class="text-sm font-bold text-slate-900 block mt-0.5">{{ $sportData['profile']->weight }} kg</span>
+                </div>
+            @endif
+            @if(!empty($sportData['profile']?->fide_id))
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">FIDE ID</span>
+                    <span class="text-sm font-mono font-bold text-slate-900 block mt-0.5">{{ $sportData['profile']->fide_id }}</span>
+                </div>
+            @endif
             @if(!empty($sportData['profile']?->current_ranking))
-            <div>
-                <div style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(148,163,184,0.6);">Current Rank</div>
-                <div style="font-size: 0.875rem; font-weight: 800; color: #38bdf8; margin-top: 0.15rem;">#{{ $sportData['profile']->current_ranking }}</div>
-            </div>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Ranking</span>
+                    <span class="text-sm font-extrabold text-amber-600 block mt-0.5">#{{ $sportData['profile']->current_ranking }}</span>
+                </div>
             @endif
         </div>
     </div>
 </section>
 
-{{-- ═══ CRICINFO-STYLE TABBED MAIN CONTENT ════════════════════════════════════ --}}
-<section style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem; flex: 1;">
+{{-- ═══ 3. TABBED PROFILE CONTENT ═════════════════════════════════════════════ --}}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1">
 
     {{-- Tabs Navigation Bar --}}
-    <div style="display: flex; align-items: center; gap: 0.5rem; border-bottom: 2px solid rgba(255,255,255,0.08); margin-bottom: 2rem; overflow-x: auto;">
+    <div class="border-b border-slate-200 mb-8 overflow-x-auto flex space-x-8">
         <button id="tab-btn-overview"
-                onclick="switchTab('overview')"
-                class="profile-tab-btn active"
-                style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.75rem 1.25rem; font-size: 0.9375rem; font-weight: 700; cursor: pointer; background: none; border: none; border-bottom: 3px solid transparent; color: #f59e0b; border-color: #f59e0b; margin-bottom: -2px; transition: all 0.15s; white-space: nowrap;">
-            👤 Overview
+                onclick="switchProfileTab('overview')"
+                class="profile-tab-btn border-b-2 border-brand-red text-brand-red font-bold text-sm py-3 px-1 flex items-center gap-2 cursor-pointer transition-colors">
+            <span>👤 Overview &amp; Bio</span>
         </button>
 
         <button id="tab-btn-stats"
-                onclick="switchTab('stats')"
-                class="profile-tab-btn"
-                style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.75rem 1.25rem; font-size: 0.9375rem; font-weight: 700; cursor: pointer; background: none; border: none; border-bottom: 3px solid transparent; color: rgba(148,163,184,0.8); margin-bottom: -2px; transition: all 0.15s; white-space: nowrap;">
-            📊 Career Stats
+                onclick="switchProfileTab('stats')"
+                class="profile-tab-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm py-3 px-1 flex items-center gap-2 cursor-pointer transition-colors">
+            <span>📊 Career Statistics</span>
         </button>
 
         <button id="tab-btn-matches"
-                onclick="switchTab('matches')"
-                class="profile-tab-btn"
-                style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.75rem 1.25rem; font-size: 0.9375rem; font-weight: 700; cursor: pointer; background: none; border: none; border-bottom: 3px solid transparent; color: rgba(148,163,184,0.8); margin-bottom: -2px; transition: all 0.15s; white-space: nowrap;">
-            📅 Matches &amp; Events
+                onclick="switchProfileTab('matches')"
+                class="profile-tab-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm py-3 px-1 flex items-center gap-2 cursor-pointer transition-colors">
+            <span>📅 Match Logs</span>
         </button>
 
         <button id="tab-btn-achievements"
-                onclick="switchTab('achievements')"
-                class="profile-tab-btn"
-                style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.75rem 1.25rem; font-size: 0.9375rem; font-weight: 700; cursor: pointer; background: none; border: none; border-bottom: 3px solid transparent; color: rgba(148,163,184,0.8); margin-bottom: -2px; transition: all 0.15s; white-space: nowrap;">
-            🏆 Achievements ({{ count($achievements) }})
+                onclick="switchProfileTab('achievements')"
+                class="profile-tab-btn border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm py-3 px-1 flex items-center gap-2 cursor-pointer transition-colors">
+            <span>🏆 Honors &amp; Achievements</span>
+            <span class="bg-amber-100 text-amber-900 text-xs px-2 py-0.5 rounded-full">{{ count($achievements) }}</span>
         </button>
     </div>
 
     {{-- ── TAB 1: OVERVIEW ── --}}
-    <div id="tab-panel-overview" class="tab-panel" style="display: block;">
-        {{-- KPI Cards Grid (if present) --}}
+    <div id="tab-panel-overview" class="profile-tab-panel space-y-8">
+        {{-- KPI StatCards Grid (if present) --}}
         @if(!empty($sportData['kpi_cards']))
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 @foreach($sportData['kpi_cards'] as $kpi)
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 1.25rem; text-align: center; position: relative; overflow: hidden;">
-                        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.7); margin-bottom: 0.25rem;">
-                            {{ $kpi['label'] }}
-                        </div>
-                        <div style="font-size: 1.75rem; font-weight: 900; color: {{ $kpi['color'] ?? '#fff' }};">
-                            {{ $kpi['value'] }}
-                        </div>
-                        @if(!empty($kpi['sub']))
-                            <div style="font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.7); margin-top: 0.25rem;">
-                                {{ $kpi['sub'] }}
-                            </div>
-                        @endif
-                    </div>
+                    <x-stat-card
+                        :label="$kpi['label']"
+                        :value="$kpi['value']"
+                        :subtext="$kpi['sub'] ?? null"
+                        accent="gold"
+                    />
                 @endforeach
             </div>
         @endif
 
-        {{-- Overview Cards Row --}}
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {{-- Personal & Technical Attributes --}}
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem;">
-                <h3 style="font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                    📋 Biographical &amp; Physical Information
-                </h3>
-                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.625rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.875rem;">
-                        <span style="color: rgba(148,163,184,0.7);">Nationality</span>
-                        <strong style="color: #fff;">{{ $player->country ?: '—' }}</strong>
+            <x-card>
+                <x-slot:header>
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <span>📋 Technical &amp; Physical Specifications</span>
+                    </h3>
+                </x-slot:header>
+
+                <div class="divide-y divide-slate-100 text-sm">
+                    <div class="py-2.5 flex justify-between">
+                        <span class="text-slate-500">Nationality</span>
+                        <span class="font-bold text-slate-900">{{ $player->country ?: '—' }}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.625rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.875rem;">
-                        <span style="color: rgba(148,163,184,0.7);">Birth Date</span>
-                        <strong style="color: #fff;">{{ $bornDateFormatted ?: '—' }}</strong>
+                    <div class="py-2.5 flex justify-between">
+                        <span class="text-slate-500">Date of Birth</span>
+                        <span class="font-bold text-slate-900">{{ $bornDateFormatted ?: '—' }}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.625rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.875rem;">
-                        <span style="color: rgba(148,163,184,0.7);">Current Age</span>
-                        <strong style="color: #f59e0b;">{{ $detailedAge ?: '—' }}</strong>
+                    <div class="py-2.5 flex justify-between">
+                        <span class="text-slate-500">Age</span>
+                        <span class="font-bold text-brand-red">{{ $detailedAge ?: '—' }}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.625rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.875rem;">
-                        <span style="color: rgba(148,163,184,0.7);">Height</span>
-                        <strong style="color: #fff;">{{ $sportData['height'] ?: '—' }}</strong>
+                    <div class="py-2.5 flex justify-between">
+                        <span class="text-slate-500">Height</span>
+                        <span class="font-bold text-slate-900">{{ $sportData['height'] ?: '—' }}</span>
                     </div>
                     @foreach($sportData['overview_fields'] as $field)
-                        <div style="display: flex; justify-content: space-between; padding-bottom: 0.625rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.875rem;">
-                            <span style="color: rgba(148,163,184,0.7);">{{ $field['label'] }}</span>
-                            <strong style="color: #fff;">{{ $field['value'] ?: '—' }}</strong>
+                        <div class="py-2.5 flex justify-between">
+                            <span class="text-slate-500">{{ $field['label'] }}</span>
+                            <span class="font-bold text-slate-900">{{ $field['value'] ?: '—' }}</span>
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-card>
 
-            {{-- Sport-Specific Technical Breakdown (e.g. Cricket Pitch/Ball or Athletics Personal Bests) --}}
+            {{-- Sport-Specific Technical Breakdown or Personal Bests --}}
             @if($activeSlug === 'cricket')
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem;">
-                    <h3 style="font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                        🎯 Delivery &amp; Bowling Distribution
-                    </h3>
+                <x-card>
+                    <x-slot:header>
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <span>🎯 Bowling &amp; Delivery Breakdown</span>
+                        </h3>
+                    </x-slot:header>
 
                     @if(!empty($sportData['pitching_line_breakdown']))
-                        <div style="margin-bottom: 1.25rem;">
-                            <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #fbbf24; margin-bottom: 0.625rem;">Pitching Line Breakdown</div>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; text-align: center;">
+                        <div class="mb-5">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Pitching Line</span>
+                            <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 text-center">
                                 @foreach($sportData['pitching_line_breakdown'] as $lineKey => $lineVal)
-                                    <div style="background: rgba(255,255,255,0.04); padding: 0.5rem; border-radius: 0.5rem;">
-                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.7); text-transform: uppercase; font-weight: 700;">{{ ucwords(str_replace('_', ' ', $lineKey)) }}</div>
-                                        <div style="font-weight: 900; font-size: 0.9375rem; color: #fff;">{{ $lineVal }}%</div>
+                                    <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase truncate">{{ ucwords(str_replace('_', ' ', $lineKey)) }}</div>
+                                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">{{ $lineVal }}%</div>
                                     </div>
                                 @endforeach
                             </div>
@@ -336,12 +338,12 @@
 
                     @if(!empty($sportData['ball_type_breakdown']))
                         <div>
-                            <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #38bdf8; margin-bottom: 0.625rem;">Ball Type Breakdown</div>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; text-align: center;">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Ball Type</span>
+                            <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 text-center">
                                 @foreach($sportData['ball_type_breakdown'] as $ballKey => $ballVal)
-                                    <div style="background: rgba(255,255,255,0.04); padding: 0.5rem; border-radius: 0.5rem;">
-                                        <div style="font-size: 0.65rem; color: rgba(148,163,184,0.7); text-transform: uppercase; font-weight: 700;">{{ ucwords(str_replace('_', ' ', $ballKey)) }}</div>
-                                        <div style="font-weight: 900; font-size: 0.9375rem; color: #fff;">{{ $ballVal }}%</div>
+                                    <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                                        <div class="text-[10px] font-bold text-slate-400 uppercase truncate">{{ ucwords(str_replace('_', ' ', $ballKey)) }}</div>
+                                        <div class="text-sm font-extrabold text-slate-900 mt-0.5">{{ $ballVal }}%</div>
                                     </div>
                                 @endforeach
                             </div>
@@ -349,233 +351,272 @@
                     @endif
 
                     @if(empty($sportData['pitching_line_breakdown']) && empty($sportData['ball_type_breakdown']))
-                        <p style="font-size: 0.8125rem; color: rgba(148,163,184,0.6); text-align: center; padding: 2rem 0;">No delivery breakdown recorded yet.</p>
+                        <div class="text-center py-8 text-slate-400 text-xs">
+                            No delivery breakdown recorded yet for this athlete.
+                        </div>
                     @endif
-                </div>
+                </x-card>
 
             @elseif(!empty($sportData['personal_bests']))
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem;">
-                    <h3 style="font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                        ⏱️ Personal Bests &amp; Records
-                    </h3>
-                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <x-card>
+                    <x-slot:header>
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <span>⏱️ Personal Bests &amp; Track Records</span>
+                        </h3>
+                    </x-slot:header>
+
+                    <div class="divide-y divide-slate-100 text-sm">
                         @foreach($sportData['personal_bests'] as $pb)
-                            <div style="display: flex; justify-content: space-between; padding-bottom: 0.625rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.875rem;">
-                                <span style="color: rgba(148,163,184,0.8); font-weight: 600;">{{ $pb['event'] }}</span>
-                                <strong style="color: #f59e0b; font-size: 0.9375rem;">{{ $pb['record'] }}</strong>
+                            <div class="py-2.5 flex justify-between items-center">
+                                <span class="text-slate-600 font-medium">{{ $pb['event'] }}</span>
+                                <span class="font-extrabold text-brand-red text-base">{{ $pb['record'] }}</span>
                             </div>
                         @endforeach
                     </div>
-                </div>
-            @endif
+                </x-card>
+            @else
+                <x-card>
+                    <x-slot:header>
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <span>🛡️ Athlete Passport &amp; Profile Summary</span>
+                        </h3>
+                    </x-slot:header>
 
+                    <div class="space-y-4 text-xs">
+                        <p class="text-slate-600 leading-relaxed">
+                            Verified athlete profile registered under <strong class="text-slate-900 font-bold">{{ $activeSport ? $activeSport->name : 'AmaX' }}</strong>. Verified career metrics, match fixture results, and honors are recorded on this official page.
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Registered Disciplines</span>
+                                <span class="text-base font-black text-brand-charcoal mt-1 block">{{ $playerSportsList->count() }} {{ Str::plural('Sport', $playerSportsList->count()) }}</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Honors Earned</span>
+                                <span class="text-base font-black text-amber-600 mt-1 block">{{ count($achievements) }} {{ Str::plural('Award', count($achievements)) }}</span>
+                            </div>
+                        </div>
+
+                        @if(!empty($teamNames))
+                            <div class="pt-2 border-t border-slate-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Affiliated Teams / Clubs</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    @foreach($teamNames as $tName)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold">
+                                            🛡️ {{ $tName }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </x-card>
+            @endif
         </div>
 
-        {{-- Photo Gallery Section (Up to 10 photos) --}}
+        {{-- Photo Gallery (if any) --}}
         @if(!empty($galleryPhotos))
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem;">
-                <h3 style="font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                    📸 Photo Gallery ({{ count($galleryPhotos) }})
-                </h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.875rem;">
+            <x-card>
+                <x-slot:header>
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                        <span>📸 Athlete Gallery ({{ count($galleryPhotos) }})</span>
+                    </h3>
+                </x-slot:header>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                     @foreach($galleryPhotos as $photo)
-                        <div style="position: relative; aspect-ratio: 1; border-radius: 0.75rem; overflow: hidden; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;"
+                        <div class="aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200 cursor-pointer group"
                              onclick="openLightbox('{{ $photo['url'] }}')">
-                            <img src="{{ $photo['url'] }}" alt="Gallery" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s;"
-                                 onmouseover="this.style.transform='scale(1.05)'"
-                                 onmouseout="this.style.transform='scale(1)'" />
+                            <img src="{{ $photo['url'] }}" alt="Gallery" class="w-full h-full object-cover transition-transform group-hover:scale-105" />
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-card>
         @endif
-
     </div>
 
-    {{-- ── TAB 2: CRICINFO CAREER STATS ── --}}
-    <div id="tab-panel-stats" class="tab-panel" style="display: none;">
-
-        {{-- CRICKET SPECIFIC STATS TABLES --}}
-        @if($activeSlug === 'cricket')
-
+    {{-- ── TAB 2: CAREER STATISTICS ── --}}
+    <div id="tab-panel-stats" class="profile-tab-panel hidden space-y-8">
+        @if(!empty($sportData['batting_stats']) || !empty($sportData['bowling_stats']))
             {{-- 1. Batting Career Statistics Table --}}
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
-                    <h3 style="font-size: 1.125rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
-                        🏏 Batting &amp; Fielding Career Statistics
-                    </h3>
-                    <span style="font-size: 0.75rem; color: rgba(148,163,184,0.6);">Official Career Log</span>
-                </div>
+            <x-card>
+                <x-slot:header>
+                    <div class="flex items-center justify-between w-full">
+                        <h3 class="font-bold text-slate-900 text-sm">
+                            {{ $activeSlug === 'soft-ball-cricket' ? '🏏 Softball Cricket Batting Career Statistics' : '🏏 Batting & Fielding Career Statistics' }}
+                        </h3>
+                        <x-badge variant="gold">Official Records</x-badge>
+                    </div>
+                </x-slot:header>
 
                 @if(!empty($sportData['batting_stats']))
-                    <div class="cricinfo-table-container" style="overflow-x: auto;">
-                        <table class="cricinfo-table">
+                    <div class="overflow-x-auto -mx-5 -mb-5 sm:-mx-6 sm:-mb-6">
+                        <table class="w-full text-xs text-center border-collapse">
                             <thead>
-                                <tr>
-                                    <th style="text-align: left;">Division</th>
-                                    <th style="text-align: left;">Category</th>
-                                    <th style="text-align: left;">Match Type</th>
-                                    <th>Mat</th>
-                                    <th>Inns</th>
-                                    <th>NO</th>
-                                    <th style="color: #f59e0b;">Runs</th>
-                                    <th>HS</th>
-                                    <th>Avg</th>
-                                    <th>SR</th>
-                                    <th>100s</th>
-                                    <th>50s</th>
-                                    <th>4s</th>
-                                    <th>6s</th>
-                                    <th>Ct</th>
-                                    <th>St</th>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                                    <th class="py-3 px-4 text-left">Format</th>
+                                    <th class="py-3 px-4 text-left">Category</th>
+                                    @if($activeSlug === 'cricket')
+                                        <th class="py-3 px-4 text-left">Type</th>
+                                    @endif
+                                    <th class="py-3 px-2">Mat</th>
+                                    <th class="py-3 px-2">Inns</th>
+                                    <th class="py-3 px-2">NO</th>
+                                    <th class="py-3 px-3 font-extrabold text-brand-red">Runs</th>
+                                    <th class="py-3 px-2">HS</th>
+                                    <th class="py-3 px-3 font-extrabold text-slate-900">Avg</th>
+                                    <th class="py-3 px-2">SR</th>
+                                    <th class="py-3 px-2 text-amber-600">100s</th>
+                                    <th class="py-3 px-2 text-amber-600">50s</th>
+                                    <th class="py-3 px-2">4s</th>
+                                    <th class="py-3 px-2">6s</th>
+                                    <th class="py-3 px-2">Ct</th>
+                                    @if($activeSlug === 'cricket')
+                                        <th class="py-3 px-2">St</th>
+                                    @endif
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
                                 @foreach($sportData['batting_stats'] as $row)
-                                    <tr>
-                                        <td style="text-align: left; font-weight: 700; color: #fff;">{{ $row['format'] }}</td>
-                                        <td style="text-align: left; color: rgba(203,213,225,0.8);">{{ $row['category'] }}</td>
-                                        <td style="text-align: left; color: rgba(148,163,184,0.7);">{{ $row['match_type'] }}</td>
-                                        <td>{{ $row['matches'] ?: '—' }}</td>
-                                        <td>{{ $row['innings'] ?: '—' }}</td>
-                                        <td>{{ $row['not_out'] ?: '—' }}</td>
-                                        <td style="font-weight: 800; color: #f59e0b;">{{ $row['runs'] ?: '0' }}</td>
-                                        <td>{{ $row['hs'] ?: '—' }}</td>
-                                        <td style="font-weight: 700; color: #fff;">{{ $row['average'] !== null && $row['average'] !== '' ? number_format((float)$row['average'], 2) : '—' }}</td>
-                                        <td>{{ $row['sr'] !== null && $row['sr'] !== '' ? number_format((float)$row['sr'], 1) : '—' }}</td>
-                                        <td style="color: #fbbf24;">{{ $row['hundreds'] ?: '0' }}</td>
-                                        <td style="color: #fbbf24;">{{ $row['fifties'] ?: '0' }}</td>
-                                        <td>{{ $row['fours'] ?: '0' }}</td>
-                                        <td>{{ $row['sixes'] ?: '0' }}</td>
-                                        <td>{{ $row['catches'] ?: '0' }}</td>
-                                        <td>{{ $row['stumpings'] ?: '0' }}</td>
+                                    <tr class="hover:bg-red-50/30 transition-colors">
+                                        <td class="py-3 px-4 text-left font-bold text-slate-900">{{ $row['format'] }}</td>
+                                        <td class="py-3 px-4 text-left text-slate-500">{{ $row['category'] }}</td>
+                                        @if($activeSlug === 'cricket')
+                                            <td class="py-3 px-4 text-left text-slate-400">{{ $row['match_type'] ?? '—' }}</td>
+                                        @endif
+                                        <td class="py-3 px-2">{{ $row['matches'] ?: '—' }}</td>
+                                        <td class="py-3 px-2">{{ $row['innings'] ?: '—' }}</td>
+                                        <td class="py-3 px-2">{{ $row['not_out'] ?: '—' }}</td>
+                                        <td class="py-3 px-3 font-extrabold text-brand-red text-sm">{{ $row['runs'] ?: '0' }}</td>
+                                        <td class="py-3 px-2 font-bold">{{ $row['hs'] ?: '—' }}</td>
+                                        <td class="py-3 px-3 font-bold text-slate-900">{{ $row['average'] !== null && $row['average'] !== '' ? number_format((float)$row['average'], 2) : '—' }}</td>
+                                        <td class="py-3 px-2">{{ $row['sr'] !== null && $row['sr'] !== '' ? number_format((float)$row['sr'], 1) : '—' }}</td>
+                                        <td class="py-3 px-2 font-bold text-amber-600">{{ $row['hundreds'] ?: '0' }}</td>
+                                        <td class="py-3 px-2 font-bold text-amber-600">{{ $row['fifties'] ?: '0' }}</td>
+                                        <td class="py-3 px-2">{{ $row['fours'] ?: '0' }}</td>
+                                        <td class="py-3 px-2">{{ $row['sixes'] ?: '0' }}</td>
+                                        <td class="py-3 px-2">{{ $row['catches'] ?: '0' }}</td>
+                                        @if($activeSlug === 'cricket')
+                                            <td class="py-3 px-2">{{ $row['stumpings'] ?: '0' }}</td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                 @else
-                    <p style="font-size: 0.875rem; color: rgba(148,163,184,0.6); text-align: center; padding: 2rem 0;">No batting statistics recorded yet.</p>
+                    <p class="text-center py-8 text-xs text-slate-400">No batting statistics recorded yet.</p>
                 @endif
-            </div>
+            </x-card>
 
             {{-- 2. Bowling Career Statistics Table --}}
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
-                    <h3 style="font-size: 1.125rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
-                        ⚾ Bowling Career Statistics
-                    </h3>
-                    <span style="font-size: 0.75rem; color: rgba(148,163,184,0.6);">Official Career Log</span>
-                </div>
+            <x-card>
+                <x-slot:header>
+                    <div class="flex items-center justify-between w-full">
+                        <h3 class="font-bold text-slate-900 text-sm">
+                            {{ $activeSlug === 'soft-ball-cricket' ? '⚾ Softball Cricket Bowling Career Statistics' : '⚾ Bowling Career Statistics' }}
+                        </h3>
+                        <x-badge variant="gold">Official Records</x-badge>
+                    </div>
+                </x-slot:header>
 
                 @if(!empty($sportData['bowling_stats']))
-                    <div class="cricinfo-table-container" style="overflow-x: auto;">
-                        <table class="cricinfo-table">
+                    <div class="overflow-x-auto -mx-5 -mb-5 sm:-mx-6 sm:-mb-6">
+                        <table class="w-full text-xs text-center border-collapse">
                             <thead>
-                                <tr>
-                                    <th style="text-align: left;">Division</th>
-                                    <th style="text-align: left;">Category</th>
-                                    <th style="text-align: left;">Match Type</th>
-                                    <th>Mat</th>
-                                    <th>Inns</th>
-                                    <th>Balls</th>
-                                    <th>Dots</th>
-                                    <th>Runs</th>
-                                    <th style="color: #38bdf8;">Wkts</th>
-                                    <th>BBI</th>
-                                    <th>BBM</th>
-                                    <th>Avg</th>
-                                    <th>Econ</th>
-                                    <th>SR</th>
-                                    <th>4w</th>
-                                    <th>5w</th>
-                                    <th>10w</th>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                                    <th class="py-3 px-4 text-left">Format</th>
+                                    <th class="py-3 px-4 text-left">Category</th>
+                                    @if($activeSlug === 'cricket')
+                                        <th class="py-3 px-4 text-left">Type</th>
+                                    @endif
+                                    <th class="py-3 px-2">Mat</th>
+                                    <th class="py-3 px-2">Inns</th>
+                                    <th class="py-3 px-2">Balls</th>
+                                    @if($activeSlug === 'cricket')
+                                        <th class="py-3 px-2">Dots</th>
+                                    @endif
+                                    <th class="py-3 px-2">Runs</th>
+                                    <th class="py-3 px-3 font-extrabold text-brand-red">Wkts</th>
+                                    <th class="py-3 px-2 font-bold">BBI</th>
+                                    @if($activeSlug === 'cricket')
+                                        <th class="py-3 px-2">BBM</th>
+                                    @endif
+                                    <th class="py-3 px-3 font-extrabold text-slate-900">Avg</th>
+                                    <th class="py-3 px-2">Econ</th>
+                                    @if($activeSlug === 'cricket')
+                                        <th class="py-3 px-2">SR</th>
+                                        <th class="py-3 px-2 text-amber-600">4w</th>
+                                    @endif
+                                    <th class="py-3 px-2 text-amber-600">5w</th>
+                                    @if($activeSlug === 'cricket')
+                                        <th class="py-3 px-2 text-amber-600">10w</th>
+                                    @endif
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
                                 @foreach($sportData['bowling_stats'] as $row)
-                                    <tr>
-                                        <td style="text-align: left; font-weight: 700; color: #fff;">{{ $row['format'] }}</td>
-                                        <td style="text-align: left; color: rgba(203,213,225,0.8);">{{ $row['category'] }}</td>
-                                        <td style="text-align: left; color: rgba(148,163,184,0.7);">{{ $row['match_type'] }}</td>
-                                        <td>{{ $row['matches'] ?: '—' }}</td>
-                                        <td>{{ $row['innings'] ?: '—' }}</td>
-                                        <td>{{ $row['balls'] ?: '—' }}</td>
-                                        <td>{{ $row['dot_balls'] ?: '—' }}</td>
-                                        <td>{{ $row['runs'] ?: '—' }}</td>
-                                        <td style="font-weight: 800; color: #38bdf8;">{{ $row['wickets'] ?: '0' }}</td>
-                                        <td style="font-weight: 700; color: #fff;">{{ $row['bbi'] ?: '—' }}</td>
-                                        <td>{{ $row['bbm'] ?: '—' }}</td>
-                                        <td>{{ $row['average'] !== null && $row['average'] !== '' ? number_format((float)$row['average'], 2) : '—' }}</td>
-                                        <td style="font-weight: 700; color: #fff;">{{ $row['economy'] !== null && $row['economy'] !== '' ? number_format((float)$row['economy'], 2) : '—' }}</td>
-                                        <td>{{ $row['sr'] !== null && $row['sr'] !== '' ? number_format((float)$row['sr'], 1) : '—' }}</td>
-                                        <td style="color: #818cf8;">{{ $row['four_w'] ?: '0' }}</td>
-                                        <td style="color: #818cf8;">{{ $row['five_w'] ?: '0' }}</td>
-                                        <td style="color: #818cf8;">{{ $row['ten_w'] ?: '0' }}</td>
+                                    <tr class="hover:bg-red-50/30 transition-colors">
+                                        <td class="py-3 px-4 text-left font-bold text-slate-900">{{ $row['format'] }}</td>
+                                        <td class="py-3 px-4 text-left text-slate-500">{{ $row['category'] }}</td>
+                                        @if($activeSlug === 'cricket')
+                                            <td class="py-3 px-4 text-left text-slate-400">{{ $row['match_type'] ?? '—' }}</td>
+                                        @endif
+                                        <td class="py-3 px-2">{{ $row['matches'] ?: '—' }}</td>
+                                        <td class="py-3 px-2">{{ $row['innings'] ?: '—' }}</td>
+                                        <td class="py-3 px-2">{{ $row['balls'] ?: '—' }}</td>
+                                        @if($activeSlug === 'cricket')
+                                            <td class="py-3 px-2">{{ $row['dot_balls'] ?? '—' }}</td>
+                                        @endif
+                                        <td class="py-3 px-2">{{ $row['runs'] ?: '—' }}</td>
+                                        <td class="py-3 px-3 font-extrabold text-brand-red text-sm">{{ $row['wickets'] ?: '0' }}</td>
+                                        <td class="py-3 px-2 font-bold text-slate-900">{{ $row['bbi'] ?: '—' }}</td>
+                                        @if($activeSlug === 'cricket')
+                                            <td class="py-3 px-2">{{ $row['bbm'] ?? '—' }}</td>
+                                        @endif
+                                        <td class="py-3 px-3 font-bold text-slate-900">{{ $row['average'] !== null && $row['average'] !== '' ? number_format((float)$row['average'], 2) : '—' }}</td>
+                                        <td class="py-3 px-2">{{ $row['economy'] !== null && $row['economy'] !== '' ? number_format((float)$row['economy'], 2) : '—' }}</td>
+                                        @if($activeSlug === 'cricket')
+                                            <td class="py-3 px-2">{{ $row['sr'] !== null && $row['sr'] !== '' ? number_format((float)$row['sr'], 1) : '—' }}</td>
+                                            <td class="py-3 px-2 font-bold text-amber-600">{{ $row['four_w'] ?? '0' }}</td>
+                                        @endif
+                                        <td class="py-3 px-2 font-bold text-amber-600">{{ $row['five_w'] ?? '0' }}</td>
+                                        @if($activeSlug === 'cricket')
+                                            <td class="py-3 px-2 font-bold text-amber-600">{{ $row['ten_w'] ?? '0' }}</td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                 @else
-                    <p style="font-size: 0.875rem; color: rgba(148,163,184,0.6); text-align: center; padding: 2rem 0;">No bowling statistics recorded yet.</p>
+                    <p class="text-center py-8 text-xs text-slate-400">No bowling statistics recorded yet.</p>
                 @endif
-            </div>
+            </x-card>
 
-            {{-- 3. Drop Catches Table (if any) --}}
-            @if(!empty($sportData['drop_catches']))
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.125rem; font-weight: 800; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                        🧤 Fielding &amp; Catch Opportunities Log
-                    </h3>
-                    <div class="cricinfo-table-container" style="overflow-x: auto;">
-                        <table class="cricinfo-table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left;">Division</th>
-                                    <th style="text-align: left;">Category</th>
-                                    <th style="text-align: left;">Field Position</th>
-                                    <th style="text-align: left;">Reason / Context</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($sportData['drop_catches'] as $dc)
-                                    <tr>
-                                        <td style="text-align: left; font-weight: 700; color: #fff;">{{ $dc['format'] }}</td>
-                                        <td style="text-align: left; color: rgba(203,213,225,0.8);">{{ $dc['category'] }}</td>
-                                        <td style="text-align: left; color: #fbbf24; font-weight: 700;">{{ $dc['field_position'] }}</td>
-                                        <td style="text-align: left; color: rgba(148,163,184,0.8);">{{ $dc['drop_reason'] }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            @endif
-
-        {{-- OTHER SPORTS STATS TABLES --}}
         @elseif(!empty($sportData['stat_tables']))
             @foreach($sportData['stat_tables'] as $statTable)
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.125rem; font-weight: 800; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                        📊 {{ $statTable['title'] }}
-                    </h3>
+                <x-card>
+                    <x-slot:header>
+                        <h3 class="font-bold text-slate-900 text-sm">📊 {{ $statTable['title'] }}</h3>
+                    </x-slot:header>
 
                     @if(!empty($statTable['rows']))
-                        <div class="cricinfo-table-container" style="overflow-x: auto;">
-                            <table class="cricinfo-table">
+                        <div class="overflow-x-auto -mx-5 -mb-5 sm:-mx-6 sm:-mb-6">
+                            <table class="w-full text-xs text-center border-collapse">
                                 <thead>
-                                    <tr>
+                                    <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
                                         @foreach($statTable['columns'] as $colHeader)
-                                            <th style="{{ $loop->first ? 'text-align: left;' : '' }}">{{ $colHeader }}</th>
+                                            <th class="py-3 px-4 {{ $loop->first ? 'text-left' : '' }}">{{ $colHeader }}</th>
                                         @endforeach
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
                                     @foreach($statTable['rows'] as $statRow)
-                                        <tr>
+                                        <tr class="hover:bg-slate-50 transition-colors">
                                             @foreach($statTable['keys'] as $k)
-                                                <td style="{{ $loop->first ? 'text-align: left; font-weight: 700; color: #fff;' : '' }}">
+                                                <td class="py-3 px-4 {{ $loop->first ? 'text-left font-bold text-slate-900' : '' }}">
                                                     {{ $statRow[$k] !== null && $statRow[$k] !== '' ? $statRow[$k] : '—' }}
                                                 </td>
                                             @endforeach
@@ -585,121 +626,129 @@
                             </table>
                         </div>
                     @else
-                        <p style="font-size: 0.875rem; color: rgba(148,163,184,0.6); text-align: center; padding: 2rem 0;">No stats recorded yet for this sport.</p>
+                        <p class="text-center py-8 text-xs text-slate-400">No stats recorded yet for this sport.</p>
                     @endif
-                </div>
+                </x-card>
             @endforeach
-
         @else
-            <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 1rem; padding: 3rem; text-align: center; color: rgba(148,163,184,0.7);">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
-                <p style="font-weight: 700; font-size: 1rem; color: #fff;">No career statistics recorded yet</p>
-                <p style="font-size: 0.8125rem; margin-top: 0.25rem; color: rgba(100,116,139,0.8);">Career stats will appear here once matches and performance metrics are updated.</p>
-            </div>
+            <x-empty-state
+                title="No career statistics recorded yet"
+                message="Career stats will appear here once matches and performance metrics are scored."
+            />
         @endif
-
     </div>
 
-    {{-- ── TAB 3: MATCHES & EVENT LOGS ── --}}
-    <div id="tab-panel-matches" class="tab-panel" style="display: none;">
+    {{-- ── TAB 3: MATCH LOGS ── --}}
+    <div id="tab-panel-matches" class="profile-tab-panel hidden space-y-6">
+        @if(!empty($sportData['recent_matches']))
+            <x-card>
+                <x-slot:header>
+                    <h3 class="font-bold text-slate-900 text-sm">
+                        📅 {{ $activeSlug === 'soft-ball-cricket' ? 'Recent Softball Cricket Match Logs' : 'Recent Cricket Match Logs' }}
+                    </h3>
+                </x-slot:header>
 
-        {{-- CRICKET RECENT MATCHES TABLE --}}
-        @if($activeSlug === 'cricket')
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem;">
-                <h3 style="font-size: 1.125rem; font-weight: 800; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                    📅 Recent Cricket Match Logs
-                </h3>
-
-                @if(!empty($sportData['recent_matches']))
-                    <div class="cricinfo-table-container" style="overflow-x: auto;">
-                        <table class="cricinfo-table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left;">Date</th>
-                                    <th style="text-align: left;">Match vs</th>
-                                    <th>Batting</th>
-                                    <th>Bowling</th>
-                                    <th>Catches</th>
-                                    <th>Stumpings</th>
-                                    <th>XI Status</th>
+                <div class="overflow-x-auto -mx-5 -mb-5 sm:-mx-6 sm:-mb-6">
+                    <table class="w-full text-xs text-center border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                                <th class="py-3 px-4 text-left">Date</th>
+                                <th class="py-3 px-4 text-left">Opponent</th>
+                                <th class="py-3 px-3">Batting</th>
+                                <th class="py-3 px-3">Bowling</th>
+                                <th class="py-3 px-2">Catches</th>
+                                @if($activeSlug === 'cricket')
+                                    <th class="py-3 px-2">Stumpings</th>
+                                    <th class="py-3 px-3 text-right">Status</th>
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            @foreach($sportData['recent_matches'] as $m)
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="py-3 px-4 text-left font-bold text-slate-900">{{ $m['match_date'] }}</td>
+                                    <td class="py-3 px-4 text-left font-bold text-brand-charcoal">vs {{ $m['opponent'] }}</td>
+                                    <td class="py-3 px-3 font-extrabold text-slate-900">
+                                        @if($m['runs'] !== null && $m['runs'] !== '')
+                                            <span class="text-brand-red">{{ $m['runs'] }}</span>
+                                            <span class="text-slate-400 font-normal text-[10px]">({{ $m['balls'] ?? 0 }}b)</span>
+                                        @else
+                                            —
+                                        @endif
+                                    </td>
+                                    <td class="py-3 px-3 font-extrabold text-slate-900">
+                                        @if($m['wickets'] !== null && $m['wickets'] !== '')
+                                            <span class="text-slate-900">{{ $m['wickets'] }} wkts</span>
+                                            <span class="text-slate-400 font-normal text-[10px]">({{ $m['overs'] ?? 0 }}ov)</span>
+                                        @else
+                                            —
+                                        @endif
+                                    </td>
+                                    <td class="py-3 px-2">{{ $m['catches'] ?: '0' }}</td>
+                                    @if($activeSlug === 'cricket')
+                                        <td class="py-3 px-2">{{ $m['stumpings'] ?: '0' }}</td>
+                                        <td class="py-3 px-3 text-right">
+                                            @if(!empty($m['played_xi']))
+                                                <x-badge variant="success" size="sm">PLAYED XI</x-badge>
+                                            @else
+                                                <x-badge variant="neutral" size="sm">SQUAD</x-badge>
+                                            @endif
+                                        </td>
+                                    @endif
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($sportData['recent_matches'] as $m)
-                                    <tr>
-                                        <td style="text-align: left; font-weight: 700; color: #fff;">{{ $m['match_date'] }}</td>
-                                        <td style="text-align: left; font-weight: 600; color: rgba(245,158,11,0.95);">vs {{ $m['opponent'] }}</td>
-                                        <td style="font-weight: 800; color: #fff;">
-                                            @if($m['runs'] !== null && $m['runs'] !== '')
-                                                {{ $m['runs'] }} <span style="font-weight: normal; font-size: 0.75rem; color: rgba(148,163,184,0.8);">({{ $m['balls'] ?? 0 }}b, {{ $m['fours'] ?? 0 }}x4, {{ $m['sixes'] ?? 0 }}x6)</span>
-                                            @else
-                                                —
-                                            @endif
-                                        </td>
-                                        <td style="font-weight: 800; color: #38bdf8;">
-                                            @if($m['wickets'] !== null && $m['wickets'] !== '')
-                                                {{ $m['wickets'] }} wkts <span style="font-weight: normal; font-size: 0.75rem; color: rgba(148,163,184,0.8);">({{ $m['overs'] ?? 0 }} ov)</span>
-                                            @else
-                                                —
-                                            @endif
-                                        </td>
-                                        <td>{{ $m['catches'] ?: '0' }}</td>
-                                        <td>{{ $m['stumpings'] ?: '0' }}</td>
-                                        <td>
-                                            @if($m['played_xi'])
-                                                <span style="background: rgba(16,185,129,0.15); color: #34d399; padding: 0.2rem 0.5rem; border-radius: 0.375rem; font-size: 0.7rem; font-weight: 800;">PLAYED XI</span>
-                                            @else
-                                                <span style="background: rgba(148,163,184,0.15); color: rgba(148,163,184,0.8); padding: 0.2rem 0.5rem; border-radius: 0.375rem; font-size: 0.7rem; font-weight: 800;">SQUAD</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <p style="font-size: 0.875rem; color: rgba(148,163,184,0.6); text-align: center; padding: 2rem 0;">No recent cricket matches recorded yet.</p>
-                @endif
-            </div>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </x-card>
 
-        {{-- OTHER SPORTS RECENT MATCHES TABLES --}}
         @elseif(!empty($sportData['recent_tables']))
             @foreach($sportData['recent_tables'] as $recentTable)
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.125rem; font-weight: 800; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                        📅 {{ $recentTable['title'] }}
-                    </h3>
+                <x-card>
+                    <x-slot:header>
+                        <h3 class="font-bold text-slate-900 text-sm">📅 {{ $recentTable['title'] }}</h3>
+                    </x-slot:header>
 
                     @if(!empty($recentTable['rows']))
-                        <div class="cricinfo-table-container" style="overflow-x: auto;">
-                            <table class="cricinfo-table">
+                        <div class="overflow-x-auto -mx-5 -mb-5 sm:-mx-6 sm:-mb-6">
+                            <table class="w-full text-xs text-center border-collapse">
                                 <thead>
-                                    <tr>
+                                    <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
                                         @foreach($recentTable['columns'] as $colHeader)
-                                            <th style="{{ $loop->first ? 'text-align: left;' : '' }}">{{ $colHeader }}</th>
+                                            <th class="py-3 px-4 {{ $loop->first ? 'text-left' : ($loop->last ? 'text-right' : '') }}">{{ $colHeader }}</th>
                                         @endforeach
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach($recentTable['rows'] as $rRow)
-                                        <tr>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    @foreach($recentTable['rows'] as $row)
+                                        <tr class="hover:bg-slate-50 transition-colors">
                                             @foreach($recentTable['keys'] as $k)
-                                                @php $val = $rRow[$k] ?? '—'; @endphp
-                                                <td style="{{ $loop->first ? 'text-align: left; font-weight: 700; color: #fff;' : '' }}">
-                                                    @if($k === 'result')
-                                                        @if(in_array($val, ['WIN', 'GOLD', '1']))
-                                                            <span style="background: rgba(16,185,129,0.2); color: #34d399; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 0.375rem; font-size: 0.75rem;">{{ $val }}</span>
-                                                        @elseif(in_array($val, ['LOSS', 'LOST']))
-                                                            <span style="background: rgba(239,68,68,0.2); color: #f87171; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 0.375rem; font-size: 0.75rem;">{{ $val }}</span>
-                                                        @elseif(in_array($val, ['SILVER', 'BRONZE']))
-                                                            <span style="background: rgba(245,158,11,0.2); color: #fbbf24; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 0.375rem; font-size: 0.75rem;">{{ $val }}</span>
+                                                @if($k === 'result')
+                                                    <td class="py-3 px-4">
+                                                        @php
+                                                            $res = strtoupper((string) ($row[$k] ?? ''));
+                                                            $badgeVariant = 'neutral';
+                                                            if (str_contains($res, 'WIN') || str_contains($res, 'GOLD') || str_contains($res, 'CHAMPION')) {
+                                                                $badgeVariant = 'success';
+                                                            } elseif (str_contains($res, 'SILVER') || str_contains($res, 'BRONZE')) {
+                                                                $badgeVariant = 'gold';
+                                                            } elseif (str_contains($res, 'LOSS')) {
+                                                                $badgeVariant = 'danger';
+                                                            }
+                                                        @endphp
+                                                        @if($row[$k] !== null && $row[$k] !== '—')
+                                                            <x-badge :variant="$badgeVariant" size="sm">{{ $row[$k] }}</x-badge>
                                                         @else
-                                                            {{ $val }}
+                                                            <span class="text-slate-400">—</span>
                                                         @endif
-                                                    @else
-                                                        {{ $val }}
-                                                    @endif
-                                                </td>
+                                                    </td>
+                                                @elseif($loop->first)
+                                                    <td class="py-3 px-4 text-left font-bold text-slate-900">{{ $row[$k] ?: '—' }}</td>
+                                                @elseif($loop->last)
+                                                    <td class="py-3 px-4 text-right font-medium text-slate-600">{{ $row[$k] ?: '—' }}</td>
+                                                @else
+                                                    <td class="py-3 px-4 font-semibold text-slate-800">{{ $row[$k] ?: '—' }}</td>
+                                                @endif
                                             @endforeach
                                         </tr>
                                     @endforeach
@@ -707,221 +756,241 @@
                             </table>
                         </div>
                     @else
-                        <p style="font-size: 0.875rem; color: rgba(148,163,184,0.6); text-align: center; padding: 2rem 0;">No match logs recorded yet.</p>
+                        <p class="text-center py-8 text-xs text-slate-400">No recent match records found for this sport.</p>
                     @endif
-                </div>
+                </x-card>
             @endforeach
-
         @else
-            <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 1rem; padding: 3rem; text-align: center; color: rgba(148,163,184,0.7);">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
-                <p style="font-weight: 700; font-size: 1rem; color: #fff;">No recent match logs recorded yet</p>
-                <p style="font-size: 0.8125rem; margin-top: 0.25rem; color: rgba(100,116,139,0.8);">Match logs will automatically populate when matches are played.</p>
-            </div>
+            <x-empty-state
+                title="No match logs recorded yet"
+                message="Match logs will automatically populate when matches and competitions are scored."
+            />
         @endif
-
     </div>
 
-    {{-- ── TAB 4: ACHIEVEMENTS ── --}}
-    <div id="tab-panel-achievements" class="tab-panel" style="display: none;">
+    {{-- ── TAB 4: ACHIEVEMENTS (Classic Trophy & Medal Showcase in Light Theme) ── --}}
+    <div id="tab-panel-achievements" class="profile-tab-panel hidden space-y-6">
         @if(!empty($achievements))
             @php
-                // The `icon` column stores an Ionicons glyph name (see
-                // Admin\AchievementController::ICON_OPTIONS) — the mobile
-                // app renders it natively via @expo/vector-icons. The web
-                // has no Ionicons font loaded, so map each of the 13
-                // possible names to an equivalent emoji instead of printing
-                // the raw name as text.
                 $achEmoji = [
-                    'trophy' => '🏆', 'ribbon' => '🎖️', 'medal' => '🏅', 'star' => '⭐',
-                    'flame' => '🔥', 'flash' => '⚡', 'flag' => '🚩', 'shield-checkmark' => '🛡️',
+                    'trophy' => '🏆', 'medal' => '🥇', 'star' => '⭐',
+                    'award' => '🎖️', 'badge' => '🏅', 'target' => '🎯',
+                    'crown' => '👑', 'flame' => '🔥', 'ribbon' => '🎖️',
+                    'flash' => '⚡', 'flag' => '🚩', 'shield-checkmark' => '🛡️',
                     'trending-up' => '📈', 'rocket' => '🚀', 'diamond' => '💎',
                     'sparkles' => '✨', 'baseball' => '⚾',
                 ];
 
-                // Mirrors the mobile app's resolveAchievementTheme() (see
-                // sport-mobile/src/components/achievements/AchievementBadge.tsx)
-                // keyword-for-keyword, so a given achievement gets the same
-                // "tier" — gradient medal + tier tag — on both platforms.
-                $achTheme = function (array $ach) {
+                $achTheme = function($ach) {
+                    $slug = strtolower($ach['icon'] ?? '');
                     $title = strtolower($ach['title'] ?? '');
-                    $icon = strtolower($ach['icon'] ?? '');
-                    $hex = strtolower($ach['color'] ?? '');
-                    $has = fn (string $haystack, array $needles) => collect($needles)->contains(fn ($n) => str_contains($haystack, $n));
+                    $color = strtolower($ach['color'] ?? '');
 
-                    if ($has($title, ['century', 'gold', 'trophy', 'champion']) || $has($icon, ['trophy', 'medal'])) {
-                        return ['gradient' => ['#FFF3B0', '#F59E0B', '#B45309'], 'glow' => 'rgba(245,158,11,0.45)', 'pillBg' => '#FEF3C7', 'pillText' => '#B45309', 'spark' => '#F59E0B', 'tier' => 'GOLD TIER'];
-                    }
-                    if ($has($title, ['debut', 'rookie', 'speed', 'energy']) || $has($icon, ['flash', 'flag'])) {
-                        return ['gradient' => ['#F5FFDB', '#D7FF3F', '#84CC16'], 'glow' => 'rgba(215,255,63,0.5)', 'pillBg' => '#F5FFDB', 'pillText' => '#3F6212', 'spark' => '#D7FF3F', 'tier' => 'ELITE MARK'];
-                    }
-                    if ($has($title, ['run machine', 'fire', 'flame']) || $has($icon, ['flame'])) {
-                        return ['gradient' => ['#FED7AA', '#F97316', '#C2410C'], 'glow' => 'rgba(249,115,22,0.45)', 'pillBg' => '#FFEDD5', 'pillText' => '#C2410C', 'spark' => '#F97316', 'tier' => 'FLAME TIER'];
-                    }
-                    if ($has($title, ['500', 'strike', 'red', 'beast']) || str_starts_with($hex, '#e') || str_starts_with($hex, '#d0') || str_starts_with($hex, '#c')) {
-                        return ['gradient' => ['#FECDD3', '#E11D48', '#9F1239'], 'glow' => 'rgba(225,29,72,0.4)', 'pillBg' => '#FFE4E6', 'pillText' => '#9F1239', 'spark' => '#E11D48', 'tier' => 'RUBY ELITE'];
-                    }
-                    if ($has($title, ['fifty', 'club', 'star']) || $has($icon, ['ribbon', 'star'])) {
-                        return ['gradient' => ['#BAE6FD', '#0284C7', '#075985'], 'glow' => 'rgba(14,165,233,0.4)', 'pillBg' => '#E0F2FE', 'pillText' => '#0369A1', 'spark' => '#0284C7', 'tier' => 'STAR CLUB'];
-                    }
-                    if ($has($title, ['scorer', 'master', 'green']) || str_starts_with($hex, '#1') || str_starts_with($hex, '#2') || str_starts_with($hex, '#0')) {
-                        return ['gradient' => ['#A7F3D0', '#10B981', '#065F46'], 'glow' => 'rgba(16,185,129,0.4)', 'pillBg' => '#DCFCE7', 'pillText' => '#166534', 'spark' => '#10B981', 'tier' => 'MASTER TIER'];
+                    // Gold Tier
+                    if (in_array($slug, ['trophy', 'crown']) || str_contains($title, 'century') || str_contains($title, 'gold') || str_contains($title, 'champion')) {
+                        return [
+                            'gradient' => ['#FEF08A', '#F59E0B', '#B45309'],
+                            'glow' => 'rgba(245, 158, 11, 0.32)',
+                            'pillBg' => '#FEF3C7',
+                            'pillBorder' => '#FDE68A',
+                            'pillText' => '#92400E',
+                            'spark' => '#F59E0B',
+                            'borderHover' => 'rgba(245, 158, 11, 0.45)',
+                            'tier' => 'GOLD TIER',
+                        ];
                     }
 
-                    return ['gradient' => ['#E9D5FF', '#A855F7', '#6B21A8'], 'glow' => 'rgba(168,85,247,0.4)', 'pillBg' => '#F3E8FF', 'pillText' => '#6B21A8', 'spark' => '#A855F7', 'tier' => 'PRO RECORD'];
+                    // Ruby / Red Elite Tier
+                    if (in_array($slug, ['star', 'flame', 'flash']) || str_contains($title, 'fire') || str_contains($title, 'run machine') || str_starts_with($color, '#e') || str_starts_with($color, '#d')) {
+                        return [
+                            'gradient' => ['#FECDD3', '#EC1F24', '#9F1239'],
+                            'glow' => 'rgba(236, 31, 36, 0.28)',
+                            'pillBg' => '#FEF2F2',
+                            'pillBorder' => '#FECACA',
+                            'pillText' => '#991B1B',
+                            'spark' => '#EC1F24',
+                            'borderHover' => 'rgba(236, 31, 36, 0.4)',
+                            'tier' => 'ELITE TIER',
+                        ];
+                    }
+
+                    // Sapphire / Blue Tier (Fifty club, ribbon, rocket, blue)
+                    if (in_array($slug, ['ribbon', 'rocket', 'diamond']) || str_contains($title, 'fifty') || str_starts_with($color, '#3') || str_starts_with($color, '#2') || str_starts_with($color, '#0')) {
+                        return [
+                            'gradient' => ['#BAE6FD', '#0284C7', '#0369A1'],
+                            'glow' => 'rgba(2, 132, 199, 0.28)',
+                            'pillBg' => '#F0F9FF',
+                            'pillBorder' => '#BAE6FD',
+                            'pillText' => '#075985',
+                            'spark' => '#0284C7',
+                            'borderHover' => 'rgba(2, 132, 199, 0.4)',
+                            'tier' => 'SAPPHIRE TIER',
+                        ];
+                    }
+
+                    // Emerald / Green Master Tier
+                    if (in_array($slug, ['target', 'award', 'trending-up']) || str_starts_with($color, '#1') || str_starts_with($color, '#05')) {
+                        return [
+                            'gradient' => ['#A7F3D0', '#10B981', '#065F46'],
+                            'glow' => 'rgba(16, 185, 129, 0.28)',
+                            'pillBg' => '#ECFDF5',
+                            'pillBorder' => '#A7F3D0',
+                            'pillText' => '#065F46',
+                            'spark' => '#10B981',
+                            'borderHover' => 'rgba(16, 185, 129, 0.4)',
+                            'tier' => 'MASTER TIER',
+                        ];
+                    }
+
+                    // Silver Tier (Medal, Badge, Flag, Shield, Neutral)
+                    return [
+                        'gradient' => ['#E2E8F0', '#94A3B8', '#475569'],
+                        'glow' => 'rgba(148, 163, 184, 0.28)',
+                        'pillBg' => '#F1F5F9',
+                        'pillBorder' => '#E2E8F0',
+                        'pillText' => '#334155',
+                        'spark' => '#64748B',
+                        'borderHover' => 'rgba(148, 163, 184, 0.5)',
+                        'tier' => 'SILVER TIER',
+                    ];
                 };
             @endphp
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem;">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach($achievements as $ach)
                     @php $theme = $achTheme($ach); @endphp
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 1.5rem 1.25rem; display: flex; flex-direction: column; align-items: center; text-align: center; transition: border-color 0.2s;"
-                         onmouseover="this.style.borderColor='rgba(245,158,11,0.4)';"
-                         onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';">
+                    <div class="group bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col items-center text-center shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative"
+                         style="transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;"
+                         onmouseover="this.style.borderColor='{{ $theme['borderHover'] }}';"
+                         onmouseout="this.style.borderColor='rgba(226, 232, 240, 0.9)';">
 
-                        {{-- Tier Tag --}}
-                        <div style="display: inline-flex; align-items: center; gap: 0.35rem; background: {{ $theme['pillBg'] }}; border-radius: 2rem; padding: 0.2rem 0.625rem; margin-bottom: 1rem;">
-                            <span style="width: 5px; height: 5px; border-radius: 50%; background: {{ $theme['spark'] }};"></span>
-                            <span style="font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: {{ $theme['pillText'] }};">{{ $theme['tier'] }}</span>
+                        {{-- Tier Tag at Top --}}
+                        <div class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 mb-4 shadow-2xs"
+                             style="background: {{ $theme['pillBg'] }}; border: 1px solid {{ $theme['pillBorder'] }};">
+                            <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background: {{ $theme['spark'] }}; box-shadow: 0 0 6px {{ $theme['spark'] }};"></span>
+                            <span class="text-[10px] font-black uppercase tracking-wider" style="color: {{ $theme['pillText'] }};">{{ $theme['tier'] }}</span>
                         </div>
 
-                        {{-- Medal Badge --}}
-                        <div style="width: 4rem; height: 4rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; background: linear-gradient(135deg, {{ $theme['gradient'][0] }} 0%, {{ $theme['gradient'][1] }} 55%, {{ $theme['gradient'][2] }} 100%); box-shadow: 0 0 0 3px rgba(255,255,255,0.15), 0 8px 24px {{ $theme['glow'] }};">
-                            <span style="font-size: 1.75rem; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.45));">{{ $achEmoji[$ach['icon']] ?? '🏆' }}</span>
+                        {{-- Circular 3D Medal Badge with Glow --}}
+                        <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 shadow-lg"
+                             style="background: linear-gradient(135deg, {{ $theme['gradient'][0] }} 0%, {{ $theme['gradient'][1] }} 55%, {{ $theme['gradient'][2] }} 100%); box-shadow: 0 0 0 4px #FFFFFF, 0 10px 25px {{ $theme['glow'] }};">
+                            <span class="text-3xl sm:text-4xl filter drop-shadow-md select-none">
+                                {{ $achEmoji[$ach['icon']] ?? ($ach['icon'] ?: '🏆') }}
+                            </span>
                         </div>
 
-                        <h4 style="font-weight: 800; font-size: 0.9375rem; color: #fff; margin-bottom: 0.25rem;">{{ $ach['title'] }}</h4>
+                        {{-- Title --}}
+                        <h4 class="font-extrabold text-slate-900 text-sm sm:text-base leading-snug mb-1">
+                            {{ $ach['title'] }}
+                        </h4>
 
+                        {{-- Date Earned --}}
                         @if(!empty($ach['unlocked_at']))
-                            <span style="font-size: 0.7rem; color: rgba(148,163,184,0.6); margin-bottom: 0.5rem;">{{ $ach['unlocked_at'] }}</span>
+                            <span class="text-[11px] font-semibold text-slate-400 mb-2.5 block">
+                                Earned {{ $ach['unlocked_at'] }}
+                            </span>
                         @endif
 
+                        {{-- Description --}}
                         @if(!empty($ach['description']))
-                            <p style="font-size: 0.8125rem; color: rgba(203,213,225,0.8); line-height: 1.5; margin-bottom: 0.75rem;">
+                            <p class="text-xs text-slate-500 leading-relaxed mb-4">
                                 {{ $ach['description'] }}
                             </p>
                         @endif
 
+                        {{-- Value Pill --}}
                         @if(!empty($ach['value']))
-                            <span style="display: inline-flex; align-items: center; gap: 0.3rem; background: #F8FAFC0D; border: 1px solid rgba(255,255,255,0.12); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 0.25rem 0.625rem; border-radius: 2rem;">
-                                ⚡ {{ $ach['value'] }}
-                            </span>
+                            <div class="mt-auto pt-2">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs">
+                                    <span style="color: #F59E0B;">⚡</span> {{ $ach['value'] }}
+                                </span>
+                            </div>
                         @endif
                     </div>
                 @endforeach
             </div>
         @else
-            <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 1rem; padding: 3rem; text-align: center; color: rgba(148,163,184,0.7);">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏆</div>
-                <p style="font-weight: 700; font-size: 1rem; color: #fff;">No achievements unlocked yet</p>
-                <p style="font-size: 0.8125rem; margin-top: 0.25rem; color: rgba(100,116,139,0.8);">Trophies, awards, and milestones earned by this player will be showcased here.</p>
+            <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center shadow-xs">
+                <div class="w-16 h-16 rounded-full bg-amber-50 text-amber-600 text-3xl flex items-center justify-center mx-auto mb-3 shadow-xs border border-amber-200/60">
+                    🏆
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-base">No achievements unlocked yet</h3>
+                <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Trophies, awards, and milestone records earned by this athlete will be showcased here.</p>
             </div>
         @endif
     </div>
-
 </section>
 
-{{-- ═══ LIGHTBOX MODAL FOR FULL-RESOLUTION IMAGES ═════════════════════════════ --}}
+{{-- ═══ 4. LIGHTBOX MODAL ═══════════════════════════════════════════════════ --}}
 <div id="image-lightbox"
-     style="display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.92); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 2rem;"
+     class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4"
      onclick="closeLightbox(event)">
-    <div style="position: relative; max-width: 90vw; max-height: 90vh;">
-        <button onclick="closeLightbox(null)"
-                title="Close"
-                style="position: absolute; top: -2.5rem; right: -0.5rem; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; width: 2.25rem; height: 2.25rem; color: #fff; font-size: 1.25rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+    <div class="relative max-w-4xl max-h-[90vh]">
+        <button type="button"
+                onclick="closeLightbox(null)"
+                class="absolute -top-10 right-0 text-white hover:text-brand-red text-2xl font-bold cursor-pointer"
+                aria-label="Close image">
             ✕
         </button>
         <img id="lightbox-image"
              src=""
              alt="Zoomed image"
-             style="max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 0.75rem; box-shadow: 0 20px 40px rgba(0,0,0,0.8);" />
+             class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl object-contain" />
     </div>
 </div>
 
-<style>
-    /* ─── Cricinfo Table Styles ─── */
-    .cricinfo-table-container {
-        border-radius: 0.75rem;
-        border: 1px solid rgba(255,255,255,0.06);
-        background: rgba(10,15,30,0.6);
-    }
-    .cricinfo-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.8125rem;
-        white-space: nowrap;
-    }
-    .cricinfo-table th {
-        background: rgba(255,255,255,0.04);
-        color: rgba(148,163,184,0.85);
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-size: 0.7rem;
-        padding: 0.75rem 0.875rem;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        text-align: center;
-    }
-    .cricinfo-table td {
-        padding: 0.75rem 0.875rem;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-        color: #e2e8f0;
-        text-align: center;
-        transition: background 0.15s;
-    }
-    .cricinfo-table tbody tr:hover td {
-        background: rgba(245,158,11,0.05);
-    }
-    .cricinfo-table tbody tr:last-child td {
-        border-bottom: none;
-    }
-</style>
-
+@push('scripts')
 <script>
-    // Tab switching logic
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-panel').forEach(panel => {
-            panel.style.display = 'none';
+    function switchProfileTab(tabId) {
+        document.querySelectorAll('.profile-tab-panel').forEach(panel => {
+            panel.classList.add('hidden');
         });
         document.querySelectorAll('.profile-tab-btn').forEach(btn => {
-            btn.style.color = 'rgba(148,163,184,0.8)';
-            btn.style.borderColor = 'transparent';
+            btn.classList.remove('border-brand-red', 'text-brand-red');
+            btn.classList.add('border-transparent', 'text-slate-500');
         });
 
         const activePanel = document.getElementById('tab-panel-' + tabId);
         const activeBtn = document.getElementById('tab-btn-' + tabId);
 
-        if (activePanel) activePanel.style.display = 'block';
+        if (activePanel) activePanel.classList.remove('hidden');
         if (activeBtn) {
-            activeBtn.style.color = '#f59e0b';
-            activeBtn.style.borderColor = '#f59e0b';
+            activeBtn.classList.add('border-brand-red', 'text-brand-red');
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
         }
     }
 
-    // Lightbox modal logic
     function openLightbox(url) {
         if (!url) return;
         const lightbox = document.getElementById('image-lightbox');
         const img = document.getElementById('lightbox-image');
         img.src = url;
-        lightbox.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        lightbox.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
     }
 
-    function closeLightbox(event) {
-        if (event && event.target && event.target.id === 'lightbox-image') {
-            return;
-        }
+    function closeLightbox(e) {
+        if (e && e.target && e.target.id === 'lightbox-image') return;
         const lightbox = document.getElementById('image-lightbox');
-        lightbox.style.display = 'none';
-        document.body.style.overflow = '';
+        lightbox.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
     }
 
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeLightbox(null);
-        }
+    function copyProfileLink() {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            const btnText = document.getElementById('share-btn-text');
+            if (btnText) {
+                const old = btnText.innerText;
+                btnText.innerText = 'Link Copied!';
+                setTimeout(() => { btnText.innerText = old; }, 2000);
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox(null);
     });
 </script>
+@endpush
 
 @endsection

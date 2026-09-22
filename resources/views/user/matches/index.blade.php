@@ -5,99 +5,98 @@
 @section('content')
 
 {{-- Header --}}
-<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem;">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
     <div>
-        <h1 style="font-weight: 900; font-size: 1.75rem; color: #fff; letter-spacing: -0.02em; margin-bottom: 0.25rem;">Matches &amp; Schedule</h1>
-        <p style="font-size: 0.875rem; color: rgba(148,163,184,0.75);">View upcoming fixtures, track live scores, and create new matches.</p>
+        <h1 class="text-2xl sm:text-3xl font-black text-brand-charcoal tracking-tight">Matches &amp; Schedule</h1>
+        <p class="text-sm text-slate-500 mt-1">Manage match fixtures, review live scores, and schedule upcoming games.</p>
     </div>
-    <a href="{{ route('user.matches.create') }}" class="btn-primary" style="padding: 0.625rem 1.25rem; font-size: 0.875rem;">
-        ➕ Create New Match
-    </a>
+    <x-button href="{{ route('user.matches.create') }}" variant="primary" size="md">
+        <span>+ Create New Match</span>
+    </x-button>
 </div>
 
 {{-- Status Filter Tabs --}}
-<div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto;">
+<div class="flex flex-wrap gap-2 mb-6">
     @foreach([
         ['', 'All Matches'],
         ['live', '🔴 Live Now'],
         ['upcoming', '📅 Upcoming'],
         ['finished', '✓ Finished'],
     ] as [$val, $label])
-    <a href="{{ route('user.matches.index', $val ? ['status' => $val] : []) }}"
-       class="nav-link {{ $status === $val ? 'active' : '' }}"
-       style="font-size: 0.8125rem;">
-        {{ $label }}
-    </a>
+        @php $isActive = ($status === $val); @endphp
+        <a href="{{ route('user.matches.index', $val ? ['status' => $val] : []) }}"
+           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $isActive ? 'bg-brand-red text-white shadow-xs' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50' }}">
+            {{ $label }}
+        </a>
     @endforeach
 </div>
 
-{{-- Matches Table --}}
-<div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; overflow: hidden;">
-    @if($matches->isEmpty())
-        <div style="padding: 4rem 2rem; text-align: center; color: rgba(148,163,184,0.6);">
-            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🏟️</div>
-            <p style="font-weight: 700; font-size: 1rem;">No matches scheduled</p>
-            <p style="font-size: 0.875rem; margin-top: 0.375rem; color: rgba(100,116,139,0.7);">Click "Create New Match" to schedule a fixture.</p>
-        </div>
-    @else
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+{{-- Matches Table Container --}}
+@if($matches->isEmpty())
+    <x-empty-state
+        title="No matches scheduled"
+        message="You haven't scheduled any fixtures yet. Click below to create your first match."
+    >
+        <x-button href="{{ route('user.matches.create') }}" variant="primary" size="sm">
+            + Create New Match
+        </x-button>
+    </x-empty-state>
+@else
+    <x-card class="p-0 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
                 <thead>
-                    <tr style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; color: rgba(148,163,184,0.6);">
-                        <th style="padding: 1rem 1.25rem;">Sport</th>
-                        <th style="padding: 1rem 1.25rem;">Fixture</th>
-                        <th style="padding: 1rem 1.25rem;">Date &amp; Time</th>
-                        <th style="padding: 1rem 1.25rem;">Status</th>
-                        <th style="padding: 1rem 1.25rem; text-align: right;">Action</th>
+                    <tr class="bg-slate-50/80 border-b border-slate-100 text-slate-400 font-extrabold uppercase text-[10px] tracking-wider">
+                        <th class="py-3.5 px-5">Sport</th>
+                        <th class="py-3.5 px-5">Fixture Teams</th>
+                        <th class="py-3.5 px-5">Scheduled Date</th>
+                        <th class="py-3.5 px-5">Status</th>
+                        <th class="py-3.5 px-5 text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-100 text-slate-700 text-xs">
                     @foreach($matches as $match)
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
-                        <td style="padding: 1rem 1.25rem; font-weight: 800; color: #818cf8;">
-                            {{ $match->sport->name }}
-                        </td>
-                        <td style="padding: 1rem 1.25rem;">
-                            <div style="font-weight: 700; color: #fff;">
-                                {{ $match->homeTeam->name }} <span style="color: rgba(100,116,139,0.6); font-weight: 400;">vs</span> {{ $match->awayTeam->name }}
-                            </div>
-                            @if($match->venue)
-                                <div style="font-size: 0.75rem; color: rgba(100,116,139,0.7); margin-top: 0.2rem;">📍 {{ $match->venue }}</div>
-                            @endif
-                        </td>
-                        <td style="padding: 1rem 1.25rem; color: rgba(203,213,225,0.8); font-size: 0.8125rem;">
-                            {{ $match->scheduled_at?->format('M j, Y • g:ia') ?? 'TBA' }}
-                        </td>
-                        <td style="padding: 1rem 1.25rem;">
-                            @if($match->status === 'live')
-                                <span style="display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); font-size: 0.65rem; font-weight: 800; padding: 0.25rem 0.625rem; border-radius: 2rem;">
-                                    🔴 LIVE
-                                </span>
-                            @elseif($match->status === 'upcoming')
-                                <span style="display: inline-flex; align-items: center; background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); font-size: 0.65rem; font-weight: 800; padding: 0.25rem 0.625rem; border-radius: 2rem;">
-                                    UPCOMING
-                                </span>
-                            @else
-                                <span style="display: inline-flex; align-items: center; background: rgba(100,116,139,0.15); color: rgba(148,163,184,0.7); border: 1px solid rgba(100,116,139,0.3); font-size: 0.65rem; font-weight: 800; padding: 0.25rem 0.625rem; border-radius: 2rem;">
-                                    FINISHED
-                                </span>
-                            @endif
-                        </td>
-                        <td style="padding: 1rem 1.25rem; text-align: right;">
-                            <a href="{{ route('user.matches.edit', $match) }}" style="color: #f59e0b; font-weight: 700; font-size: 0.8125rem; text-decoration: none; margin-right: 0.75rem;">Edit</a>
-                        </td>
-                    </tr>
+                        <tr class="hover:bg-slate-50/60 transition-colors">
+                            <td class="py-4 px-5 font-bold text-brand-charcoal">
+                                <span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md text-[11px] font-extrabold">{{ $match->sport->name }}</span>
+                            </td>
+                            <td class="py-4 px-5">
+                                <div class="font-bold text-slate-900 text-sm">
+                                    {{ $match->homeTeam->name }} <span class="text-slate-400 font-normal text-xs mx-1">vs</span> {{ $match->awayTeam->name }}
+                                </div>
+                                @if($match->venue)
+                                    <div class="text-slate-400 text-[11px] mt-0.5">📍 {{ $match->venue }}</div>
+                                @endif
+                            </td>
+                            <td class="py-4 px-5 font-medium text-slate-600">
+                                {{ $match->scheduled_at?->format('M j, Y • g:i A') ?? 'TBA' }}
+                            </td>
+                            <td class="py-4 px-5">
+                                @if($match->status === 'live')
+                                    <x-badge variant="live" size="sm">LIVE</x-badge>
+                                @elseif($match->status === 'upcoming')
+                                    <x-badge variant="info" size="sm">UPCOMING</x-badge>
+                                @else
+                                    <x-badge variant="neutral" size="sm">FINISHED</x-badge>
+                                @endif
+                            </td>
+                            <td class="py-4 px-5 text-right space-x-2">
+                                <x-button href="{{ route('user.matches.edit', $match) }}" variant="secondary" size="sm">
+                                    Edit
+                                </x-button>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
 
         @if($matches->hasPages())
-        <div style="padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.06);">
-            {{ $matches->links() }}
-        </div>
+            <div class="p-4 border-t border-slate-100">
+                <x-pagination :paginator="$matches" />
+            </div>
         @endif
-    @endif
-</div>
+    </x-card>
+@endif
 
 @endsection

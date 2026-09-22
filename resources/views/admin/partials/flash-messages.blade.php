@@ -1,27 +1,27 @@
 @if (session('success'))
-    <div class="mb-4 rounded border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
+    <x-alert type="success" title="Success">
         {{ session('success') }}
-    </div>
+    </x-alert>
 @endif
 
 @if (session('error'))
-    <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+    <x-alert type="error" title="Error">
         {{ session('error') }}
-    </div>
+    </x-alert>
 @endif
 
 @if (session('firebase_warning'))
-    <div class="mb-4 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-        ⚠ {{ session('firebase_warning') }}
-    </div>
+    <x-alert type="warning" title="Warning">
+        {{ session('firebase_warning') }}
+    </x-alert>
 @endif
 
 @if ($errors->any())
-    <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
-        <ul class="list-disc pl-5">
+    <x-alert type="error" title="Please correct the following errors">
+        <ul class="list-disc pl-5 space-y-1">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
-    </div>
+    </x-alert>
 @endif

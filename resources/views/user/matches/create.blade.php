@@ -4,153 +4,185 @@
 
 @section('content')
 
-<div style="max-width: 800px; margin: 0 auto;">
+<div class="max-w-4xl mx-auto">
 
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+    <div class="flex items-center justify-between mb-8">
         <div>
-            <h1 style="font-weight: 900; font-size: 1.75rem; color: #fff; letter-spacing: -0.02em; margin-bottom: 0.25rem;">
-                {{ $match ? 'Edit Match Fixture' : 'Match Creation' }}
+            <h1 class="text-2xl sm:text-3xl font-black text-brand-charcoal tracking-tight">
+                {{ $match ? 'Edit Match Fixture' : 'Create New Match Fixture' }}
             </h1>
-            <p style="font-size: 0.875rem; color: rgba(148,163,184,0.75);">Set up team details, scheduled date, venue, and sport category.</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Configure competing teams, venue, date-time, and tournament parameters.</p>
         </div>
-        <a href="{{ route('user.matches.index') }}" style="color: rgba(148,163,184,0.8); font-weight: 700; font-size: 0.875rem; text-decoration: none;">
+        <x-button href="{{ route('user.matches.index') }}" variant="ghost" size="sm">
             ← Back to Matches
-        </a>
+        </x-button>
     </div>
 
     @if ($errors->any())
-        <div class="flash-error">
-            @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
-        </div>
+        <x-alert type="error" title="Form Validation Error">
+            <ul class="list-disc pl-5 space-y-1 text-xs">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </x-alert>
     @endif
 
-    <form method="POST" action="{{ $match ? route('user.matches.update', $match) : route('user.matches.store') }}" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
+    <form method="POST" action="{{ $match ? route('user.matches.update', $match) : route('user.matches.store') }}" class="space-y-6">
         @csrf
         @if($match)
             @method('PUT')
         @endif
 
-        {{-- Sport Selection --}}
-        <div>
-            <label style="display: block; font-size: 0.8125rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;" for="sport_id">
-                Select Sport *
-            </label>
-            <select id="sport_id" name="sport_id" required class="form-input">
-                <option value="" style="background: #0a0f1e;">Choose a sport...</option>
+        {{-- 1. Sport Selection --}}
+        <x-card>
+            <x-slot:header>
+                <h3 class="text-sm font-bold text-slate-900">1. Sport Category</h3>
+            </x-slot:header>
+
+            <x-select name="sport_id" label="Select Sport" required>
+                <option value="">Choose sport...</option>
                 @foreach($sports as $s)
-                    <option value="{{ $s->id }}" {{ old('sport_id', $match?->sport_id) == $s->id ? 'selected' : '' }} style="background: #0a0f1e;">
+                    <option value="{{ $s->id }}" {{ old('sport_id', $match?->sport_id) == $s->id ? 'selected' : '' }}>
                         {{ $s->name }}
                     </option>
                 @endforeach
-            </select>
-        </div>
+            </x-select>
+        </x-card>
 
-        {{-- Home vs Away Teams --}}
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+        {{-- 2. Teams Configuration --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{-- Home Team --}}
-            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; padding: 1.25rem;">
-                <h3 style="font-weight: 800; font-size: 0.9375rem; color: #f59e0b; margin-bottom: 1rem;">Home Team / Side 1</h3>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Team Name *</label>
-                        <input type="text" name="home_team_name" value="{{ old('home_team_name', $match?->homeTeam?->name) }}" required placeholder="e.g. Royal College" class="form-input">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">School / Academy</label>
-                        <input type="text" name="home_team_school_academy" value="{{ old('home_team_school_academy', $match?->homeTeam?->school_academy) }}" placeholder="e.g. Royal Academy" class="form-input">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Club</label>
-                        <input type="text" name="home_team_club" value="{{ old('home_team_club', $match?->homeTeam?->club) }}" placeholder="e.g. Colombo SC" class="form-input">
-                    </div>
-                </div>
-            </div>
+            <x-card class="space-y-4">
+                <x-slot:header>
+                    <h3 class="text-sm font-bold text-brand-red flex items-center gap-1.5">
+                        <span>🛡️ Home Team / Side 1</span>
+                    </h3>
+                </x-slot:header>
+
+                <x-input
+                    name="home_team_name"
+                    label="Team Name"
+                    value="{{ $match?->homeTeam?->name }}"
+                    required
+                    placeholder="e.g. Royal Lions"
+                />
+
+                <x-input
+                    name="home_team_school_academy"
+                    label="School / Academy (Optional)"
+                    value="{{ $match?->homeTeam?->school_academy }}"
+                    placeholder="e.g. Royal Academy"
+                />
+
+                <x-input
+                    name="home_team_club"
+                    label="Club Name (Optional)"
+                    value="{{ $match?->homeTeam?->club }}"
+                    placeholder="e.g. Colombo Club"
+                />
+            </x-card>
 
             {{-- Away Team --}}
-            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; padding: 1.25rem;">
-                <h3 style="font-weight: 800; font-size: 0.9375rem; color: #818cf8; margin-bottom: 1rem;">Away Team / Side 2</h3>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Team Name *</label>
-                        <input type="text" name="away_team_name" value="{{ old('away_team_name', $match?->awayTeam?->name) }}" required placeholder="e.g. S. Thomas' College" class="form-input">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">School / Academy</label>
-                        <input type="text" name="away_team_school_academy" value="{{ old('away_team_school_academy', $match?->awayTeam?->school_academy) }}" placeholder="e.g. STC Academy" class="form-input">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Club</label>
-                        <input type="text" name="away_team_club" value="{{ old('away_team_club', $match?->awayTeam?->club) }}" placeholder="e.g. Mount Lavinia CC" class="form-input">
-                    </div>
-                </div>
-            </div>
+            <x-card class="space-y-4">
+                <x-slot:header>
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                        <span>🛡️ Away Team / Side 2</span>
+                    </h3>
+                </x-slot:header>
+
+                <x-input
+                    name="away_team_name"
+                    label="Team Name"
+                    value="{{ $match?->awayTeam?->name }}"
+                    required
+                    placeholder="e.g. Trinity Warriors"
+                />
+
+                <x-input
+                    name="away_team_school_academy"
+                    label="School / Academy (Optional)"
+                    value="{{ $match?->awayTeam?->school_academy }}"
+                    placeholder="e.g. Trinity Academy"
+                />
+
+                <x-input
+                    name="away_team_club"
+                    label="Club Name (Optional)"
+                    value="{{ $match?->awayTeam?->club }}"
+                    placeholder="e.g. Kandy CC"
+                />
+            </x-card>
         </div>
 
-        {{-- Schedule & Venue --}}
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
-            <div>
-                <label style="display: block; font-size: 0.8125rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;" for="scheduled_at">
-                    Scheduled Date &amp; Time *
-                </label>
-                <input id="scheduled_at" type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at', $match?->scheduled_at?->format('Y-m-d\TH:i')) }}" required class="form-input">
+        {{-- 3. Schedule, Venue & Settings --}}
+        <x-card class="space-y-4">
+            <x-slot:header>
+                <h3 class="text-sm font-bold text-slate-900">3. Fixture Schedule &amp; Classification</h3>
+            </x-slot:header>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <x-input
+                    type="datetime-local"
+                    name="scheduled_at"
+                    label="Scheduled Date & Time"
+                    value="{{ $match?->scheduled_at?->format('Y-m-d\TH:i') }}"
+                    required
+                />
+
+                <x-input
+                    name="venue"
+                    label="Venue / Stadium"
+                    value="{{ $match?->venue }}"
+                    placeholder="e.g. Main Stadium Ground"
+                />
             </div>
 
-            <div>
-                <label style="display: block; font-size: 0.8125rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;" for="venue">
-                    Venue / Stadium
-                </label>
-                <input id="venue" type="text" name="venue" value="{{ old('venue', $match?->venue) }}" placeholder="e.g. SSC Grounds, Colombo" class="form-input">
-            </div>
-        </div>
-
-        {{-- Match Details (Format, Age Category, Match Category, Country) --}}
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem;">
-            <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Format</label>
-                <select name="format_id" class="form-input">
-                    <option value="" style="background: #0a0f1e;">Any Format</option>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                <x-select name="format_id" label="Match Format">
+                    <option value="">Any Format</option>
                     @foreach($formats as $f)
-                        <option value="{{ $f->id }}" {{ old('format_id', $match?->format_id) == $f->id ? 'selected' : '' }} style="background: #0a0f1e;">{{ $f->name }}</option>
+                        <option value="{{ $f->id }}" {{ old('format_id', $match?->format_id) == $f->id ? 'selected' : '' }}>
+                            {{ $f->name }}
+                        </option>
                     @endforeach
-                </select>
-            </div>
+                </x-select>
 
-            <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Age Group</label>
-                <select name="age_category_id" class="form-input">
-                    <option value="" style="background: #0a0f1e;">Any Age Group</option>
+                <x-select name="age_category_id" label="Age Category">
+                    <option value="">Any Age Group</option>
                     @foreach($ageCategories as $a)
-                        <option value="{{ $a->id }}" {{ old('age_category_id', $match?->age_category_id) == $a->id ? 'selected' : '' }} style="background: #0a0f1e;">{{ $a->name }}</option>
+                        <option value="{{ $a->id }}" {{ old('age_category_id', $match?->age_category_id) == $a->id ? 'selected' : '' }}>
+                            {{ $a->name }}
+                        </option>
                     @endforeach
-                </select>
-            </div>
+                </x-select>
 
-            <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Category</label>
-                <select name="match_category_id" class="form-input">
-                    <option value="" style="background: #0a0f1e;">Any Category</option>
+                <x-select name="match_category_id" label="Match Category">
+                    <option value="">Any Category</option>
                     @foreach($matchCategories as $m)
-                        <option value="{{ $m->id }}" {{ old('match_category_id', $match?->match_category_id) == $m->id ? 'selected' : '' }} style="background: #0a0f1e;">{{ $m->name }}</option>
+                        <option value="{{ $m->id }}" {{ old('match_category_id', $match?->match_category_id) == $m->id ? 'selected' : '' }}>
+                            {{ $m->name }}
+                        </option>
                     @endforeach
-                </select>
-            </div>
+                </x-select>
 
-            <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: rgba(203,213,225,0.8); margin-bottom: 0.375rem;">Country</label>
-                <input type="text" name="country" value="{{ old('country', $match?->country) }}" placeholder="e.g. Sri Lanka" class="form-input">
+                <x-input
+                    name="country"
+                    label="Host Country"
+                    value="{{ $match?->country }}"
+                    placeholder="e.g. Sri Lanka"
+                />
             </div>
-        </div>
+        </x-card>
 
-        {{-- Submit --}}
-        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
-            <a href="{{ route('user.matches.index') }}" style="padding: 0.75rem 1.5rem; border: 1px solid rgba(255,255,255,0.15); border-radius: 0.625rem; font-size: 0.875rem; font-weight: 700; color: rgba(255,255,255,0.8); text-decoration: none;">
+        {{-- Form Actions --}}
+        <div class="flex items-center justify-end gap-3 pt-2">
+            <x-button href="{{ route('user.matches.index') }}" variant="secondary" size="md">
                 Cancel
-            </a>
-            <button type="submit" class="btn-primary" style="padding: 0.75rem 2rem; font-size: 0.875rem;">
-                {{ $match ? 'Update Match' : 'Create Match Fixture' }}
-            </button>
+            </x-button>
+            <x-button type="submit" variant="primary" size="md">
+                {{ $match ? 'Update Match Fixture' : 'Publish Match Fixture' }}
+            </x-button>
         </div>
 
     </form>

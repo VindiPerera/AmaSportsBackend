@@ -1,104 +1,108 @@
 @extends('public.layouts.app')
 
-@section('title', 'About AmaX')
-@section('meta_description', 'Learn about AmaX — the platform built to bring every sport live to fans, coaches and athletes across web and mobile.')
+@section('title', 'About AmaX — The Digital Sports Engine')
+@section('meta_description', 'Learn about AmaX — the digital sports platform built to empower athletes, coaches, and clubs across web and mobile.')
 
 @section('content')
 
-{{-- Hero --}}
-<section style="position: relative; overflow: hidden; padding: 5rem 1.5rem 3.5rem; text-align: center;">
-    <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%); pointer-events: none;"></div>
-    <div style="position: relative; max-width: 720px; margin: 0 auto;">
-        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); border-radius: 2rem; padding: 0.375rem 1rem; font-size: 0.75rem; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.5rem;">
-            About the Platform
-        </div>
-        <h1 style="font-weight: 900; font-size: clamp(2rem, 5vw, 3.25rem); color: #fff; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.25rem;">
-            Built for the love of sport
+{{-- Hero Section --}}
+<section class="relative overflow-hidden py-16 sm:py-24 bg-gradient-to-b from-white to-[#F8F9FB] border-b border-slate-200/80 text-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="text-xs font-extrabold uppercase tracking-widest text-brand-red">ABOUT THE PLATFORM</span>
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-brand-charcoal tracking-tight mt-3 mb-6">
+            Engineered for the love and progress of sport.
         </h1>
-        <p style="font-size: 1.0625rem; color: rgba(148,163,184,0.85); line-height: 1.75; max-width: 560px; margin: 0 auto;">
-            AmaX is a comprehensive sports analytics and live scoring platform connecting players, coaches, and fans across every sport — available on both web and mobile.
+        <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            AmaX is a next-generation sports analytics and real-time match scoring network connecting players, clubs, scouts, and fans worldwide.
         </p>
     </div>
 </section>
 
-{{-- Mission --}}
-<section style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 3rem;">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 2rem;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
-            <h2 style="font-weight: 800; font-size: 1.125rem; color: #fff; margin-bottom: 0.75rem;">Our Mission</h2>
-            <p style="font-size: 0.875rem; color: rgba(148,163,184,0.75); line-height: 1.7;">
-                To make sports data accessible to everyone — from grassroots athletes to professional coaches. We believe every match deserves to be followed in real time, with the same quality experience on mobile and web.
-            </p>
-        </div>
-
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 2rem;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">🌐</div>
-            <h2 style="font-weight: 800; font-size: 1.125rem; color: #fff; margin-bottom: 0.75rem;">One Account, Every Platform</h2>
-            <p style="font-size: 0.875rem; color: rgba(148,163,184,0.75); line-height: 1.7;">
-                Your AmaX account works seamlessly across the mobile app and web portal. Log in once and pick up right where you left off — your profile, stats, and subscriptions follow you everywhere.
-            </p>
-        </div>
-
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.25rem; padding: 2rem;">
-            <div style="font-size: 2rem; margin-bottom: 1rem;">📡</div>
-            <h2 style="font-weight: 800; font-size: 1.125rem; color: #fff; margin-bottom: 0.75rem;">Real-Time Firebase Sync</h2>
-            <p style="font-size: 0.875rem; color: rgba(148,163,184,0.75); line-height: 1.7;">
-                Live scores are powered by Firebase Realtime Database, meaning updates from scorers reach every viewer instantly — no refreshing required.
-            </p>
-        </div>
-
-    </div>
-</section>
-
-{{-- Sports grid --}}
-<section style="background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 3.5rem 1.5rem;">
-    <div style="max-width: 1280px; margin: 0 auto; text-align: center;">
-        <h2 style="font-weight: 800; font-size: 1.5rem; color: #fff; margin-bottom: 0.5rem;">20+ Sports. One App.</h2>
-        <p style="color: rgba(148,163,184,0.65); font-size: 0.875rem; margin-bottom: 2rem;">Complete player profiles, career stats, and live scoring for every sport below.</p>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.875rem; text-align: left;">
-            @foreach([
-                ['🏏', 'Cricket',         'Batting, bowling & fielding stats'],
-                ['⚽', 'Football',        'Goals, assists, match stats'],
-                ['🏀', 'Basketball',      'Points, rebounds, assists'],
-                ['🏑', 'Hockey',          'Goals, saves, penalty corners'],
-                ['🏐', 'Volleyball',      'Sets, spikes, blocks'],
-                ['🏐', 'Beach Volleyball','Sets and serve stats'],
-                ['🎾', 'Tennis',          'Sets, games, aces'],
-                ['🏸', 'Badminton',       'Sets, rallies, smashes'],
-                ['🏓', 'Table Tennis',    'Sets and service stats'],
-                ['🏊', 'Swimming',        'Personal bests, events'],
-                ['🏃', 'Athletics',       'Events, personal records'],
-                ['🥊', 'Boxing',          'Wins, KOs, weight class'],
-                ['🥋', 'Judo',            'Ippons, waza-ari, shidos'],
-                ['🥋', 'Karate',          'Style, bouts, scores'],
-                ['🤸', 'Kabaddi',         'Raids, tackles, points'],
-                ['🏉', 'Rugby',           'Tries, conversions, tackles'],
-                ['🏐', 'Netball',         'Goals, intercepts, assists'],
-                ['⚾', 'Baseball',        'Batting, pitching, ERA'],
-                ['♟️', 'Chess',           'Rating, openings, results'],
-                ['🏋️', 'Elle',            'Points, rounds, rankings'],
-            ] as [$emoji, $sport, $desc])
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 0.875rem; padding: 1rem; transition: all 0.2s;"
-                 onmouseover="this.style.background='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,255,255,0.14)';"
-                 onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(255,255,255,0.07)';">
-                <div style="font-size: 1.375rem; margin-bottom: 0.5rem;">{{ $emoji }}</div>
-                <div style="font-weight: 700; font-size: 0.875rem; color: #e2e8f0; margin-bottom: 0.25rem;">{{ $sport }}</div>
-                <div style="font-size: 0.75rem; color: rgba(100,116,139,0.7); line-height: 1.4;">{{ $desc }}</div>
+{{-- Mission & Values --}}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <x-card class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-red-50 text-brand-red flex items-center justify-center text-2xl font-black border border-red-100">
+                🎯
             </div>
-            @endforeach
-        </div>
+            <h2 class="text-lg font-black text-brand-charcoal">Our Mission</h2>
+            <p class="text-sm text-slate-500 leading-relaxed">
+                To make professional sports analytics accessible to every athlete — from grassroots cricket tournaments to national academy selections. Every match deserves accurate, real-time tracking.
+            </p>
+        </x-card>
+
+        <x-card class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-brand-gold flex items-center justify-center text-2xl font-black border border-amber-100">
+                🌐
+            </div>
+            <h2 class="text-lg font-black text-brand-charcoal">One Unified Account</h2>
+            <p class="text-sm text-slate-500 leading-relaxed">
+                Your athlete profile works seamlessly across our web portal and mobile application. Update your stats once, and your verifiable sports CV is instantly ready for clubs and recruiters.
+            </p>
+        </x-card>
+
+        <x-card class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center text-2xl font-black border border-slate-200">
+                📡
+            </div>
+            <h2 class="text-lg font-black text-brand-charcoal">Instant Scoring Sync</h2>
+            <p class="text-sm text-slate-500 leading-relaxed">
+                Powered by modern cloud sync architecture, scoring updates from certified match officials reach viewers, commentators, and player profiles instantaneously.
+            </p>
+        </x-card>
     </div>
 </section>
 
-{{-- CTA --}}
-<section style="max-width: 700px; margin: 0 auto; padding: 4rem 1.5rem;">
-    <div style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(99,102,241,0.1)); border: 1px solid rgba(245,158,11,0.2); border-radius: 1.5rem; padding: 3rem 2rem; text-align: center;">
-        <h2 style="font-weight: 900; font-size: 1.625rem; color: #fff; margin-bottom: 0.75rem;">Join AmaX today</h2>
-        <p style="color: rgba(148,163,184,0.8); font-size: 0.9375rem; margin-bottom: 1.75rem;">Free to sign up. Track your sport. Follow your athletes.</p>
-        <a href="{{ route('register') }}" class="btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">Create Free Account</a>
+{{-- Sports Grid --}}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-200/80">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-extrabold uppercase tracking-widest text-brand-red">MULTI-SPORT COVERAGE</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-brand-charcoal tracking-tight mt-1">20+ Disciplines Supported</h2>
+        <p class="text-sm text-slate-500 mt-2">Comprehensive player profiles and customized scoring systems for each sport.</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        @foreach([
+            ['🏏', 'Cricket', 'Batting, bowling, fielding & strike rates'],
+            ['⚽', 'Football', 'Goals, assists, cards & match records'],
+            ['🏀', 'Basketball', 'Points, rebounds, assists & fouls'],
+            ['🏑', 'Hockey', 'Goals, saves, penalty corners'],
+            ['🏐', 'Volleyball', 'Sets, spikes, service aces & blocks'],
+            ['🏖️', 'Beach Volleyball', 'Sets, rally points & match records'],
+            ['🎾', 'Tennis', 'Sets, games, break points & aces'],
+            ['🏸', 'Badminton', 'Sets, rallies, smashes & tournament rank'],
+            ['🏓', 'Table Tennis', 'Game sets, service win rate'],
+            ['🏊', 'Swimming', 'Personal bests, stroke & heat events'],
+            ['🏃', 'Athletics', 'Track & field personal records'],
+            ['🥊', 'Boxing', 'Bout records, knockouts & weight class'],
+            ['🥋', 'Judo', 'Ippon, waza-ari & tournament medals'],
+            ['🥋', 'Karate', 'Styles, bout points & rankings'],
+            ['🤼', 'Kabaddi', 'Raids, tackles & bonus points'],
+            ['🏉', 'Rugby', 'Tries, conversions & tackles'],
+            ['🥅', 'Netball', 'Shooting accuracy & intercepts'],
+            ['⚾', 'Baseball', 'Batting averages & pitching ERA'],
+            ['♟️', 'Chess', 'FIDE ratings & tournament standings'],
+            ['🏏', 'Elle', 'Points, rounds & local championships'],
+        ] as [$emoji, $sport, $desc])
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-2xs hover:border-brand-red/40 hover:-translate-y-0.5 transition-all">
+                <span class="text-2xl block mb-2">{{ $emoji }}</span>
+                <h3 class="font-bold text-sm text-slate-900">{{ $sport }}</h3>
+                <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">{{ $desc }}</p>
+            </div>
+        @endforeach
+    </div>
+</section>
+
+{{-- Join Call to Action --}}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="bg-gradient-to-r from-brand-charcoal to-slate-900 rounded-3xl p-8 sm:p-12 text-center text-white shadow-lg">
+        <h2 class="text-2xl sm:text-3xl font-black mb-3">Start Building Your Sports Profile</h2>
+        <p class="text-slate-300 text-sm max-w-md mx-auto mb-6">
+            Free to register. Take control of your sports credentials and get discovered.
+        </p>
+        <x-button href="{{ route('register') }}" variant="primary" size="lg">
+            Create Free Account
+        </x-button>
     </div>
 </section>
 

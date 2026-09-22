@@ -3,189 +3,61 @@
 @section('meta_description', 'AmaSports refund policy for player subscriptions and live-stream unlocks paid through PayHere — eligibility, timelines, and how refunds are returned to your original payment method.')
 @section('content')
 <style>
-    .doc-layout {
-        display: grid;
-        grid-template-columns: 240px 1fr;
-        gap: 2rem;
-        align-items: start;
-    }
-    @media (max-width: 900px) {
-        .doc-layout { grid-template-columns: 1fr; }
-    }
-    .doc-toc {
-        position: sticky;
-        top: 5rem;
-        padding: 1.25rem;
-    }
-    .doc-toc h2 {
-        font-size: 0.6875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: rgba(148,163,184,0.6);
-        margin: 0 0 0.75rem;
-        font-weight: 800;
-    }
-    .doc-toc ol {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-    .doc-toc a {
-        display: block;
-        text-decoration: none;
-        color: rgba(203,213,225,0.75);
-        font-size: 0.8125rem;
-        font-weight: 600;
-        padding: 0.4rem 0.5rem;
-        border-radius: 0.5rem;
-    }
-    .doc-toc a:hover {
-        background: rgba(255,255,255,0.06);
-        color: #fff;
-    }
-    .doc-main { padding: 0.5rem 2rem 2rem; }
-    .doc-main section {
-        padding-top: 1.75rem;
-        border-top: 1px solid rgba(255,255,255,0.08);
-        margin-top: 1.75rem;
-    }
-    .doc-main section:first-of-type { border-top: none; margin-top: 0.5rem; }
-    .doc-main h2 {
-        font-size: 1.1875rem;
-        font-weight: 800;
-        letter-spacing: -0.01em;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 0.625rem;
-        scroll-margin-top: 5rem;
-        margin: 0 0 0.75rem;
-    }
-    .doc-main h2 .num {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 1.625rem;
-        height: 1.625rem;
-        border-radius: 0.5rem;
-        background: rgba(99,102,241,0.15);
-        color: #a5b4fc;
-        font-size: 0.75rem;
-        font-weight: 900;
-        flex: none;
-    }
-    .doc-main h3 { font-size: 0.875rem; font-weight: 800; margin: 1.125rem 0 0.5rem; color: #e2e8f0; }
-    .doc-main p, .doc-main li {
-        font-size: 0.90625rem;
-        line-height: 1.75;
-        color: rgba(148,163,184,0.85);
-    }
+    .doc-layout { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; align-items: start; }
+    @media (max-width: 900px) { .doc-layout { grid-template-columns: 1fr; } }
+    .doc-toc { position: sticky; top: 5rem; padding: 1.25rem; background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 1.25rem; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05); }
+    .doc-toc h2 { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin: 0 0 0.75rem; font-weight: 800; }
+    .doc-toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+    .doc-toc a { display: block; text-decoration: none; color: #475569; font-size: 0.8125rem; font-weight: 600; padding: 0.4rem 0.625rem; border-radius: 0.625rem; transition: all 0.15s ease; }
+    .doc-toc a:hover { background: #fee2e2; color: #EC1F24; }
+    .doc-main { padding: 2rem; background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 1.25rem; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05); }
+    .doc-main section { padding-top: 2rem; border-top: 1px solid #f1f5f9; margin-top: 2rem; }
+    .doc-main section:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+    .doc-main h2 { font-size: 1.25rem; font-weight: 900; letter-spacing: -0.02em; color: #0f172a; display: flex; align-items: center; gap: 0.625rem; scroll-margin-top: 5rem; margin: 0 0 0.875rem; }
+    .doc-main h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; border-radius: 0.5rem; background: #fee2e2; color: #EC1F24; font-size: 0.75rem; font-weight: 900; flex: none; }
+    .doc-main h3 { font-size: 0.9375rem; font-weight: 800; margin: 1.25rem 0 0.5rem; color: #1e293b; }
+    .doc-main p, .doc-main li { font-size: 0.90625rem; line-height: 1.75; color: #475569; }
     .doc-main ul { padding-left: 1.25rem; margin: 0.625rem 0; }
     .doc-main li { margin-bottom: 0.375rem; }
-    .doc-main strong { color: #f1f5f9; }
-    .doc-main a { color: #f59e0b; font-weight: 600; }
-    .doc-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0.875rem 0;
-        font-size: 0.84375rem;
-    }
-    .doc-table th, .doc-table td {
-        text-align: left;
-        padding: 0.625rem 0.75rem;
-        border: 1px solid rgba(255,255,255,0.08);
-        vertical-align: top;
-        line-height: 1.6;
-        color: rgba(148,163,184,0.85);
-    }
-    .doc-table th {
-        background: rgba(255,255,255,0.04);
-        color: #e2e8f0;
-        font-size: 0.71875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-    .doc-callout {
-        background: rgba(99,102,241,0.1);
-        border: 1px solid rgba(99,102,241,0.25);
-        border-radius: 0.75rem;
-        padding: 0.875rem 1rem;
-        font-size: 0.84375rem;
-        color: #c7d2fe;
-        line-height: 1.7;
-        margin: 0.875rem 0;
-    }
-    .doc-callout strong { color: #e0e7ff; }
-    .doc-callout.green {
-        background: rgba(16,185,129,0.08);
-        border-color: rgba(16,185,129,0.25);
-        color: #6ee7b7;
-    }
-    .doc-callout.green strong { color: #a7f3d0; }
-    .doc-offices {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.875rem;
-        margin-top: 0.875rem;
-    }
-    @media (max-width: 620px) {
-        .doc-offices { grid-template-columns: 1fr; }
-    }
-    .doc-office-card {
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 0.75rem;
-        padding: 0.875rem 1rem;
-        background: rgba(255,255,255,0.03);
-    }
-    .doc-office-card .flag {
-        font-size: 0.8125rem;
-        font-weight: 800;
-        color: #a5b4fc;
-        margin-bottom: 0.375rem;
-    }
-    .doc-office-card p { margin: 0.125rem 0; font-size: 0.84375rem; }
-    .meta-row {
-        margin-top: 1.125rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.625rem;
-        font-size: 0.75rem;
-        color: rgba(148,163,184,0.75);
-    }
-    .meta-pill {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 0.5rem;
-        padding: 0.375rem 0.625rem;
-        font-weight: 600;
-    }
+    .doc-main strong { color: #0f172a; }
+    .doc-main a { color: #EC1F24; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+    .doc-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.84375rem; }
+    .doc-table th, .doc-table td { text-align: left; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; vertical-align: top; line-height: 1.6; color: #475569; }
+    .doc-table th { background: #f8fafc; color: #0f172a; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 800; }
+    .doc-callout { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 0.875rem; padding: 1rem 1.25rem; font-size: 0.84375rem; color: #1e40af; line-height: 1.7; margin: 1rem 0; }
+    .doc-callout strong { color: #1e3a8a; }
+    .doc-callout.green { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+    .doc-callout.green strong { color: #047857; }
+    .doc-offices { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; margin-top: 0.875rem; }
+    @media (max-width: 620px) { .doc-offices { grid-template-columns: 1fr; } }
+    .doc-office-card { border: 1px solid #e2e8f0; border-radius: 0.875rem; padding: 1rem 1.25rem; background: #f8fafc; }
+    .doc-office-card .flag { font-size: 0.8125rem; font-weight: 800; color: #EC1F24; margin-bottom: 0.375rem; }
+    .doc-office-card p { margin: 0.125rem 0; font-size: 0.84375rem; color: #475569; }
+    .meta-row { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.625rem; font-size: 0.75rem; color: #64748b; }
+    .meta-pill { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.625rem; padding: 0.375rem 0.75rem; font-weight: 700; color: #475569; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
 </style>
 
 {{-- Hero --}}
-<section style="position: relative; overflow: hidden; padding: 3.5rem 1.5rem 1.5rem;">
-    <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%); pointer-events: none;"></div>
-    <div style="position: relative; max-width: 1280px; margin: 0 auto;">
-        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.25); border-radius: 2rem; padding: 0.375rem 1rem; font-size: 0.75rem; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem;">
-            Legal
+<section class="relative overflow-hidden py-14 sm:py-16 bg-gradient-to-b from-slate-50 via-white to-[#F8F9FB] border-b border-slate-200/70">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-brand-red text-xs font-black uppercase tracking-wider mb-3">
+            Legal &amp; Compliance
         </div>
-        <h1 style="font-weight: 900; font-size: clamp(1.875rem, 4vw, 2.75rem); color: #fff; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1rem;">Refund Policy</h1>
-        <p style="font-size: 0.9375rem; color: rgba(148,163,184,0.85); line-height: 1.75; max-width: 68ch;">
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3">Refund Policy</h1>
+        <p class="text-sm sm:text-base text-slate-600 font-medium max-w-3xl leading-relaxed">
             AmaSports sells digital products only — annual player subscriptions and single-match live-stream unlocks — paid
-            through our payment partner <strong style="color:#e2e8f0;">PayHere</strong>. This policy explains when you're
+            through our payment partner <strong class="text-slate-800">PayHere</strong>. This policy explains when you're
             eligible for a refund, how to request one, and how it is paid back to you.
         </p>
         <div class="meta-row">
             <span class="meta-pill">Effective date: 10 September 2026</span>
-            <span class="meta-pill">Applies to: subscriptions &amp; live-stream unlocks</span>
+            <span class="meta-pill">Applies to: Subscriptions &amp; live-stream unlocks</span>
             <span class="meta-pill">Contact: alex@amaxlk.com</span>
         </div>
     </div>
 </section>
 
-<section style="max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.5rem 5rem;">
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
     <div class="doc-layout">
 
         <nav class="glass-card doc-toc">
