@@ -14,64 +14,66 @@
 
         {{-- ============ SCREEN 1: TOSS SETUP ============ --}}
         <div id="toss-panel" class="bg-white rounded-2xl border border-slate-200/80 p-6 max-w-lg shadow-soft">
-            <h2 class="text-base font-extrabold text-slate-900 mb-4 border-b border-slate-100 pb-3">Toss & Match Initiation</h2>
+            <h2 class="text-base font-extrabold text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <span>🪙</span> Toss &amp; Match Initiation
+            </h2>
 
             <div class="grid grid-cols-2 gap-4 mb-5">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Team A Name</label>
                     <input id="team-a-name" type="text" value="{{ $match->homeTeam->name }}" 
-                           class="w-full rounded-xl bg-slate-50 border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-800 focus:bg-white focus:border-blue-500 outline-none">
+                           class="w-full rounded-xl bg-slate-50 border border-slate-200 px-3.5 py-2.5 text-sm font-semibold text-slate-800 focus:bg-white focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 outline-none transition-all">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Team B Name</label>
                     <input id="team-b-name" type="text" value="{{ $match->awayTeam->name }}" 
-                           class="w-full rounded-xl bg-slate-50 border border-slate-200 px-3.5 py-2 text-sm font-semibold text-slate-800 focus:bg-white focus:border-blue-500 outline-none">
+                           class="w-full rounded-xl bg-slate-50 border border-slate-200 px-3.5 py-2.5 text-sm font-semibold text-slate-800 focus:bg-white focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 outline-none transition-all">
                 </div>
             </div>
 
             <p class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Toss Winner</p>
             <div class="grid grid-cols-2 gap-3 mb-5">
-                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
-                    <input type="radio" name="toss-winner" value="home" class="text-blue-600 focus:ring-blue-500"> {{ $match->homeTeam->name }}
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-brand-red transition-all">
+                    <input type="radio" name="toss-winner" value="home" class="text-brand-red focus:ring-brand-red"> {{ $match->homeTeam->name }}
                 </label>
-                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
-                    <input type="radio" name="toss-winner" value="away" class="text-blue-600 focus:ring-blue-500"> {{ $match->awayTeam->name }}
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-brand-red transition-all">
+                    <input type="radio" name="toss-winner" value="away" class="text-brand-red focus:ring-brand-red"> {{ $match->awayTeam->name }}
                 </label>
             </div>
 
             <p class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Toss Choice</p>
             <div class="grid grid-cols-2 gap-3 mb-6">
-                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
-                    <input type="radio" name="toss-choice" value="bat" class="text-blue-600 focus:ring-blue-500"> Bat First 🏏
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-brand-red transition-all">
+                    <input type="radio" name="toss-choice" value="bat" class="text-brand-red focus:ring-brand-red"> Bat First 🏏
                 </label>
-                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-blue-500 transition-all">
-                    <input type="radio" name="toss-choice" value="bowl" class="text-blue-600 focus:ring-blue-500"> Bowl First ⚾
+                <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer hover:border-brand-red transition-all">
+                    <input type="radio" name="toss-choice" value="bowl" class="text-brand-red focus:ring-brand-red"> Bowl First ⚾
                 </label>
             </div>
 
-            <button type="button" data-action="start-match" class="w-full rounded-xl bg-red-600 hover:bg-red-500 text-white py-3 text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/30 hover:scale-[1.01] transition-all">
-                🚀 Start Match & Activate Live Score Engine
+            <button type="button" data-action="start-match" class="w-full rounded-xl bg-brand-red hover:bg-red-700 text-white py-3.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/25 hover:scale-[1.01] transition-all">
+                🚀 Start Match &amp; Activate Live Score Engine
             </button>
         </div>
 
         {{-- ============ SCREEN 2: MATCH ADMIN ============ --}}
         <div id="match-panel" class="hidden">
-            <div id="result-banner" class="hidden mb-4 rounded border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800"></div>
+            <div id="result-banner" class="hidden mb-5 rounded-2xl border border-amber-300 bg-amber-50/90 px-5 py-4 text-sm font-bold text-amber-900 shadow-soft flex items-center gap-3"></div>
 
-            <div class="flex gap-2 mb-4">
-                <button type="button" id="tab-a-btn" data-action="switch-tab" data-tab="A" class="flex-1 rounded px-3 py-2 text-sm font-medium"></button>
-                <button type="button" id="tab-b-btn" data-action="switch-tab" data-tab="B" class="flex-1 rounded px-3 py-2 text-sm font-medium"></button>
+            <div class="flex gap-3 mb-5 max-w-lg">
+                <button type="button" id="tab-a-btn" data-action="switch-tab" data-tab="A" class="flex-1 rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-wider transition-all"></button>
+                <button type="button" id="tab-b-btn" data-action="switch-tab" data-tab="B" class="flex-1 rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-wider transition-all"></button>
             </div>
 
             <div id="tab-content"></div>
 
-            <div class="mt-4 flex gap-3">
+            <div class="mt-6 flex flex-wrap gap-3">
                 <button type="button" id="start-2nd-innings-btn" data-action="start-2nd-innings"
-                        class="hidden rounded bg-gray-900 text-white px-5 py-2.5 text-sm font-medium hover:bg-gray-800">
+                        class="hidden rounded-xl bg-slate-900 text-white px-6 py-3 text-xs font-black uppercase tracking-wider hover:bg-slate-800 shadow-sm transition-all">
                     Start 2nd Innings
                 </button>
                 <button type="button" id="finish-match-btn" data-action="finish-match"
-                        class="hidden rounded bg-gray-200 text-gray-800 px-5 py-2.5 text-sm font-medium hover:bg-gray-300">
+                        class="hidden rounded-xl bg-slate-200 text-slate-800 px-6 py-3 text-xs font-black uppercase tracking-wider hover:bg-slate-300 transition-all">
                     Finish Match
                 </button>
             </div>
@@ -79,23 +81,31 @@
     </div>
 
     {{-- ============ MODALS ============ --}}
-    <div id="out-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-        <div class="bg-white rounded-lg p-5 max-w-sm w-full">
-            <h3 class="text-base font-semibold mb-3">Select next batter</h3>
-            <ul id="out-modal-list" class="divide-y divide-gray-100 max-h-64 overflow-y-auto mb-4"></ul>
-            <button type="button" data-action="cancel-out" class="w-full rounded bg-gray-100 text-gray-700 py-2 text-sm font-medium hover:bg-gray-200">
-                Cancel
+    <div id="out-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 max-w-sm w-full shadow-2xl">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-black text-sm">✕</span>
+                <div>
+                    <h3 class="text-sm font-black text-slate-900">Wicket Down!</h3>
+                    <p class="text-xs font-semibold text-slate-500">Select the next incoming batter</p>
+                </div>
+            </div>
+            <ul id="out-modal-list" class="divide-y divide-slate-100 max-h-64 overflow-y-auto mb-4 -mx-2 px-2"></ul>
+            <button type="button" data-action="cancel-out" class="w-full rounded-xl bg-slate-100 text-slate-700 py-2.5 text-xs font-bold hover:bg-slate-200 transition-colors">
+                Cancel Wicket Action
             </button>
         </div>
     </div>
 
-    <div id="add-player-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-        <div class="bg-white rounded-lg p-5 max-w-sm w-full">
-            <h3 class="text-base font-semibold mb-3">Add player</h3>
-            <input id="add-player-name" type="text" placeholder="Player name" class="w-full rounded border-gray-300 mb-4">
-            <div class="flex gap-2">
-                <button type="button" data-action="confirm-add-player" class="flex-1 rounded bg-gray-900 text-white py-2 text-sm font-medium hover:bg-gray-800">Add</button>
-                <button type="button" data-action="cancel-add-player" class="flex-1 rounded bg-gray-100 text-gray-700 py-2 text-sm font-medium hover:bg-gray-200">Cancel</button>
+    <div id="add-player-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 max-w-sm w-full shadow-2xl">
+            <h3 class="text-base font-black text-slate-900 mb-1">Add Player to Lineup</h3>
+            <p class="text-xs font-semibold text-slate-500 mb-4">Enter player name to append to the match squad.</p>
+            <input id="add-player-name" type="text" placeholder="Full name (e.g. A. Jayasinghe)" 
+                   class="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 outline-none mb-4">
+            <div class="flex gap-2.5">
+                <button type="button" data-action="confirm-add-player" class="flex-1 rounded-xl bg-brand-red hover:bg-red-700 text-white py-2.5 text-xs font-black uppercase tracking-wider transition-all">Add to Squad</button>
+                <button type="button" data-action="cancel-add-player" class="flex-1 rounded-xl bg-slate-100 text-slate-700 py-2.5 text-xs font-bold hover:bg-slate-200 transition-all">Cancel</button>
             </div>
         </div>
     </div>
@@ -579,7 +589,7 @@
         list.innerHTML = yetPlayers
             .slice()
             .sort((a, b) => a.order - b.order)
-            .map((p) => `<li><button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm" data-action="select-batter" data-player-id="${p.id}">${escapeHtml(p.name)}</button></li>`)
+            .map((p) => `<li><button type="button" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-red-50 hover:text-brand-red text-sm font-bold text-slate-800 transition-colors" data-action="select-batter" data-player-id="${p.id}">🏏 ${escapeHtml(p.name)}</button></li>`)
             .join('');
         document.getElementById('out-modal').classList.remove('hidden');
     }
@@ -608,11 +618,11 @@
     }
 
     function dotColorClass(code) {
-        if (code === '4') return 'bg-blue-500 text-white';
-        if (code === '6') return 'bg-green-500 text-white';
-        if (code === 'W' || code === 'NB') return 'bg-amber-400 text-white';
-        if (code === 'X') return 'bg-red-500 text-white';
-        return 'bg-gray-200 text-gray-700';
+        if (code === '4') return 'bg-blue-600 text-white font-black shadow-xs';
+        if (code === '6') return 'bg-emerald-600 text-white font-black shadow-xs';
+        if (code === 'W' || code === 'NB') return 'bg-amber-500 text-white font-bold shadow-xs';
+        if (code === 'X') return 'bg-brand-red text-white font-black shadow-xs';
+        return 'bg-slate-100 text-slate-700 font-bold border border-slate-200';
     }
 
     function overDotsHtml(bt) {
@@ -621,31 +631,38 @@
         for (let i = 0; i < remaining; i++) items.push(null);
 
         const dots = items.map((code) => code === null
-            ? `<div class="h-7 w-7 rounded-full border border-dashed border-gray-300 bg-gray-50"></div>`
-            : `<div class="h-7 w-7 rounded-full flex items-center justify-center text-[11px] font-bold ${dotColorClass(code)}">${code}</div>`
+            ? `<div class="h-8 w-8 rounded-full border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center text-[10px] text-slate-400">·</div>`
+            : `<div class="h-8 w-8 rounded-full flex items-center justify-center text-xs ${dotColorClass(code)}">${code}</div>`
         ).join('');
 
-        return `<div class="flex flex-wrap gap-1.5 mt-3">${dots}</div>`;
+        return `<div class="flex flex-wrap items-center gap-1.5 mt-3">${dots}</div>`;
     }
 
     function targetBannerHtml() {
         const target = state.teamA.runs + 1;
         const need = Math.max(0, target - state.teamB.runs);
-        return `<p class="text-sm font-medium text-amber-700 mt-2">Target: ${target} · Need ${need} run${need === 1 ? '' : 's'}</p>`;
+        return `<div class="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-black text-amber-900">
+            <span>🎯 Target: ${target}</span>
+            <span class="text-slate-400">•</span>
+            <span>Need ${need} run${need === 1 ? '' : 's'} to win</span>
+        </div>`;
     }
 
-    function playerCardHtml(player, label, labelClass) {
-        if (!player) return '<p class="text-sm text-gray-400">—</p>';
+    function playerCardHtml(player, label, isStriker) {
+        if (!player) return '<p class="text-sm font-semibold text-slate-400">—</p>';
         return `
-            <p class="text-xs font-semibold mb-1 ${labelClass}">${label}</p>
-            <p class="text-lg font-bold text-gray-900">${escapeHtml(player.name)}</p>
-            <p class="text-sm text-gray-500">${player.runs} runs (${player.balls} balls)</p>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+                <span class="text-[10px] font-black uppercase tracking-wider ${isStriker ? 'text-brand-red' : 'text-slate-500'}">${label}</span>
+                ${isStriker ? '<span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>' : ''}
+            </div>
+            <p class="text-base sm:text-lg font-black text-slate-900 truncate">${escapeHtml(player.name)}</p>
+            <p class="text-xs font-semibold text-slate-500 mt-0.5"><span class="text-slate-900 font-black">${player.runs}</span> runs <span class="text-slate-400">(${player.balls} b · ${player.fours}×4 · ${player.sixes}×6)</span></p>
         `;
     }
 
     function logHtml(bt) {
-        if (bt.log.length === 0) return '<li class="text-gray-400">No events yet.</li>';
-        return bt.log.map((text) => `<li class="text-gray-600">${escapeHtml(text)}</li>`).join('');
+        if (bt.log.length === 0) return '<li class="text-xs font-semibold text-slate-400 py-1">No balls bowled in this innings yet.</li>';
+        return bt.log.map((text) => `<li class="text-xs font-medium text-slate-700 py-1 flex items-start gap-2 border-b border-slate-50 last:border-0"><span class="text-slate-300">›</span><span>${escapeHtml(text)}</span></li>`).join('');
     }
 
     function canPromote(bt, p) {
@@ -655,10 +672,10 @@
     }
 
     function badgeClass(label) {
-        if (label === 'Striker') return 'bg-blue-100 text-blue-700';
-        if (label === 'Non-striker') return 'bg-gray-200 text-gray-700';
-        if (label === 'Out') return 'bg-red-100 text-red-700';
-        return 'bg-gray-100 text-gray-500';
+        if (label === 'Striker') return 'bg-red-50 text-brand-red border border-red-200';
+        if (label === 'Non-striker') return 'bg-slate-100 text-slate-700 border border-slate-200';
+        if (label === 'Out') return 'bg-slate-100 text-slate-400';
+        return 'bg-slate-50 text-slate-500';
     }
 
     function battingTableHtml(bt) {
@@ -670,29 +687,37 @@
             else if (p.status === 'out') label = 'Out';
 
             const promoteBtn = (p.status === 'yet' && canPromote(bt, p))
-                ? `<button type="button" class="text-gray-400 hover:text-gray-700 text-xs ml-1" data-action="promote" data-player-id="${p.id}" title="Promote up the order">↑</button>`
+                ? `<button type="button" class="text-slate-400 hover:text-brand-red text-xs ml-1 font-bold transition-colors" data-action="promote" data-player-id="${p.id}" title="Promote up order">↑</button>`
                 : '';
 
+            const isCurrent = p.id === bt.strikerId || p.id === bt.nonStrikerId;
+
             return `
-                <tr class="${p.id === bt.strikerId ? 'bg-blue-50' : ''}">
-                    <td class="px-2 py-1.5 text-sm font-medium text-gray-800">${escapeHtml(p.name)}${p.id === bt.strikerId ? ' *' : ''}${promoteBtn}</td>
-                    <td class="px-2 py-1.5 text-sm text-center">${p.runs}</td>
-                    <td class="px-2 py-1.5 text-sm text-center">${p.balls}</td>
-                    <td class="px-2 py-1.5 text-sm text-center">${p.fours}</td>
-                    <td class="px-2 py-1.5 text-sm text-center">${p.sixes}</td>
-                    <td class="px-2 py-1.5 text-sm text-center">${sr}</td>
-                    <td class="px-2 py-1.5 text-xs"><span class="px-2 py-0.5 rounded-full font-medium ${badgeClass(label)}">${label}</span></td>
+                <tr class="${p.id === bt.strikerId ? 'bg-red-50/50' : isCurrent ? 'bg-slate-50/70' : 'hover:bg-slate-50/50'} transition-colors">
+                    <td class="px-3.5 py-2.5 text-xs font-bold text-slate-800">${escapeHtml(p.name)}${p.id === bt.strikerId ? ' <span class="text-brand-red font-black">*</span>' : ''}${promoteBtn}</td>
+                    <td class="px-3 py-2.5 text-xs font-black text-slate-900 text-center">${p.runs}</td>
+                    <td class="px-3 py-2.5 text-xs font-semibold text-slate-600 text-center">${p.balls}</td>
+                    <td class="px-3 py-2.5 text-xs font-semibold text-slate-600 text-center">${p.fours}</td>
+                    <td class="px-3 py-2.5 text-xs font-semibold text-slate-600 text-center">${p.sixes}</td>
+                    <td class="px-3 py-2.5 text-xs font-bold text-slate-700 text-center">${sr}</td>
+                    <td class="px-3.5 py-2.5 text-xs"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${badgeClass(label)}">${label}</span></td>
                 </tr>`;
         }).join('');
 
         return `
-            <table class="w-full text-sm">
-                <thead><tr class="text-left text-gray-500 text-xs">
-                    <th class="px-2 py-1">Batter</th><th class="px-2 py-1 text-center">R</th><th class="px-2 py-1 text-center">B</th>
-                    <th class="px-2 py-1 text-center">4s</th><th class="px-2 py-1 text-center">6s</th>
-                    <th class="px-2 py-1 text-center">SR</th><th class="px-2 py-1">Status</th>
-                </tr></thead>
-                <tbody class="divide-y divide-gray-100">${rows}</tbody>
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                    <tr>
+                        <th class="px-3.5 py-2.5">Batter</th>
+                        <th class="px-3 py-2.5 text-center">R</th>
+                        <th class="px-3 py-2.5 text-center">B</th>
+                        <th class="px-3 py-2.5 text-center">4s</th>
+                        <th class="px-3 py-2.5 text-center">6s</th>
+                        <th class="px-3 py-2.5 text-center">SR</th>
+                        <th class="px-3.5 py-2.5">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">${rows}</tbody>
             </table>`;
     }
 
@@ -702,24 +727,31 @@
             .map((b) => {
                 const totalOvers = b.overs + b.balls / 6;
                 const econ = totalOvers > 0 ? (b.runs / totalOvers).toFixed(2) : '—';
+                const isCurrent = b.id === currentBowlerId;
                 return `
-                    <tr>
-                        <td class="px-2 py-1.5 text-sm font-medium text-gray-800">${escapeHtml(b.name)}${b.id === currentBowlerId ? ' *' : ''}</td>
-                        <td class="px-2 py-1.5 text-sm text-center">${b.overs}.${b.balls}</td>
-                        <td class="px-2 py-1.5 text-sm text-center">${b.runs}</td>
-                        <td class="px-2 py-1.5 text-sm text-center">${b.wickets}</td>
-                        <td class="px-2 py-1.5 text-sm text-center">${b.maidens}</td>
-                        <td class="px-2 py-1.5 text-sm text-center">${econ}</td>
+                    <tr class="${isCurrent ? 'bg-amber-50/50' : 'hover:bg-slate-50/50'} transition-colors">
+                        <td class="px-3.5 py-2.5 text-xs font-bold text-slate-800">${escapeHtml(b.name)}${isCurrent ? ' <span class="text-amber-600 font-black">⚾</span>' : ''}</td>
+                        <td class="px-3 py-2.5 text-xs font-black text-slate-900 text-center">${b.overs}.${b.balls}</td>
+                        <td class="px-3 py-2.5 text-xs font-semibold text-slate-600 text-center">${b.runs}</td>
+                        <td class="px-3 py-2.5 text-xs font-black text-brand-red text-center">${b.wickets}</td>
+                        <td class="px-3 py-2.5 text-xs font-semibold text-slate-600 text-center">${b.maidens}</td>
+                        <td class="px-3 py-2.5 text-xs font-bold text-slate-700 text-center">${econ}</td>
                     </tr>`;
             }).join('');
 
         return `
-            <table class="w-full text-sm">
-                <thead><tr class="text-left text-gray-500 text-xs">
-                    <th class="px-2 py-1">Bowler</th><th class="px-2 py-1 text-center">O</th><th class="px-2 py-1 text-center">R</th>
-                    <th class="px-2 py-1 text-center">W</th><th class="px-2 py-1 text-center">M</th><th class="px-2 py-1 text-center">Econ</th>
-                </tr></thead>
-                <tbody class="divide-y divide-gray-100">${rows || '<tr><td colspan="6" class="px-2 py-3 text-center text-gray-400">No overs bowled yet.</td></tr>'}</tbody>
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                    <tr>
+                        <th class="px-3.5 py-2.5">Bowler</th>
+                        <th class="px-3 py-2.5 text-center">O</th>
+                        <th class="px-3 py-2.5 text-center">R</th>
+                        <th class="px-3 py-2.5 text-center">W</th>
+                        <th class="px-3 py-2.5 text-center">M</th>
+                        <th class="px-3 py-2.5 text-center">Econ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">${rows || '<tr><td colspan="6" class="px-3.5 py-4 text-center text-xs font-semibold text-slate-400">No overs bowled yet in this innings.</td></tr>'}</tbody>
             </table>`;
     }
 
@@ -733,77 +765,103 @@
 
         if (!bt.started) {
             document.getElementById('tab-content').innerHTML = `
-                <div class="bg-white rounded-lg border border-gray-200 p-5 text-center text-sm text-gray-400">
-                    ${escapeHtml(bt.name)} haven't batted yet.
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-8 text-center text-sm font-semibold text-slate-400 shadow-soft">
+                    ⏳ ${escapeHtml(bt.name)} haven't batted yet.
                 </div>`;
             return;
         }
 
         let html = `
-            <div class="bg-white rounded-lg border border-gray-200 p-5 mb-4">
-                <p class="text-xs uppercase tracking-wide text-gray-500 font-medium mb-1">${escapeHtml(bt.name)}</p>
-                <p class="text-3xl font-bold text-gray-900">${bt.runs}/${bt.wickets}</p>
-                <p class="text-sm text-gray-500 mt-0.5">Overs: ${bt.overs}.${bt.balls}</p>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-6 mb-5 shadow-soft">
+                <div class="flex items-center justify-between mb-1">
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-500">${escapeHtml(bt.name)} Innings</p>
+                    ${isLive ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-50 text-brand-red border border-red-200"><span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse"></span>Live Innings</span>' : '<span class="text-xs font-bold text-slate-400">Innings Concluded</span>'}
+                </div>
+                <div class="flex flex-wrap items-baseline gap-3 mt-1">
+                    <p class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">${bt.runs} <span class="text-brand-red">/</span> ${bt.wickets}</p>
+                    <p class="text-sm font-bold text-slate-500">Overs: <span class="text-slate-900 font-extrabold">${bt.overs}.${bt.balls}</span></p>
+                </div>
                 ${state.innings === 2 && key === 'B' ? targetBannerHtml() : ''}
-                ${overDotsHtml(bt)}
+                <div class="mt-4 pt-4 border-t border-slate-100">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">This Over</p>
+                    ${overDotsHtml(bt)}
+                </div>
             </div>`;
 
         const striker = getBatter(bt, bt.strikerId);
         const nonStriker = getBatter(bt, bt.nonStrikerId);
         html += `
-            <div class="grid grid-cols-2 gap-3 ${isLive ? 'mb-2' : 'mb-4'}">
-                <div class="rounded-lg border-2 border-blue-500 bg-blue-50 p-3">${playerCardHtml(striker, 'STRIKER', 'text-blue-600')}</div>
-                <div class="rounded-lg border border-gray-200 bg-white p-3">${playerCardHtml(nonStriker, 'NON-STRIKER', 'text-gray-500')}</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 ${isLive ? 'mb-3' : 'mb-5'}">
+                <div class="rounded-2xl border-2 border-brand-red bg-red-50/40 p-4 shadow-xs">${playerCardHtml(striker, 'Striker 🏏', true)}</div>
+                <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">${playerCardHtml(nonStriker, 'Non-Striker', false)}</div>
             </div>`;
 
         if (isLive && striker && nonStriker) {
             html += `
-                <div class="flex justify-center mb-4">
-                    <button type="button" data-action="swap-strike" class="flex items-center gap-1 rounded border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:border-gray-300 hover:text-gray-800">
+                <div class="flex justify-center mb-5">
+                    <button type="button" data-action="swap-strike" class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-wider text-slate-700 hover:border-slate-300 hover:bg-slate-50 shadow-xs transition-all">
                         ⇄ Swap Striker / Non-Striker
                     </button>
                 </div>`;
         }
 
         if (bt.allOut) {
-            html += `<div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">All out — ${escapeHtml(bt.name)}'s innings is complete.</div>`;
+            html += `<div class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-bold text-red-800">All out — ${escapeHtml(bt.name)}'s innings is complete.</div>`;
         }
 
         if (isLive) {
             html += `
-                <div class="bg-white rounded-lg border border-gray-200 p-5 mb-4">
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Current bowler (${escapeHtml(bowlingTeam.name)})</label>
-                    <select id="bowler-select" class="w-full rounded border-gray-300 mb-4">
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-6 mb-5 shadow-soft">
+                    <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Current Bowler (${escapeHtml(bowlingTeam.name)})</label>
+                    <select id="bowler-select" class="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-800 focus:bg-white focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 outline-none mb-5">
                         ${bowlingTeam.bowlers.map((b) => `<option value="${b.id}" ${b.id === bt.currentBowlerId ? 'selected' : ''}>${escapeHtml(b.name)}</option>`).join('')}
                     </select>
 
-                    <p class="text-xs font-medium text-gray-500 mb-2">Runs</p>
-                    <div class="grid grid-cols-3 gap-2 sm:grid-cols-6 mb-3">
-                        ${[0, 1, 2, 3, 4, 6].map((r) => `<button type="button" data-action="run" data-run="${r}" class="rounded ${r === 4 ? 'bg-blue-100 hover:bg-blue-200 text-blue-800' : r === 6 ? 'bg-green-100 hover:bg-green-200 text-green-800' : 'bg-gray-100 hover:bg-gray-200 text-gray-800'} py-3 text-lg font-semibold">${r}</button>`).join('')}
+                    <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-2">Runs Off Ball</p>
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
+                        ${[0, 1, 2, 3, 4, 6].map((r) => `
+                            <button type="button" data-action="run" data-run="${r}" 
+                                    class="rounded-xl py-3.5 text-lg font-black transition-all ${
+                                        r === 4 ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm' :
+                                        r === 6 ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm' :
+                                        'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                                    }">
+                                ${r}
+                            </button>
+                        `).join('')}
                     </div>
-                    <p class="text-xs font-medium text-gray-500 mb-2">Extras &amp; Wicket</p>
+
+                    <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-2">Extras &amp; Wickets</p>
                     <div class="grid grid-cols-3 gap-2">
-                        <button type="button" data-action="wide" class="rounded bg-amber-100 hover:bg-amber-200 py-3 text-sm font-semibold text-amber-800">Wide</button>
-                        <button type="button" data-action="noball" class="rounded bg-amber-100 hover:bg-amber-200 py-3 text-sm font-semibold text-amber-800">No Ball</button>
-                        <button type="button" data-action="out" class="rounded bg-red-600 hover:bg-red-500 py-3 text-sm font-semibold text-white">Out</button>
+                        <button type="button" data-action="wide" class="rounded-xl bg-amber-500 hover:bg-amber-600 text-white py-3 text-xs font-black uppercase tracking-wider shadow-sm transition-all">Wide (+1)</button>
+                        <button type="button" data-action="noball" class="rounded-xl bg-amber-500 hover:bg-amber-600 text-white py-3 text-xs font-black uppercase tracking-wider shadow-sm transition-all">No Ball (+1)</button>
+                        <button type="button" data-action="out" class="rounded-xl bg-brand-red hover:bg-red-700 text-white py-3 text-xs font-black uppercase tracking-wider shadow-md shadow-red-600/25 transition-all">Wicket (Out!)</button>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg border border-gray-200 p-5 mb-4">
-                    <h3 class="text-sm font-semibold text-gray-700 mb-2">Event Log</h3>
-                    <ul class="text-sm space-y-1">${logHtml(bt)}</ul>
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-5 mb-5 shadow-soft">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-2">
+                        <span>📋</span> Ball-By-Ball Activity Log
+                    </h3>
+                    <ul class="space-y-0.5 max-h-48 overflow-y-auto">${logHtml(bt)}</ul>
                 </div>`;
         }
 
         html += `
-            <div class="flex items-center justify-between mb-2 mt-4">
-                <h3 class="text-sm font-semibold text-gray-700">Batting — ${escapeHtml(bt.name)}</h3>
-                ${!state.finished && !state.result ? `<button type="button" data-action="add-player" class="text-sm font-medium text-blue-600 hover:underline">+ Add player</button>` : ''}
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-soft overflow-hidden mb-5">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-800">Batting Card — ${escapeHtml(bt.name)}</h3>
+                    ${!state.finished && !state.result ? `<button type="button" data-action="add-player" class="text-xs font-bold text-brand-red hover:underline">+ Add Batter</button>` : ''}
+                </div>
+                <div class="overflow-x-auto">${battingTableHtml(bt)}</div>
             </div>
-            <div class="bg-white rounded-lg border border-gray-200 p-3 mb-4 overflow-x-auto">${battingTableHtml(bt)}</div>
 
-            <h3 class="text-sm font-semibold text-gray-700 mb-2">Bowling — ${escapeHtml(bowlingTeam.name)}</h3>
-            <div class="bg-white rounded-lg border border-gray-200 p-3 overflow-x-auto">${bowlingTableHtml(bowlingTeam, isCurrentlyBatting ? bt.currentBowlerId : null)}</div>`;
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-soft overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-800">Bowling Card — ${escapeHtml(bowlingTeam.name)}</h3>
+                </div>
+                <div class="overflow-x-auto">${bowlingTableHtml(bowlingTeam, isCurrentlyBatting ? bt.currentBowlerId : null)}</div>
+            </div>`;
 
         document.getElementById('tab-content').innerHTML = html;
     }
@@ -823,17 +881,19 @@
 
         const tabA = document.getElementById('tab-a-btn');
         const tabB = document.getElementById('tab-b-btn');
-        tabA.textContent = `${state.teamA.name} batting`;
-        tabB.textContent = `${state.teamB.name} batting`;
-        tabA.className = 'flex-1 rounded px-3 py-2 text-sm font-medium ' + (state.activeTab === 'A' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200');
-        tabB.className = 'flex-1 rounded px-3 py-2 text-sm font-medium ' + (state.activeTab === 'B' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200');
+        tabA.textContent = `${state.teamA.name} Innings`;
+        tabB.textContent = `${state.teamB.name} Innings`;
+        tabA.className = 'flex-1 rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-wider transition-all ' + 
+            (state.activeTab === 'A' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50');
+        tabB.className = 'flex-1 rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-wider transition-all ' + 
+            (state.activeTab === 'B' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50');
 
         renderTabContent();
 
         const resultBanner = document.getElementById('result-banner');
         if (state.result) {
             resultBanner.classList.remove('hidden');
-            resultBanner.innerHTML = `<p class="font-semibold">🏆 ${escapeHtml(state.result.margin)}</p>`;
+            resultBanner.innerHTML = `<span class="text-lg">🏆</span><div><p class="font-extrabold text-amber-900">${escapeHtml(state.result.margin)}</p><p class="text-xs text-amber-700 font-semibold">Match concluded.</p></div>`;
         } else {
             resultBanner.classList.add('hidden');
         }

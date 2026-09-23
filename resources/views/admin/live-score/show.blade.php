@@ -3,13 +3,16 @@
 @section('title', 'Live Score Control Panel')
 
 @section('content')
-    <div class="mb-8">
-        <a href="{{ route('admin.matches.index') }}" class="text-xs font-bold text-blue-600 hover:text-blue-500 mb-2 inline-block">← Back to Matches</a>
+    <div class="mb-6">
+        <a href="{{ route('admin.matches.index') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-red mb-3 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back to Matches Directory
+        </a>
         
         <div class="flex flex-wrap items-center gap-2 mb-2">
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-blue-50 text-blue-700 uppercase tracking-wide">
+            <x-badge variant="info" size="sm">
                 {{ $match->sport->name }}
-            </span>
+            </x-badge>
             @if ($match->format)
                 <span class="text-xs font-semibold text-slate-500">• {{ $match->format->name }}</span>
             @endif
@@ -19,9 +22,12 @@
             @if ($match->matchCategory)
                 <span class="text-xs font-semibold text-slate-500">• {{ $match->matchCategory->name }}</span>
             @endif
+            @if ($match->status === 'live')
+                <x-badge variant="live" size="sm">Live Console</x-badge>
+            @endif
         </div>
 
-        <h1 class="text-3xl font-black text-slate-900 tracking-tight">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             {{ $match->homeTeam->name }} <span class="text-slate-400 font-normal">vs</span> {{ $match->awayTeam->name }}
         </h1>
         <p class="text-xs font-semibold text-slate-500 mt-1 flex items-center gap-1.5">
@@ -31,13 +37,10 @@
     </div>
 
     @unless ($firebaseConfigured)
-        <div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 text-xs text-amber-900 flex items-start gap-3 shadow-sm">
-            <span class="text-base">⚠️</span>
-            <div class="flex-1">
-                <span class="font-bold block mb-0.5">Firebase Realtime Sync Pending</span>
-                Live updates will save to the database, but real-time push to mobile apps requires a Firebase service-account key in <code>config/firebase.php</code>.
-            </div>
-        </div>
+        <x-alert type="warning" class="mb-6">
+            <span class="font-bold block mb-0.5">Firebase Realtime Sync Pending</span>
+            Live updates will save to the database, but real-time push to mobile apps requires a Firebase service-account key in <code>config/firebase.php</code>.
+        </x-alert>
     @endunless
 
     @if ($match->sport->slug === 'cricket')
@@ -50,17 +53,17 @@
 
             @include("admin.live-score.partials.{$match->sport->slug}", ['score' => $currentScore])
 
-            <div class="mt-8 pt-6 border-t border-slate-100 flex items-center gap-3">
+            <div class="mt-8 pt-6 border-t border-slate-100 flex flex-wrap items-center gap-3">
                 @if ($match->status === 'upcoming')
                     <button type="submit" formaction="{{ route('admin.live-score.start', $match) }}"
-                            class="rounded-xl bg-red-600 hover:bg-red-500 text-white px-6 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/30 hover:scale-[1.01] transition-all">
-                        Start Match Engine
+                            class="rounded-xl bg-brand-red hover:bg-red-700 text-white px-6 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/25 hover:scale-[1.01] transition-all">
+                        🚀 Start Match Engine
                     </button>
                 @endif
 
                 @if ($match->status === 'live')
                     <button type="button" id="update-btn"
-                            class="rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-600/30 hover:scale-[1.01] transition-all">
+                            class="rounded-xl bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-900/20 hover:scale-[1.01] transition-all">
                         Sync Scoreboard
                     </button>
                     <button type="submit" formaction="{{ route('admin.live-score.finish', $match) }}"
@@ -71,7 +74,7 @@
                 @endif
 
                 @if ($match->status === 'finished')
-                    <div class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">
+                    <div class="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
                         ✓ Match Concluded — Scoreboard is Locked (Read-Only)
                     </div>
                 @endif

@@ -11,7 +11,7 @@
     </div>
 
     {{-- Filter / Search Form --}}
-    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs mb-6">
+    <x-card class="p-5 mb-6">
         <form method="GET" action="{{ route('admin.users.index') }}" class="flex flex-col sm:flex-row gap-3">
             <div class="flex-1">
                 <input
@@ -19,11 +19,11 @@
                     name="q"
                     value="{{ $search }}"
                     placeholder="Search by name, email, or phone..."
-                    class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0366D6]/40 focus:border-[#0366D6]"
+                    class="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition-all"
                 >
             </div>
             <div class="sm:w-48">
-                <select name="role" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0366D6]/40 focus:border-[#0366D6]">
+                <select name="role" class="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:border-brand-red transition-all">
                     <option value="">All Roles</option>
                     <option value="student" {{ $role === 'student' ? 'selected' : '' }}>Student</option>
                     <option value="coach" {{ $role === 'coach' ? 'selected' : '' }}>Coach</option>
@@ -31,19 +31,19 @@
                     <option value="super_admin" {{ $role === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                 </select>
             </div>
-            <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#0366D6] hover:bg-blue-700 text-white text-xs font-extrabold shadow-xs transition-all">
+            <x-button type="submit" variant="primary" size="md">
                 Filter Users
-            </button>
+            </x-button>
             @if($search || $role)
-                <a href="{{ route('admin.users.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition-all text-center">
+                <x-button href="{{ route('admin.users.index') }}" variant="secondary" size="md">
                     Clear
-                </a>
+                </x-button>
             @endif
         </form>
-    </div>
+    </x-card>
 
     {{-- Users Table --}}
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+    <x-card class="p-0 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-xs text-left">
                 <thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">

@@ -13,20 +13,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #E2ECFF;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #F8F9FB;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             color: #0F172A;
             padding: 24px;
             box-sizing: border-box;
         }
         .card {
             background: #FFFFFF;
+            border: 1px solid rgba(226, 232, 240, 0.8);
             border-radius: 24px;
-            padding: 40px 32px;
+            padding: 44px 32px;
             max-width: 420px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(11, 31, 58, 0.12);
+            box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.08);
         }
         .icon {
             width: 64px;
@@ -37,18 +38,29 @@
             justify-content: center;
             margin: 0 auto 20px;
             font-size: 28px;
+            font-weight: 900;
         }
-        .icon.success { background: #DCFCE7; color: #22C55E; }
-        .icon.failure { background: #FEE2E2; color: #EF4444; }
-        h1 { font-size: 20px; font-weight: 800; margin: 0 0 12px; }
-        p { font-size: 14px; line-height: 1.6; color: #64748B; margin: 0; }
+        .icon.success { background: #DCFCE7; color: #16A34A; }
+        .icon.failure { background: #FEE2E2; color: #DC2626; }
+        h1 { font-size: 20px; font-weight: 900; margin: 0 0 10px; letter-spacing: -0.02em; }
+        p { font-size: 14px; line-height: 1.6; color: #64748B; margin: 0 0 24px; font-weight: 500; }
         .return-link {
             display: inline-block;
-            margin-top: 20px;
+            background: #EC1F24;
+            color: #FFFFFF;
             font-size: 13px;
-            font-weight: 700;
-            color: #2563EB;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px -4px rgba(236, 31, 36, 0.35);
+            transition: all 0.2s ease;
+        }
+        .return-link:hover {
+            background: #B91C1C;
+            transform: translateY(-1px);
         }
     </style>
 </head>

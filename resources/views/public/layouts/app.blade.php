@@ -9,269 +9,304 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Vite assets (Tailwind + JS) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        * { font-family: 'Inter', sans-serif; }
-
-        /* ── Custom Utility Overrides ── */
-        .nav-link {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.375rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.75);
-            transition: all 0.15s ease;
-            text-decoration: none;
-        }
-        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
-        .nav-link.active { color: #fff; background: rgba(255,255,255,0.15); }
-
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 0.375rem;
-            padding: 0.5rem 1.25rem;
-            background: linear-gradient(135deg, #f59e0b, #eab308);
-            color: #111827;
-            font-weight: 700; font-size: 0.8125rem;
-            border-radius: 0.625rem;
-            border: none; cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none; white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(245,158,11,0.35);
-        }
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(245,158,11,0.45);
-            color: #111827;
-        }
-
-        .live-dot {
-            display: inline-block; width: 0.5rem; height: 0.5rem;
-            background: #ef4444; border-radius: 50%;
-            animation: livepulse 1.2s ease-in-out infinite;
-        }
-        @keyframes livepulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.85); }
-        }
-
-        /* Ticker ribbon */
-        .ticker-track {
-            display: flex;
-            animation: ticker-scroll 30s linear infinite;
-            white-space: nowrap;
-        }
-        @keyframes ticker-scroll {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
-        }
-        .ticker-track:hover { animation-play-state: paused; }
-
-        /* Glass card */
-        .glass-card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 1rem;
-        }
-
-        /* Mobile menu */
-        #mobile-menu { display: none; }
-        #mobile-menu.open { display: block; }
-
-        /* Flash */
-        .flash-success {
-            background: rgba(16,185,129,0.12);
-            border: 1px solid rgba(16,185,129,0.3);
-            color: #10b981; border-radius: 0.75rem;
-            padding: 0.875rem 1.25rem;
-            font-weight: 600; font-size: 0.875rem;
-            margin-bottom: 1.25rem;
-        }
-        .flash-error {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #f87171; border-radius: 0.75rem;
-            padding: 0.875rem 1.25rem;
-            font-weight: 600; font-size: 0.875rem;
-            margin-bottom: 1.25rem;
-        }
-
-        /* Form inputs */
-        .form-input {
-            width: 100%;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: #f1f5f9;
-            font-size: 0.9375rem;
-            font-family: inherit;
-            transition: border-color 0.15s, box-shadow 0.15s;
-            outline: none;
-        }
-        .form-input::placeholder { color: rgba(148,163,184,0.6); }
-        .form-input:focus {
-            border-color: rgba(245,158,11,0.6);
-            box-shadow: 0 0 0 3px rgba(245,158,11,0.12);
-        }
-    </style>
 </head>
-<body style="background: #0a0f1e; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column;">
+<body class="bg-[#F8F9FB] text-slate-800 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-red-light selection:text-brand-red">
 
-    {{-- ─── NAVIGATION ─── --}}
-    <header style="background: rgba(10,15,30,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; z-index: 50;">
-        <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between; height: 4rem;">
-
-                {{-- Brand --}}
-                <a href="{{ route('public.home') }}" style="display: flex; align-items: center; text-decoration: none;">
-                    <img src="{{ asset('images/logo.png') }}" alt="AmaX" style="height: 2.25rem; width: auto; object-fit: contain;" />
+    {{-- ─── 1. TOP ANNOUNCEMENT / LIVE RIBBON ─── --}}
+    <div class="bg-white border-b border-slate-200/70 py-2 px-4 text-xs font-semibold text-slate-600">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 font-bold text-brand-red">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-red opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-red"></span>
+                    </span>
+                    MATCHDAY LIVE
+                </span>
+                <span class="hidden sm:inline-block text-slate-300">|</span>
+                <span class="hidden sm:inline-block text-slate-500">Real-time ball-by-ball analysis, player statistics, and live streaming.</span>
+            </div>
+            <div class="flex items-center gap-4 text-xs font-bold text-slate-500">
+                <a href="{{ route('public.matches') }}" class="hover:text-brand-red transition-colors flex items-center gap-1">
+                    <span>View Schedule</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
-
-                {{-- Desktop Nav --}}
-                <nav style="display: none; align-items: center; gap: 0.25rem;" class="desktop-nav">
-                    <a href="{{ route('public.home') }}"
-                       class="nav-link {{ request()->routeIs('public.home') ? 'active' : '' }}">
-                        Home
-                    </a>
-                    <a href="{{ route('public.about') }}"
-                       class="nav-link {{ request()->routeIs('public.about') ? 'active' : '' }}">
-                        About
-                    </a>
-                    <a href="{{ route('public.contact') }}"
-                       class="nav-link {{ request()->routeIs('public.contact') ? 'active' : '' }}">
-                        Contact Us
-                    </a>
-                    <a href="{{ route('public.matches') }}"
-                       class="nav-link {{ request()->routeIs('public.matches') ? 'active' : '' }}">
-                        <span class="live-dot" style="margin-right: 0.125rem;"></span>
-                        Matches &amp; Schedule
-                    </a>
-                    <a href="{{ route('pricing') }}"
-                       class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}">
-                        Pricing
-                    </a>
-                    <a href="{{ route('public.app') }}"
-                       class="nav-link {{ request()->routeIs('public.app') ? 'active' : '' }}" style="color: #fbbf24;">
-                        📱 Mobile Web App
-                    </a>
-                </nav>
-
-                {{-- Login CTA (desktop) --}}
-                <div style="display: none; align-items: center; gap: 0.75rem;" class="desktop-actions">
-                    <a href="{{ route('login') }}" class="nav-link">Log In</a>
-                    <a href="{{ route('register') }}" class="btn-primary">Get Started</a>
-                </div>
-
-                {{-- Hamburger --}}
-                <button id="hamburger" aria-label="Open menu"
-                        style="display: flex; align-items: center; padding: 0.5rem; color: rgba(255,255,255,0.7); cursor: pointer; background: none; border: none;">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
             </div>
         </div>
+    </div>
 
-        {{-- Mobile Menu --}}
-        <div id="mobile-menu" style="background: rgba(10,15,30,0.98); border-top: 1px solid rgba(255,255,255,0.07); padding: 1rem 1.5rem 1.5rem;">
-            <nav style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem;">
-                <a href="{{ route('public.home') }}" class="nav-link {{ request()->routeIs('public.home') ? 'active' : '' }}" style="color: #fff;">Home</a>
-                <a href="{{ route('public.about') }}" class="nav-link {{ request()->routeIs('public.about') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75);">About</a>
-                <a href="{{ route('public.contact') }}" class="nav-link {{ request()->routeIs('public.contact') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75);">Contact Us</a>
-                <a href="{{ route('public.matches') }}" class="nav-link {{ request()->routeIs('public.matches') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75); display: flex; align-items: center; gap: 0.375rem;">
-                    <span class="live-dot"></span> Matches &amp; Schedule
-                </a>
-                <a href="{{ route('pricing') }}" class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}" style="color: rgba(255,255,255,0.75);">Pricing</a>
-                <a href="{{ route('public.app') }}" class="nav-link {{ request()->routeIs('public.app') ? 'active' : '' }}" style="color: #fbbf24; display: flex; align-items: center; gap: 0.375rem;">
-                    📱 Mobile Web App
-                </a>
-            </nav>
-            <div style="display: flex; flex-direction: column; gap: 0.625rem;">
-                <a href="{{ route('login') }}" style="display: block; text-align: center; padding: 0.625rem; border-radius: 0.625rem; border: 1px solid rgba(255,255,255,0.15); color: #fff; font-weight: 600; font-size: 0.875rem; text-decoration: none;">Log In</a>
-                <a href="{{ route('register') }}" class="btn-primary" style="text-align: center; justify-content: center;">Get Started</a>
+    {{-- ─── 2. STICKY GLASS HEADER ─── --}}
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 shadow-2xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-18">
+
+                {{-- Left: Brand Logo --}}
+                <div class="flex items-center gap-8">
+                    <a href="{{ route('public.home') }}" class="flex items-center gap-3 group">
+                        <img src="{{ asset('images/logo.png') }}" alt="AmaX" class="h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+                    </a>
+
+                    {{-- Desktop Nav (PlayerProfile.io style) --}}
+                    <nav class="hidden md:flex items-center space-x-1">
+                        <a href="{{ route('public.home') }}"
+                           class="px-3.5 py-2 rounded-xl text-sm font-bold transition-colors {{ request()->routeIs('public.home') ? 'text-brand-red bg-red-50/60' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}">
+                            Home
+                        </a>
+                        <a href="{{ route('public.matches') }}"
+                           class="px-3.5 py-2 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 {{ request()->routeIs('public.matches') ? 'text-brand-red bg-red-50/60' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}">
+                            <span>Matches</span>
+                            <span class="w-2 h-2 rounded-full bg-brand-red live-dot-pulse"></span>
+                        </a>
+                        <a href="{{ route('pricing') }}"
+                           class="px-3.5 py-2 rounded-xl text-sm font-bold transition-colors {{ request()->routeIs('pricing') ? 'text-brand-red bg-red-50/60' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}">
+                            Pricing
+                        </a>
+                        <a href="{{ route('public.about') }}"
+                           class="px-3.5 py-2 rounded-xl text-sm font-bold transition-colors {{ request()->routeIs('public.about') ? 'text-brand-red bg-red-50/60' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}">
+                            About
+                        </a>
+                        <a href="{{ route('public.contact') }}"
+                           class="px-3.5 py-2 rounded-xl text-sm font-bold transition-colors {{ request()->routeIs('public.contact') ? 'text-brand-red bg-red-50/60' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}">
+                            Contact
+                        </a>
+                    </nav>
+                </div>
+
+                {{-- Center/Right: Global Live Search --}}
+                <div class="hidden lg:flex items-center flex-1 max-w-xs mx-6 relative">
+                    <div class="relative w-full">
+                        <input type="text"
+                               id="navbar-search-input"
+                               placeholder="Search athlete profiles..."
+                               autocomplete="off"
+                               class="w-full bg-slate-50 border border-slate-200 rounded-full py-2 pl-9 pr-4 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 focus:outline-none transition-all" />
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                    <div id="navbar-search-dropdown"
+                         class="hidden absolute top-full mt-2 right-0 w-88 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 max-h-96 overflow-y-auto py-2">
+                    </div>
+                </div>
+
+                {{-- Right Actions --}}
+                <div class="flex items-center gap-3">
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 transition-colors">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span>Dashboard</span>
+                        </a>
+                        <form method="POST" action="{{ route('user.logout') }}" class="inline">
+                            @csrf
+                            <x-button type="submit" variant="ghost" size="sm" class="text-slate-600">Log Out</x-button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="text-sm font-bold text-slate-700 hover:text-brand-red px-3 py-2 rounded-xl transition-colors">
+                            Sign In
+                        </a>
+                        <x-button href="{{ route('register') }}" variant="primary" size="md">
+                            <span>Register</span>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </x-button>
+                    @endauth
+
+                    {{-- Hamburger Mobile Toggle --}}
+                    <button type="button" data-mobile-menu-toggle="public-mobile-menu" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none" aria-label="Toggle navigation">
+                        <svg class="w-6 h-6 icon-menu-open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                        <svg class="w-6 h-6 icon-menu-close hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Mobile Menu Dropdown --}}
+            <div id="public-mobile-menu" class="hidden md:hidden border-t border-slate-100 py-4 space-y-3">
+                {{-- Mobile Search --}}
+                <div class="relative">
+                    <input type="text"
+                           id="mobile-search-input"
+                           placeholder="Search athlete profiles..."
+                           autocomplete="off"
+                           class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-brand-red focus:outline-none" />
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <div id="mobile-search-dropdown" class="hidden absolute top-full mt-2 left-0 right-0 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 max-h-80 overflow-y-auto py-2"></div>
+                </div>
+
+                <nav class="flex flex-col space-y-1 font-bold text-sm">
+                    <a href="{{ route('public.home') }}" class="px-3 py-2 rounded-xl {{ request()->routeIs('public.home') ? 'bg-red-50 text-brand-red' : 'text-slate-700' }}">Home</a>
+                    <a href="{{ route('public.matches') }}" class="px-3 py-2 rounded-xl {{ request()->routeIs('public.matches') ? 'bg-red-50 text-brand-red' : 'text-slate-700' }}">Matches &amp; Schedule</a>
+                    <a href="{{ route('pricing') }}" class="px-3 py-2 rounded-xl {{ request()->routeIs('pricing') ? 'bg-red-50 text-brand-red' : 'text-slate-700' }}">Pricing</a>
+                    <a href="{{ route('public.about') }}" class="px-3 py-2 rounded-xl {{ request()->routeIs('public.about') ? 'bg-red-50 text-brand-red' : 'text-slate-700' }}">About</a>
+                    <a href="{{ route('public.contact') }}" class="px-3 py-2 rounded-xl {{ request()->routeIs('public.contact') ? 'bg-red-50 text-brand-red' : 'text-slate-700' }}">Contact Us</a>
+                </nav>
+
+                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                    @guest
+                        <x-button href="{{ route('login') }}" variant="secondary" class="w-full justify-center">Sign In</x-button>
+                        <x-button href="{{ route('register') }}" variant="primary" class="w-full justify-center">Get Started</x-button>
+                    @endguest
+                </div>
             </div>
         </div>
     </header>
 
-    {{-- ─── MAIN CONTENT ─── --}}
-    <main style="flex: 1;">
+    {{-- ─── 3. MAIN CONTENT ─── --}}
+    <main class="flex-1">
         @yield('content')
     </main>
 
-    {{-- ─── FOOTER ─── --}}
-    <footer style="background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.07); padding: 2.5rem 1.5rem;">
-        <div style="max-width: 1280px; margin: 0 auto;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+    {{-- ─── 4. LIGHT FOOTER (PlayerProfile.io Style) ─── --}}
+    <footer class="bg-white border-t border-slate-200/80 mt-16 pt-16 pb-12 text-sm text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-14">
 
-                <div>
-                    <div style="display: flex; align-items: center; margin-bottom: 0.875rem;">
-                        <img src="{{ asset('images/logo.png') }}" alt="AmaX" style="height: 1.75rem; width: auto; object-fit: contain;" />
-                    </div>
-                    <p style="color: rgba(148,163,184,0.75); font-size: 0.8125rem; line-height: 1.6;">Every Sport, Live. Track scores, players, and schedules across all your favourite sports.</p>
-                </div>
-
-                <div>
-                    <p style="font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.6); margin-bottom: 0.875rem;">Platform</p>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <a href="{{ route('public.home') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Home</a>
-                        <a href="{{ route('public.matches') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Matches &amp; Schedule</a>
-                        <a href="{{ route('public.about') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">About</a>
-                        <a href="{{ route('public.contact') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none; transition: color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Contact Us</a>
+                {{-- Brand Col --}}
+                <div class="lg:col-span-2 space-y-4">
+                    <img src="{{ asset('images/logo.png') }}" alt="AmaX" class="h-9 w-auto object-contain" />
+                    <p class="text-slate-500 leading-relaxed text-sm max-w-sm">
+                        The modern digital sports platform for athletes, clubs, and scouts. Real-time scores, verified profiles, and multi-sport career analytics.
+                    </p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
+                            Verified Sports Engine
+                        </span>
                     </div>
                 </div>
 
-                <div>
-                    <p style="font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.6); margin-bottom: 0.875rem;">Account</p>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <a href="{{ route('login') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Log In</a>
-                        <a href="{{ route('register') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Create Account</a>
-                    </div>
+                {{-- Column 1: Platform --}}
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Platform</h4>
+                    <ul class="space-y-2 text-sm font-medium">
+                        <li><a href="{{ route('public.home') }}" class="hover:text-brand-red transition-colors">Home</a></li>
+                        <li><a href="{{ route('public.matches') }}" class="hover:text-brand-red transition-colors">Matches &amp; Schedule</a></li>
+                        <li><a href="{{ route('pricing') }}" class="hover:text-brand-red transition-colors">Pricing &amp; VIP</a></li>
+                        <li><a href="{{ route('public.about') }}" class="hover:text-brand-red transition-colors">About AmaX</a></li>
+                    </ul>
                 </div>
 
-                <div>
-                    <p style="font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(148,163,184,0.6); margin-bottom: 0.875rem;">Legal</p>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <a href="{{ route('pricing') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Pricing</a>
-                        <a href="{{ route('terms') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Terms &amp; Conditions</a>
-                        <a href="{{ route('privacy-policy') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Privacy Policy</a>
-                        <a href="{{ route('refund-policy') }}" style="color: rgba(203,213,225,0.8); font-size: 0.875rem; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(203,213,225,0.8)'">Refund Policy</a>
-                    </div>
+                {{-- Column 2: Sports --}}
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Explore</h4>
+                    <ul class="space-y-2 text-sm font-medium">
+                        <li><a href="{{ route('public.home') }}#sports" class="hover:text-brand-red transition-colors">Cricket</a></li>
+                        <li><a href="{{ route('public.home') }}#sports" class="hover:text-brand-red transition-colors">Badminton &amp; Tennis</a></li>
+                        <li><a href="{{ route('public.home') }}#sports" class="hover:text-brand-red transition-colors">Volleyball &amp; Rugby</a></li>
+                        <li><a href="{{ route('public.contact') }}" class="hover:text-brand-red transition-colors">Club Inquiries</a></li>
+                    </ul>
                 </div>
 
+                {{-- Column 3: Legal & Trust --}}
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Legal &amp; Trust</h4>
+                    <ul class="space-y-2 text-sm font-medium">
+                        <li><a href="{{ route('terms') }}" class="hover:text-brand-red transition-colors">Terms of Service</a></li>
+                        <li><a href="{{ route('privacy-policy') }}" class="hover:text-brand-red transition-colors">Privacy Policy</a></li>
+                        <li><a href="{{ route('refund-policy') }}" class="hover:text-brand-red transition-colors">Refund Policy</a></li>
+                        <li><a href="{{ route('public.contact') }}" class="hover:text-brand-red transition-colors">Support &amp; FAQ</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div style="border-top: 1px solid rgba(255,255,255,0.07); padding-top: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem;">
-                <p style="color: rgba(100,116,139,0.8); font-size: 0.75rem;">&copy; {{ date('Y') }} AmaX Ltd. All rights reserved.</p>
-                <p style="color: rgba(100,116,139,0.6); font-size: 0.75rem; font-weight: 600;">Every Sport, Live.</p>
+            <div class="border-t border-slate-100 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-medium">
+                <p>&copy; {{ date('Y') }} AmaX Sports Technology. All rights reserved.</p>
+                <div class="flex items-center gap-6">
+                    <span class="text-slate-400">Powered by AmaX Engine</span>
+                </div>
             </div>
         </div>
     </footer>
 
+    {{-- Live Player Search Script (Vanilla JS) --}}
     <script>
-        // Desktop nav & actions responsive show
-        function setResponsive() {
-            const isWide = window.innerWidth >= 768;
-            document.querySelectorAll('.desktop-nav, .desktop-actions').forEach(el => {
-                el.style.display = isWide ? 'flex' : 'none';
-            });
-            document.getElementById('hamburger').style.display = isWide ? 'none' : 'flex';
-        }
-        setResponsive();
-        window.addEventListener('resize', setResponsive);
+        function initPlayerAutocomplete(inputId, dropdownId) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            if (!input || !dropdown) return;
 
-        // Hamburger toggle
-        document.getElementById('hamburger').addEventListener('click', () => {
-            document.getElementById('mobile-menu').classList.toggle('open');
-        });
+            let debounceTimer = null;
+            let selectedIndex = -1;
+            let currentResults = [];
+
+            const escapeHtml = (str) => String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+
+            const highlightMatch = (text, query) => {
+                if (!query) return escapeHtml(text);
+                const safeText = escapeHtml(text);
+                const safeQuery = escapeHtml(query);
+                const regex = new RegExp('(' + safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                return safeText.replace(regex, '<span class="text-brand-red font-bold underline">$1</span>');
+            };
+
+            input.addEventListener('input', function() {
+                const query = this.value.trim();
+                clearTimeout(debounceTimer);
+                selectedIndex = -1;
+
+                if (query.length < 1) {
+                    dropdown.classList.add('hidden');
+                    dropdown.innerHTML = '';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetch(`/search/players?q=${encodeURIComponent(query)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            currentResults = data.results || [];
+                            if (currentResults.length === 0) {
+                                dropdown.innerHTML = `<div class="p-4 text-center text-xs text-slate-500 font-medium">No athletes found matching "<strong>${escapeHtml(query)}</strong>"</div>`;
+                                dropdown.classList.remove('hidden');
+                                return;
+                            }
+
+                            let html = `<div class="px-4 py-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider border-b border-slate-100">Athletes (${currentResults.length})</div>`;
+                            currentResults.forEach((player, idx) => {
+                                const sportsBadges = (player.sports || []).map(s => `<span class="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-full">${s.icon || '🏅'} ${s.name}</span>`).join(' ');
+                                const teamInfo = player.primary_team ? `<span class="text-xs text-slate-500 font-medium">🛡️ ${escapeHtml(player.primary_team)}</span>` : '';
+
+                                const avatarHtml = player.photo_url
+                                    ? `<img src="${player.photo_url}" class="w-9 h-9 rounded-full object-cover shrink-0 border border-slate-200" />`
+                                    : `<div class="w-9 h-9 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200">${player.name.substring(0, 1).toUpperCase()}</div>`;
+
+                                html += `
+                                    <a href="${player.url}"
+                                       class="search-item flex items-center gap-3 px-4 py-2.5 hover:bg-red-50/50 transition-colors border-b border-slate-50 last:border-0"
+                                       data-index="${idx}">
+                                        ${avatarHtml}
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between">
+                                                <span class="font-bold text-xs text-slate-900 truncate">${highlightMatch(player.name, query)}</span>
+                                                <span class="text-[10px] font-extrabold text-brand-red ml-2 shrink-0">View Profile →</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 mt-1 flex-wrap">
+                                                ${teamInfo}
+                                                ${sportsBadges}
+                                            </div>
+                                        </div>
+                                    </a>
+                                `;
+                            });
+
+                            dropdown.innerHTML = html;
+                            dropdown.classList.remove('hidden');
+                        })
+                        .catch(() => {
+                            dropdown.classList.add('hidden');
+                        });
+                }, 200);
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        initPlayerAutocomplete('navbar-search-input', 'navbar-search-dropdown');
+        initPlayerAutocomplete('mobile-search-input', 'mobile-search-dropdown');
     </script>
 
     @stack('scripts')
