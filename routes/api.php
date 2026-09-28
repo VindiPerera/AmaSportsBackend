@@ -19,7 +19,7 @@ use App\Http\Controllers\Api\KarateProfileController;
 use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\MatchController;
 use App\Http\Controllers\Api\NetBallProfileController;
-use App\Http\Controllers\Api\PayPalWebhookController;
+use App\Http\Controllers\Api\PayHereNotifyController;
 use App\Http\Controllers\Api\PlayerAchievementController;
 use App\Http\Controllers\Api\PlayerCollegeLogoController;
 use App\Http\Controllers\Api\PlayerPhotoController;
@@ -30,9 +30,9 @@ use App\Http\Controllers\Api\PlayerTeamLogoController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RacketSportProfileController;
 use App\Http\Controllers\Api\RugbyProfileController;
-use App\Http\Controllers\Api\StreamAccessController;
 use App\Http\Controllers\Api\SoftBallCricketProfileController;
 use App\Http\Controllers\Api\SportAnalysisController;
+use App\Http\Controllers\Api\StreamAccessController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SwimmingProfileController;
 use App\Http\Controllers\Api\VolleyballProfileController;
@@ -71,10 +71,10 @@ Route::get('/lookups', [LookupController::class, 'index']);
 Route::get('/matches', [MatchController::class, 'index']);
 Route::get('/matches/{match}', [MatchController::class, 'show']);
 
-// PayPal's server-to-server callback — deliberately outside auth:sanctum
-// (PayPal isn't a logged-in player) but signature-verified inside the
-// controller itself before anything is trusted (PayPalService::verifyWebhookSignature).
-Route::post('/paypal/webhook', [PayPalWebhookController::class, 'handle']);
+// PayHere's server-to-server notify_url — deliberately outside auth:sanctum
+// (PayHere isn't a logged-in player) but md5sig-verified inside the
+// controller itself before anything is trusted (PayHereService::verifyNotification).
+Route::post('/payhere/notify', [PayHereNotifyController::class, 'handle'])->name('payments.payhere.notify');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [ProfileController::class, 'show']);
@@ -88,7 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscriptions/create-order', [SubscriptionController::class, 'createOrder']);
     Route::get('/player/subscription-status', [SubscriptionController::class, 'status']);
 
-    // Free first 10 days (Phase 8) — no PayPal order, immediate unlock. See
+    // Free first 10 days (Phase 8) — no PayHere order, immediate unlock. See
     // SubscriptionController::startTrial() for eligibility enforcement.
     Route::post('/subscriptions/start-trial', [SubscriptionController::class, 'startTrial']);
 

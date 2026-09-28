@@ -50,7 +50,7 @@
                             <th class="px-5 py-3">Player / User</th>
                             <th class="px-5 py-3">Amount</th>
                             <th class="px-5 py-3">Status</th>
-                            <th class="px-5 py-3">PayPal Order</th>
+                            <th class="px-5 py-3">Payment Order</th>
                             <th class="px-5 py-3">Starts At</th>
                             <th class="px-5 py-3">Expires At</th>
                         </tr>
@@ -71,7 +71,8 @@
                                     </span>
                                 </td>
                                 <td class="px-5 py-3 font-mono text-[11px] text-slate-600">
-                                    {{ $sub->paypal_order_id ?? 'N/A' }}
+                                    {{ $sub->payment_order_id ?? 'N/A' }}
+                                    <div class="text-[10px] text-slate-400 font-sans uppercase">{{ $sub->payment_gateway }}@if($sub->payment_reference) · #{{ $sub->payment_reference }}@endif</div>
                                 </td>
                                 <td class="px-5 py-3 text-slate-600 font-medium">
                                     {{ $sub->starts_at?->format('Y-m-d H:i') ?? '—' }}
@@ -116,7 +117,7 @@
                             <th class="px-5 py-3">Paid By</th>
                             <th class="px-5 py-3">Amount</th>
                             <th class="px-5 py-3">Status</th>
-                            <th class="px-5 py-3">PayPal Order</th>
+                            <th class="px-5 py-3">Payment Order</th>
                             <th class="px-5 py-3">Purchased At</th>
                         </tr>
                     </thead>
@@ -137,12 +138,13 @@
                                     {{ $stream->currency }} {{ $stream->amount }}
                                 </td>
                                 <td class="px-5 py-3">
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase {{ $stream->status === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-amber-50 text-amber-600' }}">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase {{ $stream->status === 'active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-amber-50 text-amber-600' }}">
                                         {{ $stream->status }}
                                     </span>
                                 </td>
                                 <td class="px-5 py-3 font-mono text-[11px] text-slate-600">
-                                    {{ $stream->paypal_order_id ?? 'N/A' }}
+                                    {{ $stream->payment_order_id ?? 'N/A' }}
+                                    <div class="text-[10px] text-slate-400 font-sans uppercase">{{ $stream->payment_gateway }}@if($stream->payment_reference) · #{{ $stream->payment_reference }}@endif</div>
                                 </td>
                                 <td class="px-5 py-3 text-slate-600 font-medium">
                                     {{ $stream->purchased_at?->format('Y-m-d H:i') ?? '—' }}

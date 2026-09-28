@@ -38,7 +38,10 @@ class LiveStreamAccess extends Model
     protected $fillable = [
         'match_id',
         'paid_by',
-        'paypal_order_id',
+        'payment_order_id',
+        'payment_gateway',
+        'payment_reference',
+        'payment_method',
         'amount',
         'currency',
         'status',

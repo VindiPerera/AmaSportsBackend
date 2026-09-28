@@ -35,18 +35,26 @@ return [
         ],
     ],
 
-    // Orders API v2 hosted checkout — used for both the $10/year player
-    // subscription (mobile, via an in-app browser) and the $5/match admin
-    // live-stream unlock (admin panel, plain browser redirect). See
-    // App\Services\PayPalService.
-    'paypal' => [
-        'mode' => env('PAYPAL_MODE', 'sandbox'), // sandbox|live
-        'client_id' => env('PAYPAL_CLIENT_ID'),
-        'client_secret' => env('PAYPAL_CLIENT_SECRET'),
-        // From the PayPal Developer Dashboard webhook you register pointing
-        // at POST /api/paypal/webhook — required to verify inbound events.
-        'webhook_id' => env('PAYPAL_WEBHOOK_ID'),
-        'currency' => env('PAYPAL_CURRENCY', 'USD'),
+    // PayHere Checkout API (hosted checkout, https://support.payhere.lk/api-&-mobile-sdk/checkout-api)
+    // — used for both the player subscription (mobile, via an in-app
+    // browser) and the per-match live-stream unlock (mobile VIP + admin
+    // panel). See App\Services\PayHereService.
+    'payhere' => [
+        'mode' => env('PAYHERE_MODE', 'sandbox'), // sandbox|live
+        'merchant_id' => env('PAYHERE_MERCHANT_ID'),
+        // Settings > Domains & Credentials in the PayHere merchant portal —
+        // generated per domain/app, so the secret must be the one issued
+        // for the domain APP_URL points at.
+        'merchant_secret' => env('PAYHERE_MERCHANT_SECRET'),
+        // LKR, USD, GBP, EUR or AUD — non-LKR currencies must be enabled on
+        // the merchant account. Amounts in the DB/admin panel are charged
+        // in this currency as-is (no conversion).
+        'currency' => env('PAYHERE_CURRENCY', 'USD'),
+        // Optional: Business App credentials (Settings > API Keys, with the
+        // "Payment Retrieval API" permission). When set, return pages can
+        // confirm a payment immediately instead of waiting for notify_url.
+        'app_id' => env('PAYHERE_APP_ID'),
+        'app_secret' => env('PAYHERE_APP_SECRET'),
     ],
 
 ];

@@ -297,7 +297,7 @@ class CricketPlayersSeeder extends Seeder
                 Subscription::updateOrCreate(
                     ['player_id' => $player->id, 'status' => Subscription::STATUS_ACTIVE],
                     [
-                        'paypal_order_id' => 'SEEDED-'.Str::upper(Str::random(10)),
+                        'payment_order_id' => 'SEEDED-'.Str::upper(Str::random(10)),
                         'amount' => Subscription::AMOUNT,
                         'currency' => 'USD',
                         'starts_at' => now(),

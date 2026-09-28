@@ -30,7 +30,10 @@ class Subscription extends Model
      */
     protected $fillable = [
         'player_id',
-        'paypal_order_id',
+        'payment_order_id',
+        'payment_gateway',
+        'payment_reference',
+        'payment_method',
         'amount',
         'currency',
         'status',

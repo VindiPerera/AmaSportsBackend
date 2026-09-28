@@ -97,4 +97,3 @@ Route::middleware('super_admin')->prefix('super')->name('super.')->group(functio
     Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
     Route::get('/payments', [SuperAdminController::class, 'payments'])->name('payments');
 });
-

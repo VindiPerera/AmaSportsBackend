@@ -6,13 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Player;
 use App\Models\Subscription;
 use App\Models\SubscriptionCountryPrice;
-use App\Services\PayPalService;
+use App\Services\PayHereService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use RuntimeException;
-use Throwable;
 
 /**
  * The $10/year app subscription that unlocks "Add Sport" and the Analysis
@@ -25,60 +22,38 @@ class SubscriptionController extends Controller
 
     /**
      * POST /subscriptions/create-order — starts (or renews) a subscription.
-     * Creates a `pending` row, then a matching PayPal order, and hands the
-     * mobile app the PayPal-hosted approval URL to open in an in-app
-     * browser (WebBrowser.openAuthSessionAsync — capture still happens
-     * server-side on PayPal's return_url page below, same as before; the
-     * return page just also bounces the browser to the app's deep link
-     * afterward, which is what lets openAuthSessionAsync auto-close the
-     * sheet instead of the player having to dismiss it manually).
+     * Creates a `pending` row and hands the mobile app a signed link to our
+     * PayHere checkout page (see PayHereService) to open in-app. Activation
+     * happens server-side when PayHere calls notify_url; the app just polls
+     * subscription-status once the checkout view closes.
      */
-    public function createOrder(Request $request, PayPalService $paypal): JsonResponse
+    public function createOrder(Request $request, PayHereService $payhere): JsonResponse
     {
-        if (! $paypal->isConfigured()) {
+        if (! $payhere->isConfigured()) {
             return $this->error('Payments are not configured yet. Please try again later.', 503);
         }
 
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
-        $currency = config('services.paypal.currency');
-        $amount = SubscriptionCountryPrice::amountFor($player->country);
 
         $subscription = Subscription::create([
             'player_id' => $player->id,
-            'amount' => $amount,
-            'currency' => $currency,
+            'amount' => SubscriptionCountryPrice::amountFor($player->country),
+            'currency' => $payhere->currency(),
             'status' => Subscription::STATUS_PENDING,
         ]);
 
-        try {
-            $order = $paypal->createOrder(
-                amount: $amount,
-                currency: $currency,
-                customId: "subscription:{$subscription->id}",
-                description: config('app.name').' Annual Subscription',
-                returnUrl: route('payments.subscriptions.return'),
-                cancelUrl: route('payments.subscriptions.cancel'),
-            );
-        } catch (Throwable $e) {
-            Log::error('Failed to create PayPal order for subscription.', [
-                'subscription_id' => $subscription->id,
-                'message' => $e->getMessage(),
-            ]);
-
-            return $this->error('Could not start checkout with PayPal. Please try again.', 502);
-        }
-
-        $subscription->update(['paypal_order_id' => $order['id']]);
-
-        $approveUrl = $paypal->approveUrl($order);
-        if (! $approveUrl) {
-            return $this->error('PayPal did not return a checkout link. Please try again.', 502);
-        }
+        $orderId = $payhere->newOrderId(PayHereService::PREFIX_SUBSCRIPTION, $subscription->id);
+        $subscription->update(['payment_order_id' => $orderId]);
 
         return $this->success([
             'subscription_id' => $subscription->id,
-            'order_id' => $order['id'],
-            'approve_url' => $approveUrl,
+            'order_id' => $orderId,
+            'approve_url' => $payhere->checkoutUrl(
+                orderId: $orderId,
+                items: config('app.name').' Annual Subscription',
+                returnUrl: route('payments.subscriptions.return'),
+                cancelUrl: route('payments.subscriptions.cancel'),
+            ),
         ], 'Checkout order created.');
     }
 
@@ -118,7 +93,7 @@ class SubscriptionController extends Controller
                 'days_remaining' => null,
                 'expiring_soon' => false,
                 'amount' => $previewAmount,
-                'currency' => config('services.paypal.currency'),
+                'currency' => config('services.payhere.currency'),
             ], 'Subscription status retrieved successfully.');
         }
 
@@ -134,7 +109,7 @@ class SubscriptionController extends Controller
                 'days_remaining' => null,
                 'expiring_soon' => false,
                 'amount' => $previewAmount,
-                'currency' => config('services.paypal.currency'),
+                'currency' => config('services.payhere.currency'),
             ], 'Subscription status retrieved successfully.');
         }
 
@@ -161,7 +136,7 @@ class SubscriptionController extends Controller
 
     /**
      * POST /subscriptions/start-trial — the one-time free first 10 days
-     * (Phase 8). No PayPal order: unlocks immediately. Re-validates
+     * (Phase 8). No PayHere order: unlocks immediately. Re-validates
      * eligibility server-side regardless of what the UI shows, since a
      * stale client (or a direct API call) could otherwise let a player
      * double-dip.
@@ -185,7 +160,7 @@ class SubscriptionController extends Controller
         $subscription = Subscription::create([
             'player_id' => $player->id,
             'amount' => 0,
-            'currency' => config('services.paypal.currency'),
+            'currency' => config('services.payhere.currency'),
             'status' => Subscription::STATUS_ACTIVE,
             'is_trial' => true,
             'starts_at' => $startsAt,
@@ -226,7 +201,7 @@ class SubscriptionController extends Controller
     {
         return $this->success([
             'default_amount' => Subscription::AMOUNT,
-            'currency' => config('services.paypal.currency'),
+            'currency' => config('services.payhere.currency'),
             'prices' => SubscriptionCountryPrice::allAsMap(),
         ], 'Subscription prices retrieved successfully.');
     }

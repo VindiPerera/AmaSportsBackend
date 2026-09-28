@@ -67,7 +67,7 @@ class Player extends Model
      * really were paid subscribers at some point. Deliberately NOT "does
      * the latest row exist": a `pending` row is created the instant
      * checkout starts (Api\SubscriptionController::createOrder), before
-     * PayPal confirms anything, so a player who abandoned/failed checkout
+     * PayHere confirms anything, so a player who abandoned/failed checkout
      * without ever completing one would otherwise be told their
      * subscription "expired" despite never having paid. Checks every row,
      * not just latestSubscription(), because a lapsed subscriber's most

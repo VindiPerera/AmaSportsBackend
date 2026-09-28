@@ -1,12 +1,17 @@
 <?php
 
-use App\Http\Controllers\PublicController;
+use App\Http\Controllers\Payments\PayHereCheckoutController;
 use App\Http\Controllers\Payments\StreamAccessPaymentController;
 use App\Http\Controllers\Payments\SubscriptionPaymentController;
+use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
-// PayPal redirects the payer's own browser here after hosted checkout —
+// Signed link every payment flow hands the payer — renders PayHere's
+// checkout form and auto-submits it to payhere.lk (see PayHereService).
+Route::get('/payments/payhere/checkout', [PayHereCheckoutController::class, 'show'])->name('payments.payhere.checkout');
+
+// PayHere redirects the payer's own browser here after hosted checkout —
 // plain server-rendered pages, deliberately outside the Sanctum-protected
 // /api surface. See SubscriptionPaymentController for why the mobile app
 // doesn't rely on this redirect actually happening.
@@ -25,15 +30,14 @@ Route::prefix('payments/stream-access')->name('payments.stream-access.')->group(
     Route::get('/cancel', [StreamAccessPaymentController::class, 'cancel'])->name('cancel');
 });
 
+use App\Http\Controllers\PublicPlayerProfileController;
 use App\Http\Controllers\UserMatchController;
 use App\Http\Controllers\UserWebAuthController;
 
-use App\Http\Controllers\PublicPlayerProfileController;
-
 // ─── Public Website ──────────────────────────────────────────────────────────
 Route::get('/', fn () => redirect('/home'))->name('public.root');
-Route::get('/home',    [PublicController::class, 'home'])->name('public.home');
-Route::get('/about',   [PublicController::class, 'about'])->name('public.about');
+Route::get('/home', [PublicController::class, 'home'])->name('public.home');
+Route::get('/about', [PublicController::class, 'about'])->name('public.about');
 Route::get('/contact', [PublicController::class, 'contact'])->name('public.contact');
 Route::post('/contact', [PublicController::class, 'contactStore'])->name('public.contact.store');
 Route::get('/matches', [PublicController::class, 'matches'])->name('public.matches');
@@ -68,6 +72,7 @@ Route::post('/logout', [UserWebAuthController::class, 'logout'])->name('user.log
 Route::get('/app/{any?}', function () {
     $shell = public_path('app/index.html');
     abort_unless(is_file($shell), 404);
+
     return Response::file($shell);
 })->where('any', '.*')->name('public.app');
 

@@ -61,7 +61,7 @@ class GameMatchResource extends JsonResource
             // instead of treating both as the same blank result.
             'stream_access_active' => $this->hasActiveStreamAccess(),
             'stream_access_amount' => (float) LiveStreamAccess::AMOUNT,
-            'stream_access_currency' => config('services.paypal.currency'),
+            'stream_access_currency' => config('services.payhere.currency'),
         ];
     }
 

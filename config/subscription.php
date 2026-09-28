@@ -13,7 +13,7 @@ return [
     | is treated as satisfied, regardless of any real Subscription row.
     |
     | Purely a development convenience so sport profiles / Analysis can be
-    | exercised locally without going through PayPal checkout. Nothing about
+    | exercised locally without going through PayHere checkout. Nothing about
     | the real gating logic is removed — set SUBSCRIPTION_BYPASS=false (or
     | unset it) to restore normal enforcement.
     |
@@ -33,11 +33,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | Where resources/views/payments/result.blade.php bounces the browser
-    | after rendering (subscription and stream-access PayPal flows both
+    | after rendering (subscription and stream-access PayHere flows both
     | share that view). Must match the `scheme` in Frontend/app.json so
     | expo-web-browser's openAuthSessionAsync() can detect the redirect and
     | auto-close the in-app browser sheet. This carries no payment data —
-    | capture already happened server-side before this redirect fires.
+    | activation happens server-side via PayHere's notify_url.
     |
     */
 

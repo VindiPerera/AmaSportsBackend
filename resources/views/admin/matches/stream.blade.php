@@ -40,19 +40,19 @@
             </form>
         @else
             <x-alert type="warning" title="Live Streaming is Locked">
-                Pay a one-time $5 activation to broadcast the live video stream for this fixture. Real-time live scoring is always free; this unlock enables the video embed.
+                Pay a one-time {{ config('services.payhere.currency') }} {{ number_format(\App\Models\LiveStreamAccess::AMOUNT, 2) }} activation to broadcast the live video stream for this fixture. Real-time live scoring is always free; this unlock enables the video embed.
             </x-alert>
 
             @if ($access && $access->status === 'pending')
                 <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    A payment was started but not completed. If you already completed checkout on PayPal, refresh this page — otherwise, complete payment below.
+                    A payment was started but not completed. If you already completed checkout on PayHere, refresh this page in a few seconds — otherwise, complete payment below.
                 </p>
             @endif
 
             <form method="POST" action="{{ route('admin.matches.stream.create-order', $match) }}">
                 @csrf
                 <x-button type="submit" variant="primary" size="lg">
-                    <span>Pay $5 with PayPal to Unlock Streaming</span>
+                    <span>Pay {{ config('services.payhere.currency') }} {{ number_format(\App\Models\LiveStreamAccess::AMOUNT, 2) }} with PayHere to Unlock Streaming</span>
                 </x-button>
             </form>
         @endif
