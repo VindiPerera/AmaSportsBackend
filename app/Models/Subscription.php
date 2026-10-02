@@ -25,6 +25,9 @@ class Subscription extends Model
     /** Fixed price for now — one plan, no tiers. */
     public const AMOUNT = 10.00;
 
+    /** A paid year can be renewed early once this many days or fewer are left — matches the app's "expiring soon" banner. */
+    public const RENEWAL_WINDOW_DAYS = 30;
+
     /**
      * @var list<string>
      */
