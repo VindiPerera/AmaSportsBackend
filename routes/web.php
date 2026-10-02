@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountDeletionController;
 use App\Http\Controllers\Payments\PayHereCheckoutController;
 use App\Http\Controllers\Payments\StreamAccessPaymentController;
 use App\Http\Controllers\Payments\SubscriptionPaymentController;
@@ -98,6 +99,11 @@ Route::view('/pricing', 'legal.pricing')->name('pricing');
 Route::view('/privacy-policy', 'legal.privacy-policy')->name('privacy-policy');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::view('/refund-policy', 'legal.refund-policy')->name('refund-policy');
+// Google Play's required web account-deletion link (Data safety form).
+Route::get('/delete-account', [AccountDeletionController::class, 'show'])->name('delete-account');
+Route::post('/delete-account', [AccountDeletionController::class, 'destroy'])
+    ->middleware('throttle:5,1')
+    ->name('delete-account.destroy');
 Route::view('/design-system', 'design-system')->name('design-system');
 
 // Mobile app (SPA shell).
