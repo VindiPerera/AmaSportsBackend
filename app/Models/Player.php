@@ -47,18 +47,53 @@ class Player extends Model
     }
 
     /**
-     * The subscription row that currently governs this player's access —
-     * always the most recent one, never a merged/extended view of history
-     * (Phase 6 spec: "always check the most recent one for current access").
+     * The most recently created subscription row, whatever its status —
+     * what status reporting falls back to when nothing is active. Access
+     * itself is decided by currentSubscription().
      */
     public function latestSubscription(): ?Subscription
     {
         return $this->subscriptions()->latest('id')->first();
     }
 
+    /**
+     * The subscription that actually grants access right now — the active,
+     * unexpired row that runs the furthest. Not latestSubscription(): a
+     * `pending` checkout row is created the moment checkout starts (see
+     * Api\SubscriptionController::createOrder), so a trial player opening
+     * the 1-year upgrade, or a subscriber renewing early, would otherwise
+     * lose access the instant they tap the button. A paid year bought
+     * during a trial or early renewal starts when the current period ends
+     * (see SubscriptionPaymentController::activate()), so it always has the
+     * latest expiry and is the one reported here.
+     */
+    public function currentSubscription(): ?Subscription
+    {
+        return $this->subscriptions()
+            ->where('status', Subscription::STATUS_ACTIVE)
+            ->where('expires_at', '>', now())
+            ->orderByDesc('expires_at')
+            ->first();
+    }
+
     public function hasActiveSubscription(): bool
     {
-        return (bool) $this->latestSubscription()?->isActive();
+        return $this->currentSubscription() !== null;
+    }
+
+    /**
+     * Whether the 1-year plan can be bought right now: nothing active, on
+     * the free trial (upgrade), or a paid year within its last
+     * Subscription::RENEWAL_WINDOW_DAYS days (renew early). Blocks paying
+     * twice for a year that still has months to run.
+     */
+    public function canPurchaseSubscription(): bool
+    {
+        $current = $this->currentSubscription();
+
+        return $current === null
+            || $current->is_trial
+            || $current->expires_at->lte(now()->addDays(Subscription::RENEWAL_WINDOW_DAYS));
     }
 
     /**

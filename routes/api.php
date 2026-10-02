@@ -80,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [ProfileController::class, 'show']);
     Route::patch('/user', [ProfileController::class, 'update']);
     Route::put('/user/password', [ProfileController::class, 'changePassword']);
+    Route::delete('/user', [ProfileController::class, 'destroy']);
 
     // $10/year app subscription (Phase 6 revision 2) — gates "Add Sport"
     // and Analysis (and, per product decision, editing sport profiles the

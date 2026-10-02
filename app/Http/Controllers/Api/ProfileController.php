@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
+use App\Services\AccountDeletionService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,5 +50,27 @@ class ProfileController extends Controller
             ->delete();
 
         return $this->success(null, 'Password changed successfully.');
+    }
+
+    /**
+     * DELETE /user — permanently delete the current account and all of its
+     * player data (Google Play account-deletion requirement). Asks for the
+     * password again so an unlocked phone can't wipe the account by accident.
+     */
+    public function destroy(Request $request, AccountDeletionService $deletion): JsonResponse
+    {
+        $request->validate(['password' => ['required', 'string']]);
+
+        $user = $request->user();
+
+        if (! Hash::check($request->password, $user->password)) {
+            return $this->error('The password is incorrect.', 422, [
+                'password' => ['The password is incorrect.'],
+            ]);
+        }
+
+        $deletion->delete($user);
+
+        return $this->success(null, 'Your account has been deleted.');
     }
 }

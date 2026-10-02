@@ -80,7 +80,11 @@ class SubscriptionPaymentController extends Controller
             return;
         }
 
-        $startsAt = now();
+        // Bought while a free trial or a paid year is still running (upgrade
+        // / early renewal): the new year starts when that period ends, so
+        // the player never loses days they already have. Otherwise now.
+        $runningUntil = $subscription->player->currentSubscription()?->expires_at;
+        $startsAt = $runningUntil && $runningUntil->isFuture() ? $runningUntil->copy() : now();
 
         $subscription->update([
             'status' => Subscription::STATUS_ACTIVE,

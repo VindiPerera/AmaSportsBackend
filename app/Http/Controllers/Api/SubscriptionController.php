@@ -35,6 +35,13 @@ class SubscriptionController extends Controller
 
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
 
+        if (! $player->canPurchaseSubscription()) {
+            return $this->error(
+                'Your 1-year plan is already active. You can renew it in the last '.Subscription::RENEWAL_WINDOW_DAYS.' days before it ends.',
+                422
+            );
+        }
+
         $subscription = Subscription::create([
             'player_id' => $player->id,
             'amount' => SubscriptionCountryPrice::amountFor($player->country),
@@ -71,7 +78,10 @@ class SubscriptionController extends Controller
     public function status(Request $request): JsonResponse
     {
         $player = Player::firstOrCreate(['user_id' => $request->user()->id]);
-        $subscription = $player->latestSubscription();
+        // The row granting access right now (see Player::currentSubscription())
+        // — only falls back to the latest row when nothing is active, so an
+        // abandoned upgrade/renewal checkout never masks a running plan.
+        $subscription = $player->currentSubscription() ?? $player->latestSubscription();
         // What THIS player would pay right now — only relevant as a preview
         // for the two branches below (no active/pending subscription yet);
         // once a real subscription row exists its own stored `amount` is
@@ -94,6 +104,8 @@ class SubscriptionController extends Controller
                 'expiring_soon' => false,
                 'amount' => $previewAmount,
                 'currency' => config('services.payhere.currency'),
+                'plan_amount' => $previewAmount,
+                'can_purchase' => $player->canPurchaseSubscription(),
             ], 'Subscription status retrieved successfully.');
         }
 
@@ -110,6 +122,8 @@ class SubscriptionController extends Controller
                 'expiring_soon' => false,
                 'amount' => $previewAmount,
                 'currency' => config('services.payhere.currency'),
+                'plan_amount' => $previewAmount,
+                'can_purchase' => $player->canPurchaseSubscription(),
             ], 'Subscription status retrieved successfully.');
         }
 
@@ -131,6 +145,11 @@ class SubscriptionController extends Controller
             'expiring_soon' => $isActive && $daysRemaining !== null && $daysRemaining <= 30,
             'amount' => (float) $subscription->amount,
             'currency' => $subscription->currency,
+            // What the 1-year plan costs this player now (country price) —
+            // `amount` above is what the reported row was charged, which is
+            // 0 for the free trial.
+            'plan_amount' => $previewAmount,
+            'can_purchase' => $player->canPurchaseSubscription(),
         ], 'Subscription status retrieved successfully.');
     }
 
@@ -186,6 +205,8 @@ class SubscriptionController extends Controller
             'expiring_soon' => $daysRemaining <= 30,
             'amount' => (float) $subscription->amount,
             'currency' => $subscription->currency,
+            'plan_amount' => SubscriptionCountryPrice::amountFor($player->country),
+            'can_purchase' => true,
         ], 'Your free trial has started.');
     }
 
